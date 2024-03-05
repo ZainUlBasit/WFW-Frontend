@@ -1,0 +1,22 @@
+.ShopWrapper {
+  margin-bottom: 5px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+  width: 79.8%;
+}
+
+@media screen and (max-width: 480px) {
+  .ShopWrapper {
+    width: 99.5% !important;
+  }
+}
+
+.Title {
+  background-color: white !important;
+  color: #5a4ae3 !important;
+}
+.TitleText {
+  font-size: 1.2rem !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: "Raleway" !important;
+}

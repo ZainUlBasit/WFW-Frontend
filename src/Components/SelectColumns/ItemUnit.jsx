@@ -1,0 +1,15 @@
+export const ItemUnitData = [
+  { value: "Bowl" },
+  { value: "Ltr" },
+  { value: "Bottle" },
+  { value: "ml" },
+  { value: "Kg" },
+  { value: "Gram" },
+  { value: "No." },
+  { value: "Pkt" },
+  { value: "Plate" },
+  { value: "Cup" },
+  { value: "Piece" },
+  { value: "Box" },
+  { value: "Bundle" },
+];

@@ -1,0 +1,2 @@
+export const MENU_ACTIVE = 'MENU_ACTIVE'
+export const MENU_DEACTIVE = 'MENU_DEACTIVE'

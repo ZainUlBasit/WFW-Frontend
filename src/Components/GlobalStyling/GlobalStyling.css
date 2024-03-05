@@ -1,0 +1,44 @@
+/* flex justify-center items-center flex-col */
+
+.Flex_CC_Col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.Flex_JC_Col {
+  display: flex;
+  justify-content: center;
+}
+/* flex justify-between items-center flex-col */
+.Flex_CB_Col {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+/* flex justify-around items-center flex-col */
+.Flex_CA_Col {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+/* flex justify-center items-center flex-col */
+.Flex_CC {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* flex justify-between items-center flex-col */
+.Flex_CB {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* flex justify-around items-center flex-col */
+.Flex_CA {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
