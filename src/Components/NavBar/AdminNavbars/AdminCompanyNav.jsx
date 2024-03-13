@@ -16,7 +16,7 @@ const AdminCompanyNav = ({ setOpen }) => {
       className={isActive_ ? "isActiveStyling" : "isNotActiveStyling"}
     >
       <div className="NavWrapper">
-        {userData.userdata.role === "shop" ? (
+        {userData.role === 2 ? (
           <AdminNavButton
             title={"Add Company"}
             type={"modal"}

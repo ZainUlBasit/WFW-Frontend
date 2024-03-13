@@ -24,16 +24,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchItems } from "../../store/ItemSlice";
 import BadgeIcon from "@mui/icons-material/Badge";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
-import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
-import { auth, db, storage } from "../../config/firebase";
-import { addDoc, collection } from "firebase/firestore";
 import { toast } from "react-toastify";
 import AddingLoader from "../Loader/AddingLoader";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
+import { listAll, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../config/firebaseImage";
+import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
+import LockIcon from "@mui/icons-material/Lock";
+import StoreIcon from "@mui/icons-material/Store";
+import { RegisterApi } from "../../Https";
+import { fetchBranches } from "../../store/BranchSlice";
+
 const AddNewShop = ({ open, setOpen, RefreshData }) => {
   const Data = useSelector((state) => state.ItemSliceReducer.data);
   const loading = useSelector((state) => state.ItemSliceReducer.loading);
@@ -43,6 +43,7 @@ const AddNewShop = ({ open, setOpen, RefreshData }) => {
   const [Pic, setPic] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+  const [BranchNumber, setBranchNumber] = useState("");
   const style = {
     position: "absolute",
     top: "50%",
@@ -58,25 +59,6 @@ const AddNewShop = ({ open, setOpen, RefreshData }) => {
   const [CurrentImageUrl, setCurrentImageUrl] = useState("");
   const [CurrentList, setCurrentList] = useState("");
   const [Loading, setLoading] = useState(false);
-
-  const GetCurrentImageUrl = async () => {
-    setLoading(true);
-    const ImageListRef = ref(storage, `images/`);
-    await listAll(ImageListRef).then((response) =>
-      response.items.forEach((resp) => {
-        if (resp._location.path === `images/${Name}`) {
-          getDownloadURL(resp).then((url) => setCurrentImageUrl(url));
-        }
-      })
-    );
-    setLoading(false);
-  };
-  const UploadImage = async () => {
-    const imageRef = ref(storage, `images/${Name}`);
-    await uploadBytes(imageRef, Pic).then((image) => {
-      alert("Image Successfully Uploaded.");
-    });
-  };
 
   const [DataAdded, setDataAdded] = useState(false);
   const [ProcessLoading, setProcessLoading] = useState(false);
@@ -114,25 +96,42 @@ const AddNewShop = ({ open, setOpen, RefreshData }) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (
-      CurrentImageUrl !== "" &&
-      DataAdded !== true &&
-      ProcessLoading === true
-    ) {
-      AddToDatabase();
-      setDataAdded(true);
-    }
-  }, [CurrentImageUrl]);
+  // useEffect(() => {
+  //   if (
+  //     CurrentImageUrl !== "" &&
+  //     DataAdded !== true &&
+  //     ProcessLoading === true
+  //   ) {
+  //     AddToDatabase();
+  //     setDataAdded(true);
+  //   }
+  // }, [CurrentImageUrl]);
 
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    // Upload Image
-    if (Pic === "") return;
-    await UploadImage();
-    await GetCurrentImageUrl();
-    setProcessLoading(true);
+    const imageRef = storage.ref(`/branch/${Name}`);
+    try {
+      const snapshot = await imageRef.put(Pic);
+      const downloadURL = await snapshot.ref.getDownloadURL();
+      const response = await RegisterApi({
+        name: Name,
+        email: Email,
+        password: Password,
+        confirmPassword: Password,
+        role: 2,
+        branch_number: BranchNumber,
+        imageUrl: downloadURL,
+      });
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        dispatch(fetchBranches());
+        showSuccessToast(response.data?.data?.msg);
+        setOpen(false);
+      }
+    } catch (err) {
+      showErrorToast(err.response?.data?.error?.msg || err.message);
+    }
     setLoading(false);
   };
 
@@ -207,7 +206,7 @@ const AddNewShop = ({ open, setOpen, RefreshData }) => {
               <InputWrapper>
                 <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                   <StyledLabel>
-                    <AttachEmailIcon className="LabelIcon" />
+                    <LockIcon className="LabelIcon" />
                   </StyledLabel>
                   <StyledInput
                     id="password"
@@ -216,6 +215,21 @@ const AddNewShop = ({ open, setOpen, RefreshData }) => {
                     value={Password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter Password"
+                  />
+                </div>
+              </InputWrapper>
+              <InputWrapper>
+                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                  <StyledLabel>
+                    <StoreIcon className="LabelIcon" />
+                  </StyledLabel>
+                  <StyledInput
+                    id="shop-number"
+                    type="number"
+                    name="shop-number"
+                    value={BranchNumber}
+                    onChange={(e) => setBranchNumber(e.target.value)}
+                    placeholder="Select Branch #"
                   />
                 </div>
               </InputWrapper>

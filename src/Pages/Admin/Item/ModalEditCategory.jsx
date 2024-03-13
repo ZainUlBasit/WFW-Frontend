@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import categoryServices from "../../../Services/category.services";
 import companyServices from "../../../Services/company.services";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
+import { fetchCompanies } from "../../../store/CompanySlice";
 
 const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
   const style = {
@@ -36,22 +37,20 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
     p: 4,
   };
 
-  const [CategoryName, setCategoryName] = useState("");
+  const [CategoryId, setCategoryId] = useState("");
   const [CategoryNewName, setCategoryNewName] = useState("");
   const [ProccessLoading, setProccessLoading] = useState(false);
 
+  const company = useSelector((state) => state.CompanySliceReducer.data);
+  const category = useSelector((state) => state.CategorySliceReducer.data);
+
   const [Categories, setCategories] = useState([]);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
-  const [CategoryCompany, setCategoryCompany] = useState("");
-
+  const [CategoryCompanyID, setCategoryCompany] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
-    const getCat = async () => {
-      let data = await categoryServices.getCategories();
-      data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data = data.filter((dt) => dt.shop === uData.userdata.fullName);
-      setCategories(data);
-    };
-    getCat();
+    dispatch(fetchCompanies(uData));
+    dispatch(fetchCategories(uData));
   }, []);
   const onUpdate = async (e) => {
     setProccessLoading(true);
@@ -145,17 +144,6 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
   const [Companies, setCompanies] = useState([]);
   const [Loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const getComp = async () => {
-      let response = await companyServices.getCompanies();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      console.log(response);
-      response.filter((cat) => cat.shop === uData.userdata.fullName);
-      setCompanies(response);
-    };
-    getComp();
-  }, []);
-
   return (
     <Modal
       open={EditCategoryModal}
@@ -190,11 +178,11 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
                     <CategoryIcon className="LabelIcon" />
                   </StyledLabel>
                   <StyledSelect
-                    value={CategoryCompany}
+                    value={CategoryCompanyID}
                     onChange={(e) => setCategoryCompany(e.target.value)}
                   >
                     <option value="none">Select Company</option>
-                    {Companies.map((val, i) => (
+                    {company.map((val, i) => (
                       <option key={i} value={val._id}>
                         {val.name}
                       </option>
@@ -209,19 +197,20 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
                     <CategoryIcon className="LabelIcon" />
                   </StyledLabel>
                   <StyledSelect
-                    value={CategoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
+                    value={CategoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
                   >
                     <option value="none" selected>
                       Select Category
                     </option>
-                    {Categories.filter((cat) => {
-                      if (cat.company_id === CategoryCompany) return cat;
-                    }).map((val, i) => (
-                      <option key={i} value={val.categoryname}>
-                        {val.categoryname}
-                      </option>
-                    ))}
+                    {category &&
+                      category
+                        .filter((cat) => cat.company_id === CategoryCompanyID)
+                        .map((val, i) => (
+                          <option key={i} value={val._id}>
+                            {val.name}
+                          </option>
+                        ))}
                   </StyledSelect>
                 </div>
               </InputWrapper>

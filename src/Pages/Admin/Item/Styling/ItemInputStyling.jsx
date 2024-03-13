@@ -11,6 +11,7 @@ export const StyledInput = ({
   placeholder,
   value,
   onChange,
+  disabled,
 }) => {
   return (
     <input
@@ -21,6 +22,7 @@ export const StyledInput = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      disabled={disabled ? disabled : false}
     />
   );
 };

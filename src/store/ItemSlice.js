@@ -1,19 +1,31 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import ItemDataServices from "../Services/item.services";
 import moment from "moment";
+import { GetBranchItems, GetItems } from "../Https";
+import { showErrorToast } from "../utils/TaostMessages";
 
-export const fetchItems = createAsyncThunk("fetch-items", async (shop) => {
-  let data = await ItemDataServices.getAllItems();
-  data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-  console.log(data);
-  data = data.map((dt)=>{
-    return {
-      ...dt,
-      itemaddeddate: moment(new Date(dt.itemaddeddate.seconds * 1000)).format("DD/MM/YYYY"),
+export const fetchItems = createAsyncThunk(
+  "fetch-items",
+  async (CurrentUser) => {
+    try {
+      let response;
+      const reqBody = { branch: CurrentUser.branch_number };
+      if (CurrentUser.role === 1) {
+        response = await GetItems();
+      } else if (CurrentUser.role === 2) {
+        response = await GetBranchItems(reqBody);
+      }
+      if (!response.data?.success) {
+        showErrorToast(response.data.error.msg);
+      } else if (response.data?.success) {
+        return response.data.data.payload;
+      }
+    } catch (err) {
+      showErrorToast(err.response.data.error.msg);
     }
-  })
-  return data;
-});
+    return [];
+  }
+);
 
 const ItemSlice = createSlice({
   name: "item",

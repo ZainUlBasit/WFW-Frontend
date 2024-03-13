@@ -11,6 +11,7 @@ import CustomerReturnSliceReducer from "./CustomerReturnSlice";
 import CustomerTransactionSliceReducer from "./CustomerTransactionSlice";
 import AutoLoginSliceReducer from "./AuthSlice";
 import BankReducer from "./BankSlice";
+import BranchReducer from "./BranchSlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,5 +27,6 @@ export const store = configureStore({
     CustomerTransactionSliceReducer,
     AutoLoginSliceReducer,
     BankReducer,
+    branches: BranchReducer,
   },
 });

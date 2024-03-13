@@ -58,11 +58,7 @@ const AdminItems = () => {
         <div>
           <TableComp
             title={"ITEM INFO"}
-            rows={item.filter((it) => {
-              console.log(it);
-              if (data.userdata.fullName === "Admin") return it;
-              else return it.itemshop === data.userdata.fullName;
-            })}
+            rows={item}
             columns={Columns}
             isActive_={isActive_}
             setSelID={setSelID}

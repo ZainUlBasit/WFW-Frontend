@@ -1,21 +1,31 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import DataLoader from "../Loader/DataLoader";
+import { LogoutApi } from "../../https";
+import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
+import { SetAuthNotFound } from "../../store/AuthSlice";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const LogoutFunction = async () => {
     try {
-      signOut(auth);
+      const response = await LogoutApi();
+      if (!response.data?.success)
+        return showErrorToast(response.data?.error?.msg);
+      showSuccessToast(response.data?.data?.msg);
+      dispatch(SetAuthNotFound());
       navigate("/login");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      showErrorToast(
+        err.response?.data?.error?.msg || response.data?.error?.msg
+      );
     }
   };
 

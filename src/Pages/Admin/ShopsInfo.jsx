@@ -3,12 +3,13 @@ import Navbar from "../../Components/NavBar/NavBar";
 import ShopInfo from "../../Components/ShopInfo/ShopInfo";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import AddNewShop from "../../Components/Modals/AddNewShop";
 import DataLoader from "../../Components/Loader/DataLoader";
 import LoadingError from "../../Components/Loader/LoadingError";
+import { fetchBranches } from "../../store/BranchSlice";
 
 const StyledIconWrapper = styled.div`
   border-radius: 50%;
@@ -30,6 +31,8 @@ const ShopsInfo = () => {
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const [AddShopModal, setAddShopModal] = useState(false);
   const [Loading, setLoading] = useState(false);
+  const Branches = useSelector((state) => state.branches);
+  const dispatch = useDispatch()
   const FetchData = async () => {
     setLoading(true);
     let data = await getDocs(collection(db, "users"));
@@ -39,12 +42,13 @@ const ShopsInfo = () => {
     setLoading(false);
   };
   useEffect(() => {
+    dispatch(fetchBranches())
     FetchData();
   }, []);
   return (
     <>
       <Navbar />
-      {Loading ? (
+      {Branches.loading ? (
         <DataLoader />
       ) : (
         <div className="pt-[12vh] flex justify-center items-center">
@@ -65,8 +69,8 @@ const ShopsInfo = () => {
               </StyledIconWrapper>
             </div>
             <div className="px-[10px]">
-              {AllShops.map((shop) => {
-                return <ShopInfo shop={shop} RefreshData={FetchData} />;
+              {Branches && Branches.data.map((branch) => {
+                return <ShopInfo shop={branch} RefreshData={FetchData} />;
               })}
               {AllShops.length === 0 ? (
                 <div className="h-[60vh] w-full flex justify-center items-center">

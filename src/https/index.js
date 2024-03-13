@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: API_BASE_URL_LOCAL,
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
@@ -10,15 +11,21 @@ export const api = axios.create({
 });
 
 // Auth Requests
-export const LoginApi = (data) => api.post("/auth/login");
-export const LogoutApi = (data) => api.post("/auth/logout");
-export const RefreshAuthApi = (data) => api.post("/auth/refresh");
+export const LoginApi = (data) => api.post("/auth/login", data);
+export const LogoutApi = () => api.post("/auth/logout");
+export const RegisterApi = (data) => api.post("/auth/register", data);
+export const RefreshAuthApi = () => api.get("/auth/refresh");
+// create new branch
+export const GetBranches = () => api.get("/auth/branch");
+export const DeleteBranch = (data) => api.delete("/auth/branch/" + data.id);
+export const UpdateBranchApi = (data) => api.patch("/auth/branch", data);
 // Company Requests
-export const CreateCompany = (data) => api.post("/company/create");
+export const CreateCompany = (data) => api.post("/company/create", data);
 export const GetCompany = () => api.get("/company/all");
-export const GetBranchCompany = (data) => api.get("/company/branch");
+export const GetBranchCompany = (payload) =>
+  api.post("/company/branch", payload);
 export const UpdateCompany = (data) => api.patch("/company/update");
-export const DeleteCompany = (data) => api.delete("/company/delete");
+export const DeleteCompany = (data) => api.delete("/company/delete", data);
 // items Requests
 export const CreateItem = (data) => api.post("/item/create");
 export const GetItems = () => api.get("/item/all");
@@ -26,9 +33,10 @@ export const GetBranchItems = (data) => api.get("/item/branch");
 export const UpdateItem = (data) => api.patch("/item/update");
 export const DeleteItem = (data) => api.delete("/item/delete");
 // Category Request
-export const CreateCategory = (data) => api.post("/category/create");
+export const CreateCategory = (data) => api.post("/category/create", data);
 export const GetAllCategory = () => api.get("/category/all");
-export const GetBranchCategory = (data) => api.get("/category/branch");
+export const GetBranchCategory = (data) =>
+  api.get("/category/branch/" + data.branch);
 export const DeleteCategory = (data) => api.delete("/category/delete");
 export const UpdateCategory = (data) => api.patch("/category/update");
 // Sub Category Request
@@ -67,4 +75,3 @@ export const GetAllPayment = () => api.get("/payment/all");
 export const GetBranchPayment = (data) => api.get("/payment/branch");
 export const DeletePayment = (data) => api.delete("/payment/delete");
 export const UpdatePayment = (data) => api.patch("/payment/update");
-

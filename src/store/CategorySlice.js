@@ -1,14 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import categoryServices from "../Services/category.services";
+import { GetAllCategory, GetBranchCategory } from "../Https";
 
-export const fetchCategories = createAsyncThunk("fetch/category", async () => {
-  let response = await categoryServices.getCategories();
-  response = response.docs.map((doc) => ({
-    ...doc.data(),
-    _id: doc.id,
-  }));
-  return response;
-});
+export const fetchCategories = createAsyncThunk(
+  "fetch/category",
+  async (data) => {
+    try {
+      let response;
+      if (data.role === 1) {
+        response = await GetAllCategory();
+      } else if (data.role === 2) {
+        response = await GetBranchCategory({ branch: data.branch_number });
+      }
+      if (!response.data?.success) {
+        showErrorToast(response.data.error.msg);
+      } else if (response.data?.success) {
+        return response.data.data.payload;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return [];
+  }
+);
 
 const CategorySlice = createSlice({
   name: "category",

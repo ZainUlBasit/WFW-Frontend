@@ -13,11 +13,18 @@ import {
 } from "./Styling/ItemInputStyling";
 import { CrossButton, StyledButton } from "./Styling/StyleButton";
 import { CircularProgress } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CategoryIcon from "@mui/icons-material/Category";
 import { toast } from "react-toastify";
 import categoryServices from "../../../Services/category.services";
 import companyServices from "../../../Services/company.services";
+import { fetchCompanies } from "../../../store/CompanySlice";
+import { CreateCategory } from "../../../Https";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
 
 const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
   const [CompanyID, setCompanyID] = useState("");
@@ -25,6 +32,7 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
   const company = useSelector((state) => state.CompanySliceReducer.data);
   const loading = useSelector((state) => state.CompanySliceReducer.loading);
   const data = useSelector((state) => state.AutoLoginSliceReducer.data);
+  const dispatch = useDispatch();
   // const dispatch = useDispatch();
   const style = {
     position: "absolute",
@@ -43,53 +51,30 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
   const [Loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const getComp = async () => {
-      let response = await companyServices.getCompanies();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      setCompanies(response);
-    };
-    getComp();
+    dispatch(fetchCompanies(data));
   }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    let shopName = data.userdata.fullName;
+    let shopName = data.branch_number;
     const categoryInfo = {
       company_id: CompanyID,
-      categoryname: CategoryName,
-      shop: shopName,
+      name: CategoryName,
+      branch: shopName,
     };
     if (!(CategoryName === "") && !(CompanyID === "")) {
       try {
-        await categoryServices.addCategory(categoryInfo);
-        toast.success("Category Successfully Added...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setCategoryModal(false);
+        const response = await CreateCategory(categoryInfo);
+        if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+        else {
+          showSuccessToast(response.data?.data?.msg);
+          setCategoryModal(false);
+        }
       } catch (err) {
-        toast.error("Unable to add new Sub Category", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        showErrorToast(err.response?.data?.error?.msg || err.message);
       }
     } else {
-      toast.warn("All Fields are mandatory", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      showWarningToast("All Fields are mandatory");
     }
   };
 
@@ -140,7 +125,7 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
                         onChange={(e) => setCompanyID(e.target.value)}
                       >
                         <option value="none">Select Company</option>
-                        {Companies.map((val, i) => (
+                        {company.map((val, i) => (
                           <option key={i} value={val._id}>
                             {val.name}
                           </option>

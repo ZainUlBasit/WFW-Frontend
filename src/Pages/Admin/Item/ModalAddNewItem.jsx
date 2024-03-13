@@ -33,6 +33,7 @@ import AddingLoader from "../../../Components/Loader/AddingLoader";
 import companyServices from "../../../Services/company.services";
 import categoryServices from "../../../Services/category.services";
 import subcategoryServices from "../../../Services/subcategory.services";
+import { CreateItem } from "../../../Https";
 
 const ModalAddNewItem = ({ setOpen, open }) => {
   // States
@@ -46,40 +47,26 @@ const ModalAddNewItem = ({ setOpen, open }) => {
   const [ItemPurchase, setItemPurchase] = useState(0);
   const [ItemSale, setItemSale] = useState(0);
   // redux code
-  const companies = useSelector((state) => state.CompanySliceReducer.data);
-  const categories = useSelector((state) => state.CategorySliceReducer.data);
-  const subcategories = useSelector(
-    (state) => state.SubCategorySliceReducer.data
-  );
-  const loading = useSelector((state) => state.SubCategorySliceReducer.loading);
+  // const companies = useSelector((state) => state.CompanySliceReducer.data);
+  // const categories = useSelector((state) => state.CategorySliceReducer.data);
+  // const loading = useSelector((state) => state.SubCategorySliceReducer.loading);
   const dispatch = useDispatch();
 
-  const [Companies, setCompanies] = useState([]);
-  const [Categories, setCategories] = useState([]);
-  const [SubCategories, setSubCategories] = useState([]);
+  // const [Companies, setCompanies] = useState([]);
+  // const [SubCategories, setSubCategories] = useState([]);
   const [Loading, setLoading] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
+  const Categories = useSelector((state) => state.CategorySliceReducer.data);
+  const SubCategories = useSelector(
+    (state) => state.SubCategorySliceReducer.data
+  );
+  const Companies = useSelector((state) => state.CompanySliceReducer.data);
   const [ProccessLoading, setProccessLoading] = useState(false);
 
   useEffect(() => {
-    const getComp = async () => {
-      let response = await companyServices.getCompanies();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      setCompanies(response);
-    };
-    const getCat = async () => {
-      let response = await categoryServices.getCategories();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      setCategories(response);
-    };
-    const getSubCat = async () => {
-      let response = await subcategoryServices.getSubCategories();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      setSubCategories(response);
-    };
-    getComp();
-    getCat();
-    getSubCat();
+    dispatch(fetchCategories(uData));
+    dispatch(fetchCompanies(uData));
+    dispatch(fetchSubCategories(uData));
   }, []);
 
   const style = {
@@ -87,36 +74,28 @@ const ModalAddNewItem = ({ setOpen, open }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 380,
     bgcolor: "background.paper",
     border: "3px solid #5A4AE3",
     borderRadius: "10px",
     boxShadow: 24,
-    p: 4,
   };
-  
+
   const onSubmit = async (e) => {
     setProccessLoading(true);
     e.preventDefault();
-    const shopName = uData.userdata.fullName;
-    let it_company = Companies.filter((comp) => comp._id === ItemCompany);
-    it_company = it_company[0];
-    it_company = it_company.name;
-
-    const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+    const shopName = uData.branch_number;
 
     const itemInfo = {
-      itemcode: ItemCode,
-      itemname: ItemName,
-      itemcompany: it_company,
-      itemcategory: ItemCategory,
-      itemsubcategory: ItemSubCategory,
-      itemunit: ItemUnit,
-      itempurchase: ItemPurchase,
-      itemsale: ItemSale,
-      itemqty: 0,
-      itemshop: shopName,
-      itemaddeddate: timestamp,
+      code: ItemCode,
+      name: ItemName,
+      companyId: ItemCompany,
+      category: ItemCategory,
+      subcategory: ItemSubCategory,
+      unit: ItemUnit,
+      purchase: ItemPurchase,
+      sale: ItemSale,
+      qty: 0,
+      branch: shopName,
     };
     if (
       !(ItemCode === "") ||
@@ -129,6 +108,7 @@ const ModalAddNewItem = ({ setOpen, open }) => {
       !(ItemSale === 0)
     ) {
       try {
+        const response = await CreateItem(itemInfo);
         await itemServices.addItem(itemInfo);
         setOpen(false);
         dispatch(fetchItems());
@@ -170,13 +150,13 @@ const ModalAddNewItem = ({ setOpen, open }) => {
       aria-describedby="modal-modal-description"
     >
       {SubCategories ? (
-        <Box sx={style} className="flex-col justify-center items-center">
+        <Box sx={style} className="flex-col justify-center items-center w-fit">
           <Typography
             id="modal-modal-title"
             variant="h6"
             component="h2"
             style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
-            className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3]"
+            className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3] py-5"
           >
             <PostAddIcon
               className="mr-[5px] mb-[5px]"
@@ -188,167 +168,179 @@ const ModalAddNewItem = ({ setOpen, open }) => {
 
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {/* Form Portion */}
-            <div className="flex-col justify-center items-center">
-              <form className="flex flex-col items-center justify-center w-[100%]">
-                {/* Item Code */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemCode">
-                      <IntegrationInstructionsIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledInput
-                      id="itemCode"
-                      type="text"
-                      name="itemCode"
-                      placeholder="Item Code"
-                      value={ItemCode}
-                      onChange={(e) =>
-                        setItemCode(e.target.value.toUpperCase())
-                      }
-                    />
+            <div className="flex-col justify-center items-center w-fit">
+              <form className="flex flex-col items-center justify-center w-fit pb-10">
+                <div className="flex gap-x-10 flex-wrap w-fit p-7">
+                  <div>
+                    {/* Item Code */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemCode">
+                          <IntegrationInstructionsIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledInput
+                          id="itemCode"
+                          type="text"
+                          name="itemCode"
+                          placeholder="Item Code"
+                          value={ItemCode}
+                          onChange={(e) =>
+                            setItemCode(e.target.value.toUpperCase())
+                          }
+                        />
+                      </div>
+                    </InputWrapper>
+                    {/* Item Name */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemName">
+                          <DriveFileRenameOutlineIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledInput
+                          id="itemName"
+                          type="text"
+                          name="itemName"
+                          placeholder="Item Name"
+                          value={ItemName}
+                          onChange={(e) => setItemName(e.target.value)}
+                        />
+                      </div>
+                    </InputWrapper>
+                    {/* Purchase Rate */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemUnit">
+                          <ShoppingCartIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledInput
+                          id="itemPurchase"
+                          type="number"
+                          name="itemPurchase"
+                          value={ItemPurchase}
+                          onChange={(e) => setItemPurchase(e.target.value)}
+                          placeholder="Item Purchase Rate"
+                        />
+                      </div>
+                    </InputWrapper>
+                    {/* Sale Rate */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemUnit">
+                          <PaymentsIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledInput
+                          id="itemPurchase"
+                          type="number"
+                          name="itemPurchase"
+                          value={ItemSale}
+                          onChange={(e) => setItemSale(e.target.value)}
+                          placeholder="Item Sale Rate"
+                        />
+                      </div>
+                    </InputWrapper>
                   </div>
-                </InputWrapper>
-                {/* Item Name */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemName">
-                      <DriveFileRenameOutlineIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledInput
-                      id="itemName"
-                      type="text"
-                      name="itemName"
-                      placeholder="Item Name"
-                      value={ItemName}
-                      onChange={(e) => setItemName(e.target.value)}
-                    />
+                  <div>
+                    {/* Select Company */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemCompany">
+                          <AssuredWorkloadIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledSelect
+                          value={ItemCompany}
+                          onChange={(e) => {
+                            setItemCompany(e.target.value);
+                          }}
+                        >
+                          <option value="none">Select Company</option>
+                          {Companies.map((comp, i) => (
+                            <option key={i} value={comp._id}>
+                              {comp.name}
+                            </option>
+                          ))}
+                        </StyledSelect>
+                      </div>
+                    </InputWrapper>
+                    {/* Select Category */}
+                    {ItemCompany && (
+                      <InputWrapper>
+                        <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                          <StyledLabel for="itemCategory">
+                            <CategoryIcon className="LabelIcon" />
+                          </StyledLabel>
+                          <StyledSelect
+                            value={ItemCategory}
+                            onChange={(e) => setItemCategory(e.target.value)}
+                          >
+                            <option value="none">Select Category</option>
+                            {Categories.filter(
+                              (data) => data.company_id === ItemCompany
+                            ).map((val, i) => (
+                              <option key={i} value={val.categoryname}>
+                                {val.categoryname}
+                              </option>
+                            ))}
+                          </StyledSelect>
+                        </div>
+                      </InputWrapper>
+                    )}
+                    {/* Select Sub Category */}
+                    {ItemCategory && (
+                      <InputWrapper>
+                        <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                          <StyledLabel for="itemSubCategory">
+                            <SubdirectoryArrowRightIcon className="LabelIcon" />
+                          </StyledLabel>
+                          <StyledSelect
+                            value={ItemSubCategory}
+                            onChange={(e) => setItemSubCategory(e.target.value)}
+                          >
+                            <option value="none">Select Sub Category</option>
+                            {SubCategories.filter(
+                              (subcat) =>
+                                subcat.company_id === ItemCompany &&
+                                subcat.category_id === ItemCategory
+                            ).map((val, i) => (
+                              <option key={i} value={val._id}>
+                                {val.name}
+                              </option>
+                            ))}
+                          </StyledSelect>
+                        </div>
+                      </InputWrapper>
+                    )}
+                    {/* Select Unit */}
+                    {ItemSubCategory && (
+                      <InputWrapper>
+                        <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                          <StyledLabel for="itemUnit">
+                            <AdUnitsIcon className="LabelIcon" />
+                          </StyledLabel>
+                          <StyledSelect
+                            value={ItemUnit}
+                            onChange={(e) => setItemUnit(e.target.value)}
+                          >
+                            <option value="none">Select Unit</option>
+                            <option value="Bowl">Bowl</option>
+                            <option value="Ltr">Ltr</option>
+                            <option value="Bottle">Bottle</option>
+                            <option value="ml">ml</option>
+                            <option value="Kg">Kg</option>
+                            <option value="Gram">Gram</option>
+                            <option value="No.">No.</option>
+                            <option value="Pkt">Pkt</option>
+                            <option value="Plate">Plate</option>
+                            <option value="Cup">Cup</option>
+                            <option value="Piece">Piece</option>
+                            <option value="Box">Box</option>
+                            <option value="Bundle">Bundle</option>
+                          </StyledSelect>
+                        </div>
+                      </InputWrapper>
+                    )}
                   </div>
-                </InputWrapper>
-                {/* Select Company */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemCompany">
-                      <AssuredWorkloadIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledSelect
-                      value={ItemCompany}
-                      onChange={(e) => {
-                        console.log(e.target.value);
-                        setItemCompany(e.target.value);
-                      }}
-                    >
-                      <option value="none">Select Company</option>
-                      {Companies.map((comp, i) => (
-                        <option key={i} value={comp._id}>
-                          {comp.name}
-                        </option>
-                      ))}
-                    </StyledSelect>
-                  </div>
-                </InputWrapper>
-                {/* Select Category */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemCategory">
-                      <CategoryIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledSelect
-                      value={ItemCategory}
-                      onChange={(e) => setItemCategory(e.target.value)}
-                    >
-                      <option value="none">Select Category</option>
-                      {Categories.filter(
-                        (cat) => cat.company_id === ItemCompany
-                      ).map((val, i) => (
-                        <option key={i} value={val.categoryname}>
-                          {val.categoryname}
-                        </option>
-                      ))}
-                    </StyledSelect>
-                  </div>
-                </InputWrapper>
-                {/* Select Sub Category */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemSubCategory">
-                      <SubdirectoryArrowRightIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledSelect
-                      value={ItemSubCategory}
-                      onChange={(e) => setItemSubCategory(e.target.value)}
-                    >
-                      <option value="none">Select Sub Category</option>
-                      {SubCategories.filter(
-                        (subcat) =>
-                          subcat.company_id === ItemCompany &&
-                          subcat.categoryname === ItemCategory
-                      ).map((val, i) => (
-                        <option key={i} value={val.subcategoryname}>
-                          {val.subcategoryname}
-                        </option>
-                      ))}
-                    </StyledSelect>
-                  </div>
-                </InputWrapper>
-                {/* Select Unit */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemUnit">
-                      <AdUnitsIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledSelect
-                      value={ItemUnit}
-                      onChange={(e) => setItemUnit(e.target.value)}
-                    >
-                      <option value="none">Select Unit</option>
-                      <option value="Bowl">Bowl</option>
-                      <option value="Ltr">Ltr</option>
-                      <option value="Bottle">Bottle</option>
-                      <option value="ml">ml</option>
-                      <option value="Kg">Kg</option>
-                      <option value="Gram">Gram</option>
-                      <option value="No.">No.</option>
-                      <option value="Pkt">Pkt</option>
-                      <option value="Plate">Plate</option>
-                      <option value="Cup">Cup</option>
-                      <option value="Piece">Piece</option>
-                      <option value="Box">Box</option>
-                      <option value="Bundle">Bundle</option>
-                    </StyledSelect>
-                  </div>
-                </InputWrapper>
-                {/* Purchase Rate */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemUnit">
-                      <ShoppingCartIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledInput
-                      id="itemPurchase"
-                      type="number"
-                      name="itemPurchase"
-                      value={ItemPurchase}
-                      onChange={(e) => setItemPurchase(e.target.value)}
-                      placeholder="Item Purchase Rate"
-                    />
-                  </div>
-                </InputWrapper>
-                {/* Sale Rate */}
-                <InputWrapper>
-                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                    <StyledLabel for="itemUnit">
-                      <PaymentsIcon className="LabelIcon" />
-                    </StyledLabel>
-                    <StyledInput
-                      id="itemPurchase"
-                      type="number"
-                      name="itemPurchase"
-                      value={ItemSale}
-                      onChange={(e) => setItemSale(e.target.value)}
-                      placeholder="Item Sale Rate"
-                    />
-                  </div>
-                </InputWrapper>
+                </div>
+
                 {ProccessLoading ? (
                   <AddingLoader />
                 ) : (

@@ -23,6 +23,12 @@ import { fetchCompanies } from "../../../store/CompanySlice";
 import { toast } from "react-toastify";
 import CompanyDataServices from "../../../Services/company.services";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
+import { CreateCompany } from "../../../Https";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
 
 const ModalAddNewCompany = ({ setOpen, open }) => {
   const [CompanyName, setCompanyName] = useState("");
@@ -96,6 +102,40 @@ const ModalAddNewCompany = ({ setOpen, open }) => {
       });
     }
     setProccessLoading(false);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      !(CompanyName == "") &&
+      !(CompanyContact == "") &&
+      !(CompanyEmail == "") &&
+      !(CompanyCnic == "") &&
+      !(CompanyDesc == "") &&
+      !(CompanyAddress == "")
+    ) {
+      try {
+        const response = await CreateCompany({
+          name: CompanyName,
+          email: CompanyEmail,
+          contact: CompanyContact,
+          cnic: CompanyCnic,
+          description: CompanyDesc,
+          address: CompanyAddress,
+          branch: uData.branch_number,
+        });
+        if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+        else {
+          showSuccessToast(response.data?.data?.msg);
+          dispatch(fetchCompanies(uData));
+          setOpen(false);
+        }
+      } catch (err) {
+        showErrorToast(err.response.data?.error?.msg);
+      }
+    } else {
+      showWarningToast("Required Fields are undefined!");
+    }
   };
 
   return (
@@ -226,7 +266,7 @@ const ModalAddNewCompany = ({ setOpen, open }) => {
               {ProccessLoading ? (
                 <AddingLoader />
               ) : (
-                <StyledButton onClick={onSubmitForm} primary>
+                <StyledButton onClick={onSubmit} primary>
                   ADD NEW COMPANY
                 </StyledButton>
               )}

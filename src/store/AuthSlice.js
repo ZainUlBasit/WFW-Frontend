@@ -1,4 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RefreshAuthApi } from "../https";
+
+export const RefreshAuthSlice = createAsyncThunk("refresh/auth", async () => {
+  try {
+    const response = await RefreshAuthApi();
+    if (response.data?.success) return response.data?.data?.payload;
+  } catch (err) {}
+  return [];
+});
 
 const AuthSlice = createSlice({
   name: "AuthSlice",
@@ -17,8 +26,23 @@ const AuthSlice = createSlice({
     SetAuthNotFound: (state, action) => {
       state.auth = false;
       state.loading = false;
-      state.data = action.payload;
+      state.data = [];
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RefreshAuthSlice.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(RefreshAuthSlice.fulfilled, (state, action) => {
+      state.loading = false;
+      state.auth = action.payload.length === 0 ? false : true;
+      state.data = action.payload;
+    });
+    builder.addCase(RefreshAuthSlice.rejected, (state, action) => {
+      state.loading = false;
+      state.isError = true;
+      console.log("Error: ", action.error);
+    });
   },
 });
 

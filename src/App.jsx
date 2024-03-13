@@ -28,7 +28,7 @@ import AddNewBill from "./Pages/Admin/Customer/AddNewBill";
 import LoginComp from "./Components/LoginComponent/LoginComp";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SetAuth, SetAuthNotFound } from "./store/AuthSlice";
+import { RefreshAuthSlice, SetAuth, SetAuthNotFound } from "./store/AuthSlice";
 import DataLoader from "./Components/Loader/DataLoader";
 import Requests from "./Pages/Admin/Requests";
 import PageLoader from "./Components/Loader/PageLoader";
@@ -52,31 +52,8 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // Methods
-  const CallAutoLogin = () => {
-    try {
-      onAuthStateChanged(auth, async (currentuser) => {
-        if (currentuser !== null) {
-          let response = await UserDataServices.getUsers();
-          response = response.docs.map((doc) => ({
-            ...doc.data(),
-            _id: doc.id,
-          }));
-          console.log(response);
-          response = response.filter(
-            (resp) => resp.email === currentuser.email
-          );
-          dispatch(SetAuth({ userdata: response[0] }));
-        } else {
-          dispatch(SetAuthNotFound([]));
-        }
-      });
-    } catch (error) {
-      dispatch(SetAuthNotFound([]));
-    }
-  };
-
   useEffect(() => {
-    CallAutoLogin();
+    dispatch(RefreshAuthSlice());
   }, []);
   return loading ? (
     <div className="h-[100vh] w-full flex justify-center items-center">

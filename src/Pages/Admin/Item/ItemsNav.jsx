@@ -35,7 +35,7 @@ const ItemsNav = ({
             <span className="btnText">Items Info</span>
           </Link>
         </ButtonComp>
-        {userData.userdata.role === "shop" ? (
+        {userData.role === 2 ? (
           <>
             <ButtonComp width="180px" onClick={() => setOpen(true)}>
               <div className="btnModal">

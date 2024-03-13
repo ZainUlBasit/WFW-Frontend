@@ -33,4 +33,11 @@ export const Columns = [
     minWidth: 140,
     format: (value) => value.toLocaleString("en-US"),
   },
+  {
+    id: "branch",
+    label: "Branch #",
+    align: "center",
+    minWidth: 140,
+    format: (value) => value.toLocaleString("en-US"),
+  },
 ];

@@ -19,8 +19,8 @@ const CompaniesKata = () => {
   const data = useSelector((state) => state.AutoLoginSliceReducer.data);
 
   useEffect(() => {
-    dispatch(fetchCompanies());
-  }, [dispatch]);
+    dispatch(fetchCompanies(data));
+  }, []);
   return (
     <>
       <Navbar />
@@ -33,10 +33,7 @@ const CompaniesKata = () => {
         <div className="transition-all duration-[5s]">
           <TableComp
             title="COMPANIES KATA"
-            rows={company.filter((comp) => {
-              if (data.userdata.fullName == "Admin") return comp;
-              else return comp.shop == data.userdata.fullName;
-            })}
+            rows={company}
             columns={Columns}
             isActive_={isActive_}
           />

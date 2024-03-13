@@ -119,84 +119,15 @@ const ChartWrapper = styled.div`
 const Home = () => {
   const [AllShopSale, setAllShopSale] = useState([]);
   const [Shops, setShops] = useState([]);
-  const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
-  let company = useSelector((state) => state.CompanySliceReducer.data);
-  let customer = useSelector((state) => state.CustomerSliceReducer.data);
   const [TotalRec, setTotalRec] = useState(0);
   const [TotalPay, setTotalPay] = useState(0);
 
   // loading
   const [Loading, setLoading] = useState(false);
 
-  const FetchData = async () => {
-    setLoading(true);
-    let data = await getDocs(collection(db, "users"));
-    data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-    data = data.filter((dt) => dt.role === "shop").map((dt) => dt.fullName);
-    data.sort(
-      (a, b) => a.localeCompare(b) //using String.prototype.localCompare()
-    );
-    setShops(data);
-
-    let all_transactions =
-      await customerTransactionsServices.getAllTransactions();
-    all_transactions = all_transactions.docs.map((doc) => ({
-      ...doc.data(),
-      _id: doc.id,
-    }));
-
-    all_transactions = all_transactions.filter((dt) => {
-      const curD = new Date();
-      const itemDate = new Date(dt.date.seconds * 1000);
-      if (itemDate.getMonth() === curD.getMonth()) {
-        return dt;
-      }
-    });
-
-    let current_shop;
-    let shop_sale;
-    let all_shop_sale = [];
-    data.map((shop) => {
-      current_shop = all_transactions.filter((dt) => dt.shop === shop);
-      console.log(current_shop);
-      shop_sale = current_shop.reduce(
-        (acc, cur) => acc + Number(cur.qty) * Number(cur.unitprice),
-        0
-      );
-      console.log(shop_sale);
-      all_shop_sale.push(Number(shop_sale));
-    });
-    setAllShopSale(all_shop_sale);
-
-    // set Total Payable
-    company = company.filter((cp) => {
-      if (cp.shop === "Admin") return cp;
-      else return uData.userdata.fullName === cp.shop;
-    });
-    const Total_Payable = company.reduce(
-      (acc, cur) => acc + Number(cur.remaining),
-      0
-    );
-    setTotalPay(Total_Payable);
-    // Set Total Recievable
-    customer = customer.filter((cp) => {
-      if (cp.shop === "Admin") return cp;
-      else return uData.userdata.fullName === cp.shop;
-    });
-
-    const Total_Rec = customer.reduce(
-      (acc, cur) => acc + Number(cur.remaining),
-      0
-    );
-    setTotalRec(Total_Rec);
-
-    setLoading(false);
-  };
+  
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchCompanies());
-    dispatch(fetchCustomers({ shop: uData.userdata.fullName }));
-    FetchData();
   }, []);
 
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);

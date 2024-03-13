@@ -72,7 +72,7 @@ const Navbar = () => {
           <div className="mainBox  overflow-hidden">
             <img
               className="w-[50px] h-[50px] select-none"
-              src={data.userdata.pic}
+              src={data.imageUrl}
               alt="not found"
             />
             <button
@@ -89,7 +89,7 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        {isDropActive ? (
+        {isDropActive && (
           <div className="DropDownList">
             <ul ref={dropDownRef}>
               {/* <li>
@@ -112,7 +112,7 @@ const Navbar = () => {
                 </div>
               </li>*/}
 
-              {data.userdata.fullName === "Admin" ? (
+              {data.role === 1 && (
                 <>
                   <li
                     className="hover:bg-white transition-all ease-in-out duration-300"
@@ -133,8 +133,6 @@ const Navbar = () => {
                     <div className="LinkTextB select-none">Shops Info</div>
                   </li>
                 </>
-              ) : (
-                <></>
               )}
               <li
                 className="hover:bg-white transition-all ease-in-out duration-300"
@@ -151,7 +149,7 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-        ) : null}
+        )}
       </div>
       {isOpModal ? <CPModal /> : null}
       {/* Side Menu List */}

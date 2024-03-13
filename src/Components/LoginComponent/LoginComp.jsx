@@ -19,6 +19,8 @@ import { auth } from "../../config/firebase";
 import { toast } from "react-toastify";
 import UserDataServices from "../../Services/user.services";
 import AddingLoader from "../Loader/AddingLoader";
+import { LoginApi } from "../../https";
+import { showErrorToast } from "../../utils/TaostMessages";
 
 const LoginComp = () => {
   const [email, setEmail] = useState("");
@@ -27,7 +29,6 @@ const LoginComp = () => {
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
-    let AlreadyHaveAccount = false;
     setProcessLoading(true);
     let response;
     try {
@@ -41,19 +42,19 @@ const LoginComp = () => {
           theme: "light",
         });
       } else {
-        response = await UserDataServices.getUsers();
-        response = response.docs.map((doc) => ({
-          ...doc.data(),
-          _id: doc.id,
-        }));
-        response = response.filter((resp) => resp.email === email);
-        response = response[0];
-        if (response !== undefined) {
-          AlreadyHaveAccount = true;
-          await signInWithEmailAndPassword(auth, email, password);
-          dispatch(SetAuth({ userdata: response }));
-        } else {
-          toast.error("Invalid Credential...", {
+        response = await LoginApi({ email, password });
+        if (!response.data?.success) {
+          toast.error(response.data.error.msg, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        } else if (response.data?.success) {
+          dispatch(SetAuth(response.data.data.payload));
+          toast.success(response.data.data.msg, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -64,20 +65,11 @@ const LoginComp = () => {
         }
       }
     } catch (error) {
-      if (AlreadyHaveAccount === true) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        dispatch(SetAuth({ userdata: response }));
-        window.location.reload(true);
-      } else {
-        toast.error("Unable to login...", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
+      setProcessLoading(false);
+      showErrorToast(error.response.data.error.msg);
+      // showErrorToast(
+      //   error.response?.data?.error?.msg
+      // );
     }
     setProcessLoading(false);
   };

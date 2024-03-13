@@ -13,14 +13,13 @@ import LoadingError from "../../../Components/Loader/LoadingError";
 
 const AdminCompany = () => {
   let company = useSelector((state) => state.CompanySliceReducer.data);
+  const data = useSelector((state) => state.AutoLoginSliceReducer.data);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchCompanies());
-    console.log(company);
+    dispatch(fetchCompanies(data));
   }, []);
   const loading = useSelector((state) => state.CompanySliceReducer.loading);
   const isError = useSelector((state) => state.CompanySliceReducer.isError);
-  const data = useSelector((state) => state.AutoLoginSliceReducer.data);
 
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
   const [EditCompanyModal, setEditCompanyModal] = useState(false);
@@ -40,10 +39,7 @@ const AdminCompany = () => {
         <div>
           <TableComp
             title="COMPANIES INFO"
-            rows={company.filter((comp) => {
-              if (data.userdata.fullName == "Admin") return comp;
-              else return comp.shop == data.userdata.fullName;
-            })}
+            rows={company}
             columns={Columns}
             isActive_={isActive_}
             setEditCompanyModal={setEditCompanyModal}

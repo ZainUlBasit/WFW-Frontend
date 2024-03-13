@@ -26,6 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import CompanyDataServices from "../../../Services/company.services";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
+import { DeleteCompany } from "../../../Https";
+import { showErrorToast } from "../../../utils/TaostMessages";
 
 const ModalEditCompany = ({ setOpen, open, selComp }) => {
   const style = {
@@ -91,17 +93,17 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
       !(CompanyDesc == "") &&
       !(CompanyAddress == "")
     ) {
-      await CompanyDataServices.updateCompany(CompanyId, companyInfo);
-      setOpen(false);
-      dispatch(fetchCompanies());
-      toast.success("Company Successfully Updated...", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      try {
+        const response = await DeleteCompany({ companyId: CompanyId });
+        if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+        else {
+          showSuccessToast(response.data?.data?.msg);
+          dispatch(fetchCompanies(uData));
+          setOpen(false);
+        }
+      } catch (err) {
+        showErrorToast(err.response?.data?.error?.msg);
+      }
     } else {
       toast.warn("All Fields are Mandatory...", {
         position: "top-right",
