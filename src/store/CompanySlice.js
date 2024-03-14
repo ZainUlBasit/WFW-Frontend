@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import CompanyDataServices from "../Services/company.services";
 import { showErrorToast } from "../utils/TaostMessages";
-import { GetBranchCompany, GetCompany } from "../Https";
+import { GetBranchCompany, GetCompany } from "../https";
 
 export const fetchCompanies = createAsyncThunk(
   "fetchCompanies",
