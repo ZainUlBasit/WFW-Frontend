@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import DataLoader from "../Loader/DataLoader";
-import { LogoutApi } from "../../https";
+import { LogoutApi } from "../../Https";
 import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
 import { SetAuthNotFound } from "../../store/AuthSlice";
 

@@ -19,7 +19,7 @@ import { auth } from "../../config/firebase";
 import { toast } from "react-toastify";
 import UserDataServices from "../../Services/user.services";
 import AddingLoader from "../Loader/AddingLoader";
-import { LoginApi } from "../../https";
+import { LoginApi } from "../../Https";
 import { showErrorToast } from "../../utils/TaostMessages";
 
 const LoginComp = () => {

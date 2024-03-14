@@ -31,8 +31,8 @@ import { storage } from "../../config/firebaseImage";
 import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
 import LockIcon from "@mui/icons-material/Lock";
 import StoreIcon from "@mui/icons-material/Store";
-import { RegisterApi } from "../../Https";
 import { fetchBranches } from "../../store/BranchSlice";
+import { RegisterApi } from "../../Https";
 
 const AddNewShop = ({ open, setOpen, RefreshData }) => {
   const Data = useSelector((state) => state.ItemSliceReducer.data);

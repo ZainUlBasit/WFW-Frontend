@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RefreshAuthApi } from "../https";
+import { RefreshAuthApi } from "../Https";
 
 export const RefreshAuthSlice = createAsyncThunk("refresh/auth", async () => {
   try {
