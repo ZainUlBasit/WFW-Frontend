@@ -34,6 +34,12 @@ import companyServices from "../../../Services/company.services";
 import categoryServices from "../../../Services/category.services";
 import subcategoryServices from "../../../Services/subcategory.services";
 import { CreateItem } from "../../../Https";
+import { fetchTri } from "../../../store/TriGetSlice";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
 
 const ModalAddNewItem = ({ setOpen, open }) => {
   // States
@@ -44,13 +50,15 @@ const ModalAddNewItem = ({ setOpen, open }) => {
   const [ItemCategory, setItemCategory] = useState("");
   const [ItemSubCategory, setItemSubCategory] = useState("");
   const [ItemUnit, setItemUnit] = useState("");
-  const [ItemPurchase, setItemPurchase] = useState(0);
-  const [ItemSale, setItemSale] = useState(0);
+  const [ItemPurchase, setItemPurchase] = useState("");
+  const [ItemSale, setItemSale] = useState("");
   // redux code
   // const companies = useSelector((state) => state.CompanySliceReducer.data);
   // const categories = useSelector((state) => state.CategorySliceReducer.data);
   // const loading = useSelector((state) => state.SubCategorySliceReducer.loading);
   const dispatch = useDispatch();
+
+  const TriData = useSelector((state) => state.TriGet.data);
 
   // const [Companies, setCompanies] = useState([]);
   // const [SubCategories, setSubCategories] = useState([]);
@@ -63,10 +71,16 @@ const ModalAddNewItem = ({ setOpen, open }) => {
   const Companies = useSelector((state) => state.CompanySliceReducer.data);
   const [ProccessLoading, setProccessLoading] = useState(false);
 
+  const [CompanyID, setCompanyID] = useState("");
+  const [CategoryID, setCategoryID] = useState("");
+  const [SubCategoryID, setSubCategoryID] = useState("");
+
+  const [CompanyName, setCompanyName] = useState("");
+  const [CategoryName, setCategoryName] = useState("");
+  const [SubCategoryName, setSubCategoryName] = useState("");
+
   useEffect(() => {
-    dispatch(fetchCategories(uData));
-    dispatch(fetchCompanies(uData));
-    dispatch(fetchSubCategories(uData));
+    dispatch(fetchTri(uData));
   }, []);
 
   const style = {
@@ -83,19 +97,18 @@ const ModalAddNewItem = ({ setOpen, open }) => {
   const onSubmit = async (e) => {
     setProccessLoading(true);
     e.preventDefault();
-    const shopName = uData.branch_number;
 
     const itemInfo = {
       code: ItemCode,
       name: ItemName,
-      companyId: ItemCompany,
-      category: ItemCategory,
-      subcategory: ItemSubCategory,
+      companyId: CompanyID,
+      categoryId: CategoryID,
+      subcategoryId: SubCategoryID,
       unit: ItemUnit,
       purchase: ItemPurchase,
       sale: ItemSale,
       qty: 0,
-      branch: shopName,
+      branch: uData.branch_number,
     };
     if (
       !(ItemCode === "") ||
@@ -109,36 +122,17 @@ const ModalAddNewItem = ({ setOpen, open }) => {
     ) {
       try {
         const response = await CreateItem(itemInfo);
-        await itemServices.addItem(itemInfo);
-        setOpen(false);
-        dispatch(fetchItems());
-        toast.success("Item Successfully Added...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+        else {
+          showSuccessToast(response.data?.data?.msg);
+          setOpen(false);
+          dispatch(fetchItems(uData));
+        }
       } catch (err) {
-        toast.error("Unable to add item...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        showErrorToast(err.response?.data?.error?.msg || err.message);
       }
     } else {
-      toast.warn("All Fields are Mandatory...", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      showWarningToast("All Fields are Mandatory...");
     }
     setProccessLoading(false);
   };
@@ -149,7 +143,7 @@ const ModalAddNewItem = ({ setOpen, open }) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      {SubCategories ? (
+      {!TriData.loading ? (
         <Box sx={style} className="flex-col justify-center items-center w-fit">
           <Typography
             id="modal-modal-title"
@@ -170,7 +164,7 @@ const ModalAddNewItem = ({ setOpen, open }) => {
             {/* Form Portion */}
             <div className="flex-col justify-center items-center w-fit">
               <form className="flex flex-col items-center justify-center w-fit pb-10">
-                <div className="flex gap-x-10 flex-wrap w-fit p-7">
+                <div className="flex gap-x-10 items-center justify-center flex-wrap w-fit p-7">
                   <div>
                     {/* Item Code */}
                     <InputWrapper>
@@ -247,70 +241,81 @@ const ModalAddNewItem = ({ setOpen, open }) => {
                           <AssuredWorkloadIcon className="LabelIcon" />
                         </StyledLabel>
                         <StyledSelect
-                          value={ItemCompany}
+                          value={CompanyID}
                           onChange={(e) => {
-                            setItemCompany(e.target.value);
+                            setCompanyID(e.target.value);
                           }}
                         >
                           <option value="none">Select Company</option>
-                          {Companies.map((comp, i) => (
-                            <option key={i} value={comp._id}>
-                              {comp.name}
-                            </option>
-                          ))}
+                          {TriData.company &&
+                            TriData.company.map((comp, i) => (
+                              <option key={i} value={comp._id}>
+                                {comp.name}
+                              </option>
+                            ))}
                         </StyledSelect>
                       </div>
                     </InputWrapper>
                     {/* Select Category */}
-                    {ItemCompany && (
+                    {CompanyID && (
                       <InputWrapper>
                         <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                           <StyledLabel for="itemCategory">
                             <CategoryIcon className="LabelIcon" />
                           </StyledLabel>
                           <StyledSelect
-                            value={ItemCategory}
-                            onChange={(e) => setItemCategory(e.target.value)}
+                            value={CategoryID}
+                            onChange={(e) => {
+                              setCategoryID(e.target.value);
+                            }}
                           >
                             <option value="none">Select Category</option>
-                            {Categories.filter(
-                              (data) => data.company_id === ItemCompany
-                            ).map((val, i) => (
-                              <option key={i} value={val.categoryname}>
-                                {val.categoryname}
-                              </option>
-                            ))}
+                            {TriData.category &&
+                              TriData.category
+                                .filter((data) => {
+                                  return data.company_id === CompanyID;
+                                })
+                                .map((val, i) => (
+                                  <option key={i} value={val._id}>
+                                    {val.name}
+                                  </option>
+                                ))}
                           </StyledSelect>
                         </div>
                       </InputWrapper>
                     )}
                     {/* Select Sub Category */}
-                    {ItemCategory && (
+                    {CategoryID && (
                       <InputWrapper>
                         <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                           <StyledLabel for="itemSubCategory">
                             <SubdirectoryArrowRightIcon className="LabelIcon" />
                           </StyledLabel>
                           <StyledSelect
-                            value={ItemSubCategory}
-                            onChange={(e) => setItemSubCategory(e.target.value)}
+                            value={SubCategoryID}
+                            onChange={(e) => {
+                              setSubCategoryID(e.target.value);
+                            }}
                           >
                             <option value="none">Select Sub Category</option>
-                            {SubCategories.filter(
-                              (subcat) =>
-                                subcat.company_id === ItemCompany &&
-                                subcat.category_id === ItemCategory
-                            ).map((val, i) => (
-                              <option key={i} value={val._id}>
-                                {val.name}
-                              </option>
-                            ))}
+                            {TriData.subcategory &&
+                              TriData.subcategory
+                                .filter(
+                                  (subcat) =>
+                                    subcat.company_id === CompanyID &&
+                                    subcat.category_id === CategoryID
+                                )
+                                .map((val, i) => (
+                                  <option key={i} value={val._id}>
+                                    {val.name}
+                                  </option>
+                                ))}
                           </StyledSelect>
                         </div>
                       </InputWrapper>
                     )}
                     {/* Select Unit */}
-                    {ItemSubCategory && (
+                    {true && (
                       <InputWrapper>
                         <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                           <StyledLabel for="itemUnit">

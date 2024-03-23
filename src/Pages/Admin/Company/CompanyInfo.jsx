@@ -14,6 +14,8 @@ import LoadingError from "../../../Components/Loader/LoadingError";
 const AdminCompany = () => {
   let company = useSelector((state) => state.CompanySliceReducer.data);
   const data = useSelector((state) => state.AutoLoginSliceReducer.data);
+  const [SearchText, setSearchText] = useState("");
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCompanies(data));
@@ -44,6 +46,9 @@ const AdminCompany = () => {
             isActive_={isActive_}
             setEditCompanyModal={setEditCompanyModal}
             setSelID={setSelComp}
+            Value={SearchText}
+            setValue={setSearchText}
+            placeholder={"Search Company..."}
           />
           {open ? (
             <ModalAddNewCompany setOpen={setOpen} open={open} />
@@ -62,6 +67,7 @@ const AdminCompany = () => {
                     companyAddress: v.address,
                     companyCnic: v.cnic,
                     companyEmail: v.email,
+                    companyBranch: v.branch,
                   };
                 })}
             />

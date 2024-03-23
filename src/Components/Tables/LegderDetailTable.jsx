@@ -14,9 +14,7 @@ export default function LedgerTable({ rows, setTotal }) {
   }
 
   function getTotal(items) {
-    setTotal(
-      items.map((item) => item.totalAmount).reduce((sum, i) => sum + i, 0)
-    );
+    setTotal(items.map((item) => item.amount).reduce((sum, i) => sum + i, 0));
   }
   const invoiceTotal = getTotal(rows);
   const rowCellStyle = {
@@ -54,15 +52,15 @@ export default function LedgerTable({ rows, setTotal }) {
         <TableBody>
           {rows.map((val, i) => (
             <TableRow key={i} style={{ border: "1px solid #5a4ae3" }}>
-              <TableCell style={rowCellStyle}>{val.itemName}</TableCell>
+              <TableCell style={rowCellStyle}>{val.name}</TableCell>
               <TableCell align="left" style={rowCellStyle}>
-                {val.itemQuantity}
+                {val.qty}
               </TableCell>
               <TableCell align="left" style={rowCellStyle}>
-                {val.itemPrice}
+                {val.price}
               </TableCell>
               <TableCell align="right" style={rowCellStyle}>
-                {val.totalAmount}
+                {val.amount}
               </TableCell>
             </TableRow>
           ))}

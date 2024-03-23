@@ -5,91 +5,77 @@ import Navbar from "../../../Components/NavBar/NavBar";
 import CustomerNav from "../../../Components/NavBar/AdminNavbars/CustomerNav";
 import ModalItemReturn from "../../../Components/Modals/ItemReturnModal";
 import LedgerTable from "../../../Components/Tables/LegderDetailTable";
-import { fetchCustomers } from "../../../store/CustomerSlice";
-import moment from "moment";
 import easyinvoice from "easyinvoice";
-import customerReturnsServices from "../../../Services/customerReturns.services";
-import customerTransactionsServices from "../../../Services/customerTransactions.services";
+import moment from "moment";
+import { fetchCustomers } from "../../../store/CustomerSlice";
+import DataLoader from "../../../Components/Loader/DataLoader";
+import ConnectionLost from "../../../Components/Error/ConnectionLost";
+import { toast } from "react-toastify";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
-import DataLoader from "../../../Components/Loader/DataLoader";
+import customerTransactionsServices from "../../../Services/customerTransactions.services";
+import customerServices from "../../../Services/customer.services";
+import customerReturnsServices from "../../../Services/customerReturns.services";
+import itemServices from "../../../Services/item.services";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import AddNewBillReport from "../../../Components/Reports/AddNewBillReport";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
+import { CreateSaleReturn, CreateTransaction } from "../../../Https";
 
 const CustomerReturn = () => {
-  const [CustomerID, setCustomerID] = useState("");
-  const [CustomerName, setCustomerName] = useState("");
-  const [CustomerAddress, setCustomerAddress] = useState("");
-
-  const [ReturnItems, setReturnItems] = useState([]);
+  // ======================================
+  // States
+  // ======================================
+  const [NewItems, setNewItems] = useState([]);
   const [ReturnItem, setReturnItem] = useState({});
-  const [FormatedItems, setFormatedItems] = useState(null);
-
   const [Total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [open, setOpen] = useState(false);
+  const [SelectCustomer, setSelectCustomer] = useState({
+    name: "",
+    found: false,
+  });
+
+  const [Uploaded, setUploaded] = useState(false);
+  const [FormatedItems, setFormatedItems] = useState(null);
+  const [CustomerID, setCustomerID] = useState("");
+  const [CustomerName, setCustomerName] = useState("");
+  const [CustomerAddress, setCustomerAddress] = useState("");
+  const [curDate, setCurDate] = useState("");
+  // =========================================
+  // Redux Toolkit
+  // =========================================
   const customers = useSelector((state) => state.CustomerSliceReducer.data);
   const loading = useSelector((state) => state.CustomerSliceReducer.loading);
   const isError = useSelector((state) => state.CustomerSliceReducer.isError);
   const dispatch = useDispatch();
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const [AllBillNo, setAllBillNo] = useState([]);
-  const [CurrentBillNo, setCurrentBillNo] = useState(0);
+  const [CurrentBillNo, setCurrentBillNo] = useState("");
   const [DefaultBillNo, setDefaultBillNo] = useState(0);
-  const [Loading, setLoading] = useState(false);
-  const FetchData = async () => {
-    setLoading(true);
-    let data = await customerTransactionsServices.getAllTransactions();
-    let data1 = await customerReturnsServices.getAllReturns();
-    data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-    data1 = data1.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-    data = data
-      .filter((d) => d.shop === uData.userdata.fullName)
-      .map((dt) => {
-        return dt.billNo;
-      });
-    data1 = data1
-      .filter((d) => d.shop === uData.userdata.fullName)
-      .map((dt) => {
-        return Number(dt.billNo);
-      });
-    const sortedData = [...data].sort((a, b) => a - b);
-    const sortedData1 = [...data1].sort((a, b) => a - b);
-    if (data.length !== 0 || data1.length !== 0) {
-      if (
-        Number(sortedData[data.length - 1]) >=
-        Number(sortedData1[data1.length - 1])
-      ) {
-        setCurrentBillNo(Number(sortedData[data.length - 1]) + 1);
-        setDefaultBillNo(Number(sortedData[data.length - 1]) + 1);
-      } else if (
-        Number(sortedData[data.length - 1]) <=
-        Number(sortedData1[data1.length - 1])
-      ) {
-        setCurrentBillNo(Number(sortedData1[data1.length - 1]) + 1);
-        setDefaultBillNo(Number(sortedData1[data1.length - 1]) + 1);
-      }
-    } else if (data.length === 0 || data1.length === 0) {
-      setCurrentBillNo(1);
-      setDefaultBillNo(1);
-    }
-    setAllBillNo([...sortedData, ...sortedData1]);
-    setLoading(false);
-  };
+  const [FetchingLoading, setFetchingLoading] = useState(false);
+
+  // =========================================
+  // Use Effects Hook
+  // =========================================
   useEffect(() => {
-    FetchData();
-    dispatch(fetchCustomers({ shop: uData.userdata.fullName }));
+    dispatch(fetchCustomers(uData));
   }, []);
-  const [SelectCompany, setSelectCompany] = useState({
-    name: "",
-    found: false,
-  });
 
   const lenghtOfList = () => {
-    return ReturnItems.length > 0;
+    return NewItems.length > 0;
   };
 
+  // ============================================
+  // method for format data for invoice
+  // ============================================
   const setData = () => {
     const taxRate = -((discount / Total) * 100);
-    return ReturnItems.map((item) => {
+    return NewItems.map((item) => {
       const Quantity = item.itemQuantity;
       const Description = item.itemName;
       const Price = item.itemPrice;
@@ -102,56 +88,31 @@ const CustomerReturn = () => {
     });
   };
 
-  const addToDatabase = () => {
-    let cName;
-    customers.map((cus) => {
-      if (cus._id === SelectCompany.name) {
-        cName = cus.name;
-      }
-    });
-    const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
-    const da = ReturnItems.map((it) => {
-      return {
-        customerid: SelectCompany.name,
-        customer: cName,
-        name: it.itemName,
-        unitprice: it.itemPrice,
-        qty: it.itemQuantity,
-        total: it.totalAmount,
-        shop: uData.userdata.fullName,
-        date: timestamp,
-        billNo: CurrentBillNo,
-      };
-    });
-    da.map(async (curItem, index) => {
-      await customerReturnsServices.addReturn(curItem);
-    });
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    // Calling functions
-    // PrintInvoice();
-    addToDatabase();
-    // Reset Data
-    FetchData();
-    setReturnItems([]);
-    setDiscount(0);
-  };
-
+  // ============================================
+  // method for printing invoice
+  // ============================================
   const PrintInvoice = () => {
+    // =================================
+    // format data for invoice
+    // =================================
     const formatedData = setData();
+    // =================================
+    // getting customer info
+    // =================================
     let cName, cAddress, cId;
     customers.map((cus) => {
-      if (cus._id === SelectCompany.name) {
+      if (cus._id === SelectCustomer.name) {
         cName = cus.name;
         cAddress = cus.address;
         cId = cus._id;
       }
     });
+    // ==================================
+    // Generating Invoice
+    // ==================================
     let data = {
       customize: {},
-      images: {},
+      // images: {},
       // Company data
       sender: {
         company: "Irshad Carton Dealer",
@@ -169,7 +130,7 @@ const CustomerReturn = () => {
         // Invoice number
         number: CurrentBillNo,
         // Invoice data
-        date: moment(new Date()).format("DD/MM/YYYY"),
+        date: moment(new Date(curDate)).format("DD/MM/YYYY"),
         // Invoice due date
         "due-date": "--/--/----",
       },
@@ -187,105 +148,223 @@ const CustomerReturn = () => {
         vat: "Discount", // Defaults to 'vat'
       },
     };
+    // ==========================================
+    // Call for generating Invoice
+    // ==========================================
     easyinvoice.createInvoice(data, function (result) {
       easyinvoice.download("invoice.pdf");
     });
   };
 
+  // ============================================
+  // Method for Send data data to database
+  // ============================================
+  const addToDatabase = async () => {
+    try {
+      const response = await CreateSaleReturn({
+        customerId: SelectCustomer.name,
+        date: curDate,
+        items: NewItems,
+        discount: discount,
+      });
+      console.log("Return: ", response);
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        setCurrentBillNo(response.data.data.payload.invoice_no);
+        showSuccessToast(response.data?.data?.msg);
+        setUploaded(true);
+      }
+    } catch (err) {
+      showErrorToast(err.response?.data?.error?.msg || err.message);
+    }
+  };
+
+  // ============================================
+  // On Submit method
+  // ============================================
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    addToDatabase();
+  };
+
+  const resetStates = () => {
+    setTimeout(() => {
+      setNewItems([]);
+      setReturnItem({});
+      setTotal(0);
+      setDiscount(0);
+      setOpen(false);
+      setSelectCustomer({
+        name: "",
+        found: false,
+      });
+      setUploaded(false);
+      setFormatedItems(null);
+      setCustomerID("");
+      setCustomerName("");
+      setCustomerAddress("");
+      setCurDate("");
+      setCurrentBillNo("");
+      setAllBillNo([]);
+      setDefaultBillNo(0);
+      setFetchingLoading(false);
+    }, 4000);
+  };
+
+  useEffect(() => {
+    if (SelectCustomer.found !== "") {
+      customers
+        .filter((cu) => cu._id === SelectCustomer.name)
+        .map((cust) => {
+          setCustomerName(cust.name);
+          setCustomerAddress(cust.address);
+        });
+    }
+  }, [SelectCustomer]);
+
   return (
     <div className="transition-all">
       <Navbar />
       <CustomerNav setOpen={setOpen} />
-      {Loading ? (
+      {FetchingLoading ? (
         <DataLoader />
+      ) : isError ? (
+        <ConnectionLost />
+      ) : customers ? (
+        <div>
+          <CustomerReturnCard
+            title={"Rerurn Bill"}
+            setSelect={setSelectCustomer}
+            Select={SelectCustomer}
+            setOpen={setOpen}
+            data={customers}
+          />
+          {open ? (
+            <ModalItemReturn
+              open={open}
+              setOpen={setOpen}
+              setNewItems={setNewItems}
+              ReturnItem={ReturnItem}
+              NewItems={NewItems}
+              title={"Add New Item"}
+            />
+          ) : null}
+
+          {lenghtOfList && SelectCustomer.found ? (
+            <div className="Wrapper w-full flex justify-center border-t-[2px] border-t-white">
+              <div className="w-[90%]">
+                <LedgerTable setTotal={setTotal} rows={NewItems} />
+              </div>
+            </div>
+          ) : null}
+          {/* Button Panel */}
+          {SelectCustomer.found ? (
+            <div className="wrapper w-[100%] flex justify-center items-center">
+              <div className="py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
+                <div className="h-full flex flex-col gap-y-2 justify-center items-center ml-[15px]">
+                  {!Uploaded && (
+                    <button
+                      className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                      onClick={onSubmit}
+                    >
+                      Add Bill
+                    </button>
+                  )}
+                  {Uploaded && (
+                    <PDFDownloadLink
+                      document={
+                        <AddNewBillReport
+                          Data={NewItems}
+                          cTotal={Total.toFixed(2)}
+                          cDiscount={discount}
+                          cGrand={(Number(Total) - Number(discount)).toFixed(2)}
+                          bBillNo={CurrentBillNo}
+                          bDate={curDate}
+                          cName={CustomerName}
+                          cAddress={CustomerAddress}
+                        />
+                      }
+                      fileName={`${CustomerName}`}
+                    >
+                      <button
+                        className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                        onClick={(e) => {
+                          resetStates();
+                        }}
+                      >
+                        Print Bill
+                      </button>
+                    </PDFDownloadLink>
+                  )}
+                </div>
+                <div className="w-[210px] justify-end flex flex-col items-center">
+                  <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
+                    {/* <input
+                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
+                      type="number"
+                      name="billno"
+                      id="billno"
+                      value={CurrentBillNo}
+                      onChange={(e) => setCurrentBillNo(e.target.value)}
+                      onBlur={(e) => {
+                        const enterBill = e.target.value;
+                        if (AllBillNo.includes(Number(enterBill))) {
+                          toast.warn("Bill No Already Taken...", {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                          });
+                          setCurrentBillNo(DefaultBillNo);
+                        }
+                      }}
+                    /> */}
+                  </div>
+                  <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
+                    <input
+                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
+                      type="date"
+                      name="date"
+                      id="date"
+                      value={curDate}
+                      onChange={(e) => setCurDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex pr-[10px] text-[1.1rem] mb-[5px] font-[raleway] font-[700]">
+                    <div className="w-[110px] text-right mr-[15px]">Total:</div>
+                    <div className="w-[100px]">{Number(Total)} /-</div>
+                  </div>
+                  <div className="flex mt-[0px] mr-[10px] text-[1.1rem]">
+                    <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
+                      Discount:
+                    </div>
+                    <input
+                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
+                      type="number"
+                      name="discountAmount"
+                      id="discountAmount"
+                      value={discount}
+                      onChange={(e) => setDiscount(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[raleway] font-[700]">
+                    <div className="w-[110px] text-right mr-[15px]">
+                      Grand Total:
+                    </div>
+                    <div className="w-[100px]">
+                      {Number(Total) - Number(discount)} /-
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
       ) : (
-        <CustomerReturnCard
-          title={"Customer Item Return"}
-          setSelect={setSelectCompany}
-          Select={SelectCompany}
-          setOpen={setOpen}
-          data={customers}
-        />
+        <DataLoader />
       )}
-      {open ? (
-        <ModalItemReturn
-          open={open}
-          setOpen={setOpen}
-          setReturnItem={setReturnItem}
-          setReturnItems={setReturnItems}
-          ReturnItem={ReturnItem}
-          ReturnItems={ReturnItems}
-          title={"Item Return"}
-        />
-      ) : null}
-
-      {lenghtOfList && SelectCompany.found ? (
-        <div className="Wrapper w-full flex justify-center border-t-[2px] border-t-white">
-          <div className="w-[90%]">
-            <LedgerTable setTotal={setTotal} rows={ReturnItems} />
-          </div>
-        </div>
-      ) : null}
-      {SelectCompany.found ? (
-        <div className="wrapper w-[100%] flex justify-center items-center">
-          <div className=" h-full py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
-            <div className="h-full flex justify-center items-center ml-[15px]">
-              <button
-                className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                onClick={onSubmit}
-              >
-                Add Bill
-              </button>
-            </div>
-            <div>
-              <div className="flex pr-[10px] text-[1.3rem] mb-[5px] font-[raleway] font-[700]">
-                <div className="w-[130px] text-right mr-[15px]">Total:</div>
-                <div className="w-[100px]">{Number(Total)} /-</div>
-              </div>
-              <div className="flex mt-[0px] mr-[10px] text-[1.3rem]">
-                <div className="w-[130px] mr-[15px] font-[raleway] font-[700] text-right">
-                  Discount:
-                </div>
-                <input
-                  className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
-                  type="number"
-                  name="discountAmount"
-                  id="discountAmount"
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                />
-              </div>
-              <div className="flex pr-[10px] text-[1.3rem] mt-[5px] font-[raleway] font-[700]">
-                <div className="w-[130px] text-right mr-[15px]">
-                  Grand Total:
-                </div>
-                <div className="w-[100px]">
-                  {Number(Total) - Number(discount)} /-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {/* <div className="flex flex-col items-center w-full">
-        <div className="flex w-[50%] justify-between bg-[gray] py-[5px] pl-[8px] text-white font-[700] font-[raleway] pr-[8px]">
-          <h4>Item Name</h4>
-          <h4>Item Quantity</h4>
-          <h4>Item Price</h4>
-          <h4>Total Amount</h4>
-        </div>
-        {ReturnItems.map((val, i) => {
-          return (
-            <div className="flex w-[50%] justify-between font-[700] font-[raleway] pr-[8px]">
-              <h4>{val.itemName}</h4>
-              <h4>{val.itemQuantity}</h4>
-              <h4>{val.itemPrice}</h4>
-              <h4>{val.totalAmount}</h4>
-            </div>
-          );
-        })}
-      </div> */}
     </div>
   );
 };

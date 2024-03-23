@@ -11,49 +11,37 @@ import { fetchCustomerReturn } from "../../../store/CustomerReturnSlice";
 import { fetchCustomerTransaction } from "../../../store/CustomerTransactionSlice";
 import moment from "moment";
 import customerTransactionsServices from "../../../Services/customerTransactions.services";
+import { fetchTransactions } from "../../../store/TransactionSlice";
 
 const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
-  const [customerTransaction, setCustomerTransaction] = useState([]);
+  // const [customerTransaction, setCustomerTransaction] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
+  const customerTransaction = useSelector((state) => state.Transactions);
   const dispatch = useDispatch();
   useEffect(() => {
-    const getTransactions = async () => {
-      setIsLoading(true);
-      const cName = SelectedCustomer.name;
-      let data = await customerTransactionsServices.getAllTransactions();
-      data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data = data.sort((a, b) => {
-        const date1 = new Date(a.date.seconds * 1000);
-        const date2 = new Date(b.date.seconds * 1000);
-        return date1 - date2;
-      });
-      data = data
-        .filter(
-          (dt) =>
-            dt.customerid === cName &&
-            dt.shop === uData.userdata.fullName &&
-            new Date(dt.date.seconds * 1000) >= new Date(FromDate) &&
-            new Date(dt.date.seconds * 1000) <= new Date(ToDate)
-        )
-        .map((ite) => {
-          return {
-            ...ite,
-            date: moment(ite.date.seconds * 1000).format("DD/MM/YYYY"),
-          };
-        });
-      setCustomerTransaction(data);
-      setIsLoading(false);
-    };
-    getTransactions();
+    // const getTransactions = async () => {
+    //   setIsLoading(true);
+    //   const c_id = SelectedCustomer.name
+    //   setCustomerTransaction(data);
+    //   setIsLoading(false);
+    // };
+    // getTransactions();
+    dispatch(
+      fetchTransactions({
+        customerId: SelectedCustomer?.name,
+        to: ToDate,
+        from: FromDate,
+      })
+    );
   }, [SelectedCustomer, FromDate, ToDate]);
 
   const [selID, setSelID] = useState(-1);
   return (
     <>
       {/* {!loading && !isError && formatData()} */}
-      {isLoading ? (
+      {customerTransaction.loading ? (
         <DataLoader />
       ) : customerTransaction ? (
         <div>
@@ -61,8 +49,21 @@ const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
           <div className={isItem ? "flex flex-col" : "hidden"}>
             <TableComp
               title="Item Ledger Detail"
-              rows={customerTransaction}
-              columns={uData.userdata.name === "Admin" ? AdminColumns : Columns}
+              rows={customerTransaction.data.map((data) => {
+                console.log(data);
+                const itemsData = data.items.map((dt) => {
+                  return {
+                    date: data.date,
+                    invoice_no: data.invoice_no,
+                    name: dt.itemId.name,
+                    qty: dt.qty,
+                    price: dt.price,
+                    amount: dt.amount,
+                  };
+                });
+                return itemsData;
+              })}
+              columns={uData.role === 1 ? AdminColumns : Columns}
               isActive_={isActive_}
               setSelID={setSelID}
               LedgerDetail={true}

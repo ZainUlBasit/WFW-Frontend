@@ -8,7 +8,7 @@ import TableComp from "../../../Components/Tables/TableComponent";
 import { StockDataColumns } from "../../../DemoData/StockDataColumns";
 import { Data as Rows } from "../../../DemoData/StockData";
 import { useDispatch, useSelector } from "react-redux";
-import ModalEditSubCategory from "./ModalEditSubCategory";
+// import ModalEditSubCategory from "./ModalEditSubCategory";
 import ModalEditCategory from "./ModalEditCategory";
 import ModalAddStock from "./ModalAddStock";
 import ModalEditItem from "./ModalEditItem";
@@ -17,6 +17,8 @@ import DataLoader from "../../../Components/Loader/DataLoader";
 import ConnectionLost from "../../../Components/Error/ConnectionLost";
 import moment from "moment";
 import companyTransactionsServices from "../../../Services/companyTransactions.services";
+import EditSubCategory from "./EditSubCategory";
+import { fetchStocks } from "../../../store/StockSlice";
 
 const StockStatistics = () => {
   const [open, setOpen] = useState(false);
@@ -30,23 +32,17 @@ const StockStatistics = () => {
   const [AddStockModal, setAddStockModal] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
 
-  const [Transactions, setTransactions] = useState([]);
+  const Transactions = useSelector((state) => state.StockState.data);
   const [Loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      let data = await companyTransactionsServices.getAllTransactions();
-      data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data = data.map((ite) => {
-        return {
-          ...ite,
-          date: moment(new Date(ite.date.seconds * 1000)).format("DD/MM/YYYY"),
-        };
-      });
-      setTransactions(data);
-      setLoading(false);
-    };
-    getData();
+    dispatch(
+      fetchStocks({
+        ...uData,
+        fromDate: 0,
+        toDate: Math.floor(Date.now() / 1000),
+      })
+    );
   }, []);
 
   return (
@@ -104,9 +100,9 @@ const StockStatistics = () => {
               })}
             />
           ) : EditSubCategoryModal ? (
-            <ModalEditSubCategory
-              EditSubCategoryModal={EditSubCategoryModal}
-              setEditSubCategoryModal={setEditSubCategoryModal}
+            <EditSubCategory
+              SubModal={EditSubCategoryModal}
+              setSubModal={setEditSubCategoryModal}
             />
           ) : EditCategoryModal ? (
             <ModalEditCategory

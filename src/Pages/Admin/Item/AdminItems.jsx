@@ -10,7 +10,6 @@ import { ItemDataColumns as Columns } from "../../../DemoData/ItemDataColumns";
 import { ItemData as Rows } from "../../../DemoData/ItemData";
 import ModalEditItem from "./ModalEditItem";
 import { useRef } from "react";
-import ModalEditSubCategory from "./ModalEditSubCategory";
 import ModalEditCategory from "./ModalEditCategory";
 import ModalAddStock from "./ModalAddStock";
 import { CircularProgress } from "@mui/material";
@@ -19,6 +18,7 @@ import DataLoader from "../../../Components/Loader/DataLoader";
 import ConnectionLost from "../../../Components/Error/ConnectionLost";
 import { ControlPointOutlined } from "@mui/icons-material";
 import moment from "moment";
+import EditSubCategory from "./EditSubCategory";
 
 const AdminItems = () => {
   const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ const AdminItems = () => {
 
   const [selID, setSelID] = useState(-1);
   useEffect(() => {
-    dispatch(fetchItems());
+    dispatch(fetchItems(data));
   }, []);
 
   return (
@@ -80,26 +80,12 @@ const AdminItems = () => {
             <ModalEditItem
               open={EditItemModal}
               setOpen={setEditItemModal}
-              selItem={item
-                .filter((val) => selID === val._id)
-                .map((v, i) => {
-                  return {
-                    itemid: v._id,
-                    itemcode: v.itemcode,
-                    itemname: v.itemname,
-                    itemcompany: v.itemcompany,
-                    itemcategory: v.itemcategory,
-                    itemsubcategory: v.itemsubcategory,
-                    itemunit: v.itemunit,
-                    itempurchase: v.itempurchase,
-                    itemsale: v.itemsale,
-                  };
-                })}
+              state={item.filter((val) => selID === val._id)[0]}
             />
           ) : EditSubCategoryModal ? (
-            <ModalEditSubCategory
-              EditSubCategoryModal={EditSubCategoryModal}
-              setEditSubCategoryModal={setEditSubCategoryModal}
+            <EditSubCategory
+              SubModal={EditSubCategoryModal}
+              setSubModal={setEditSubCategoryModal}
             />
           ) : EditCategoryModal ? (
             <ModalEditCategory

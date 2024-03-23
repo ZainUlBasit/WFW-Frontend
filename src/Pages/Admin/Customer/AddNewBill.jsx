@@ -19,12 +19,18 @@ import customerReturnsServices from "../../../Services/customerReturns.services"
 import itemServices from "../../../Services/item.services";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AddNewBillReport from "../../../Components/Reports/AddNewBillReport";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
+import { CreateTransaction } from "../../../Https";
 
 const AddNewBill = () => {
   // ======================================
   // States
   // ======================================
-  const [ReturnItems, setReturnItems] = useState([]);
+  const [NewItems, setNewItems] = useState([]);
   const [ReturnItem, setReturnItem] = useState({});
   const [Total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -33,6 +39,8 @@ const AddNewBill = () => {
     name: "",
     found: false,
   });
+
+  const [Uploaded, setUploaded] = useState(false);
   const [FormatedItems, setFormatedItems] = useState(null);
   const [CustomerID, setCustomerID] = useState("");
   const [CustomerName, setCustomerName] = useState("");
@@ -47,7 +55,7 @@ const AddNewBill = () => {
   const dispatch = useDispatch();
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const [AllBillNo, setAllBillNo] = useState([]);
-  const [CurrentBillNo, setCurrentBillNo] = useState(0);
+  const [CurrentBillNo, setCurrentBillNo] = useState("");
   const [DefaultBillNo, setDefaultBillNo] = useState(0);
   const [FetchingLoading, setFetchingLoading] = useState(false);
 
@@ -55,62 +63,11 @@ const AddNewBill = () => {
   // Use Effects Hook
   // =========================================
   useEffect(() => {
-    const FetchData = async () => {
-      setFetchingLoading(true);
-      let data = await customerTransactionsServices.getAllTransactions();
-      let data1 = await customerReturnsServices.getAllReturns();
-      data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data1 = data1.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data = data
-        .filter((d) => d.shop === uData.userdata.fullName)
-        .map((dt) => {
-          return dt.billNo;
-        });
-      data1 = data1
-        .filter((d) => d.shop === uData.userdata.fullName)
-        .map((dt) => {
-          return dt.billNo;
-        });
-      const sortedData = [...data].sort((a, b) => a - b);
-      const sortedData1 = [...data1].sort((a, b) => a - b);
-      if (data.length !== 0 || data1.length !== 0) {
-        if (
-          Number(sortedData[data.length - 1]) >=
-          Number(sortedData1[data1.length - 1])
-        ) {
-          setCurrentBillNo(Number(sortedData[data.length - 1]) + 1);
-          setDefaultBillNo(Number(sortedData[data.length - 1]) + 1);
-        } else if (
-          Number(sortedData[data.length - 1]) <=
-          Number(sortedData1[data1.length - 1])
-        ) {
-          setCurrentBillNo(Number(sortedData1[data1.length - 1]) + 1);
-          setDefaultBillNo(Number(sortedData1[data1.length - 1]) + 1);
-        }
-      } else if (data.length === 0 && data1.length === 0) {
-        setCurrentBillNo(1);
-        setDefaultBillNo(1);
-      }
-      setAllBillNo([...sortedData, ...sortedData1]);
-      setFetchingLoading(false);
-    };
-    FetchData();
-    dispatch(fetchCustomers({ shop: uData.userdata.fullName }));
+    dispatch(fetchCustomers(uData));
   }, []);
 
-  useEffect(() => {
-    if (SelectCustomer.name !== "") {
-      customers
-        .filter((cu) => cu._id === SelectCustomer.name)
-        .map((cust) => {
-          setCustomerName(cust.name);
-          setCustomerAddress(cust.address);
-        });
-    }
-  }, [SelectCustomer]);
-
   const lenghtOfList = () => {
-    return ReturnItems.length > 0;
+    return NewItems.length > 0;
   };
 
   // ============================================
@@ -118,7 +75,7 @@ const AddNewBill = () => {
   // ============================================
   const setData = () => {
     const taxRate = -((discount / Total) * 100);
-    return ReturnItems.map((item) => {
+    return NewItems.map((item) => {
       const Quantity = item.itemQuantity;
       const Description = item.itemName;
       const Price = item.itemPrice;
@@ -203,52 +160,23 @@ const AddNewBill = () => {
   // Method for Send data data to database
   // ============================================
   const addToDatabase = async () => {
-    // ======================================
-    // to set data for database
-    // ======================================
-    const timestamp = firebase.firestore.Timestamp.fromDate(new Date(curDate));
-    const da = ReturnItems.map((it) => {
-      return {
-        customerid: SelectCustomer.name,
-        name: it.itemName,
-        unitprice: it.itemPrice,
-        purchase: it.itemPurchase,
-        qty: it.itemQuantity,
-        total: it.totalAmount,
-        shop: uData.userdata.fullName,
-        date: timestamp,
-        billNo: Number(CurrentBillNo),
-      };
-    });
-    ReturnItems.map(async (it) => {
-      await itemServices.updateItemQty(it.itemID, Number(it.itemQuantity) * -1);
-      return {
-        customerid: SelectCustomer.name,
-        name: it.itemName,
-        unitprice: it.itemPrice,
-        purchase: it.itemPurchase,
-        qty: it.itemQuantity,
-        total: it.totalAmount,
-        shop: uData.userdata.fullName,
-        date: timestamp,
-        billNo: Number(CurrentBillNo),
-      };
-    });
-    // ======================================
-    // Inserting data to database
-    // ======================================
-    da.map(async (curItem, index) => {
-      await customerTransactionsServices.addTransaction(curItem);
-    });
-    // ======================================
-    // Update Customer Account in Database
-    // ======================================
-    const id = SelectCustomer.name;
-    await customerServices.updateCustomerTotal(
-      id,
-      Number(Total),
-      Number(discount)
-    );
+    try {
+      const response = await CreateTransaction({
+        customerId: SelectCustomer.name,
+        date: curDate,
+        items: NewItems,
+        discount: discount,
+      });
+      console.log("transaction: ", response);
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        setCurrentBillNo(response.data.data.payload.invoice_no);
+        showSuccessToast(response.data?.data?.msg);
+        setUploaded(true);
+      }
+    } catch (err) {
+      showErrorToast(err.response?.data?.error?.msg || err.message);
+    }
   };
 
   // ============================================
@@ -256,23 +184,43 @@ const AddNewBill = () => {
   // ============================================
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    // Calling functions
     addToDatabase();
-    PrintInvoice();
-    // update bill no
-    toast.success("Successfully Added...", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    // Reset Data
-    setReturnItems([]);
-    setDiscount(0);
   };
+
+  const resetStates = () => {
+    setTimeout(() => {
+      setNewItems([]);
+      setReturnItem({});
+      setTotal(0);
+      setDiscount(0);
+      setOpen(false);
+      setSelectCustomer({
+        name: "",
+        found: false,
+      });
+      setUploaded(false);
+      setFormatedItems(null);
+      setCustomerID("");
+      setCustomerName("");
+      setCustomerAddress("");
+      setCurDate("");
+      setCurrentBillNo("");
+      setAllBillNo([]);
+      setDefaultBillNo(0);
+      setFetchingLoading(false);
+    }, 4000);
+  };
+
+  useEffect(() => {
+    if (SelectCustomer.found !== "") {
+      customers
+        .filter((cu) => cu._id === SelectCustomer.name)
+        .map((cust) => {
+          setCustomerName(cust.name);
+          setCustomerAddress(cust.address);
+        });
+    }
+  }, [SelectCustomer]);
 
   return (
     <div className="transition-all">
@@ -295,10 +243,9 @@ const AddNewBill = () => {
             <ModalItemReturn
               open={open}
               setOpen={setOpen}
-              setReturnItem={setReturnItem}
-              setReturnItems={setReturnItems}
+              setNewItems={setNewItems}
               ReturnItem={ReturnItem}
-              ReturnItems={ReturnItems}
+              NewItems={NewItems}
               title={"Add New Item"}
             />
           ) : null}
@@ -306,7 +253,7 @@ const AddNewBill = () => {
           {lenghtOfList && SelectCustomer.found ? (
             <div className="Wrapper w-full flex justify-center border-t-[2px] border-t-white">
               <div className="w-[90%]">
-                <LedgerTable setTotal={setTotal} rows={ReturnItems} />
+                <LedgerTable setTotal={setTotal} rows={NewItems} />
               </div>
             </div>
           ) : null}
@@ -315,38 +262,44 @@ const AddNewBill = () => {
             <div className="wrapper w-[100%] flex justify-center items-center">
               <div className="py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
                 <div className="h-full flex flex-col gap-y-2 justify-center items-center ml-[15px]">
-                  <button
-                    className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                    onClick={onSubmit}
-                  >
-                    Add Bill
-                  </button>
-                  <PDFDownloadLink
-                    document={
-                      <AddNewBillReport
-                        Data={ReturnItems}
-                        cTotal={Total.toFixed(2)}
-                        cDiscount={discount}
-                        cGrand={(Number(Total) - Number(discount)).toFixed(2)}
-                        bBillNo={CurrentBillNo}
-                        bDate={curDate}
-                        cName={CustomerName}
-                        cAddress={CustomerAddress}
-                      />
-                    }
-                    fileName={`${CurrentBillNo}`}
-                  >
+                  {!Uploaded && (
                     <button
                       className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                      onClick={() => addToDatabase()}
+                      onClick={onSubmit}
                     >
-                      Add & Print
+                      Add Bill
                     </button>
-                  </PDFDownloadLink>
+                  )}
+                  {Uploaded && (
+                    <PDFDownloadLink
+                      document={
+                        <AddNewBillReport
+                          Data={NewItems}
+                          cTotal={Total.toFixed(2)}
+                          cDiscount={discount}
+                          cGrand={(Number(Total) - Number(discount)).toFixed(2)}
+                          bBillNo={CurrentBillNo}
+                          bDate={curDate}
+                          cName={CustomerName}
+                          cAddress={CustomerAddress}
+                        />
+                      }
+                      fileName={`${CustomerName}`}
+                    >
+                      <button
+                        className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                        onClick={(e) => {
+                          resetStates();
+                        }}
+                      >
+                        Print Bill
+                      </button>
+                    </PDFDownloadLink>
+                  )}
                 </div>
                 <div className="w-[210px] justify-end flex flex-col items-center">
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
-                    <input
+                    {/* <input
                       className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
                       type="number"
                       name="billno"
@@ -367,7 +320,7 @@ const AddNewBill = () => {
                           setCurrentBillNo(DefaultBillNo);
                         }
                       }}
-                    />
+                    /> */}
                   </div>
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
                     <input

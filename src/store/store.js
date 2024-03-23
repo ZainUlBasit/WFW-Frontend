@@ -12,6 +12,9 @@ import CustomerTransactionSliceReducer from "./CustomerTransactionSlice";
 import AutoLoginSliceReducer from "./AuthSlice";
 import BankReducer from "./BankSlice";
 import BranchReducer from "./BranchSlice";
+import TriGetSlice from "./TriGetSlice";
+import StockReducer from "./StockSlice";
+import TransactionSlice from "./TransactionSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,5 +31,8 @@ export const store = configureStore({
     AutoLoginSliceReducer,
     BankReducer,
     branches: BranchReducer,
+    TriGet: TriGetSlice,
+    StockState: StockReducer,
+    Transactions: TransactionSlice,
   },
 });

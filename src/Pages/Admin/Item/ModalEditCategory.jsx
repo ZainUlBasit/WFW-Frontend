@@ -22,6 +22,8 @@ import categoryServices from "../../../Services/category.services";
 import companyServices from "../../../Services/company.services";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
 import { fetchCompanies } from "../../../store/CompanySlice";
+import { UpdateCategory } from "../../../Https";
+import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
 
 const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
   const style = {
@@ -55,38 +57,20 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
   const onUpdate = async (e) => {
     setProccessLoading(true);
     e.preventDefault();
-    let id = Categories.filter(
-      (c) => c.categoryname === CategoryName && CategoryCompany === c.company_id
-    );
-    id = id[0]._id;
-    const categoryInfo = {
-      categoryname: CategoryNewName,
-    };
-    if (
-      !(CategoryName === "") &&
-      !(CategoryName === "none") &&
-      !(CategoryNewName === "")
-    ) {
+    if (CategoryNewName !== "") {
       try {
-        await categoryServices.updateCategory(id, categoryInfo);
-        setEditCategoryModal(false);
-        toast.success("Category Successfully Updated...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
+        const response = await UpdateCategory({
+          categoryId: CategoryId,
+          newName: CategoryNewName,
         });
+        if (!response.data?.success) {
+          showErrorToast(response.data?.error?.msg);
+        } else {
+          showSuccessToast(response.data?.data?.msg);
+          setEditCategoryModal(false);
+        }
       } catch (err) {
-        toast.error("Unable to Update Category...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        showErrorToast(err.response?.data?.error?.msg);
       }
     } else {
       toast.warn("All Fields are Mandatory...", {
@@ -191,45 +175,49 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
                 </div>
               </InputWrapper>
               {/* Select Category */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel for="itemCompany">
-                    <CategoryIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledSelect
-                    value={CategoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                  >
-                    <option value="none" selected>
-                      Select Category
-                    </option>
-                    {category &&
-                      category
-                        .filter((cat) => cat.company_id === CategoryCompanyID)
-                        .map((val, i) => (
-                          <option key={i} value={val._id}>
-                            {val.name}
-                          </option>
-                        ))}
-                  </StyledSelect>
-                </div>
-              </InputWrapper>
+              {CategoryCompanyID && (
+                <InputWrapper>
+                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                    <StyledLabel for="itemCompany">
+                      <CategoryIcon className="LabelIcon" />
+                    </StyledLabel>
+                    <StyledSelect
+                      value={CategoryId}
+                      onChange={(e) => setCategoryId(e.target.value)}
+                    >
+                      <option value="none" selected>
+                        Select Category
+                      </option>
+                      {category &&
+                        category
+                          .filter((cat) => cat.company_id === CategoryCompanyID)
+                          .map((val, i) => (
+                            <option key={i} value={val._id}>
+                              {val.name}
+                            </option>
+                          ))}
+                    </StyledSelect>
+                  </div>
+                </InputWrapper>
+              )}
               {/* Category New Name */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel for="categoryName">
-                    <DriveFileRenameOutlineIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    id="categoryName"
-                    type="text"
-                    name="categoryName"
-                    placeholder="Category new name"
-                    value={CategoryNewName}
-                    onChange={(e) => setCategoryNewName(e.target.value)}
-                  />
-                </div>
-              </InputWrapper>
+              {CategoryCompanyID && CategoryId && (
+                <InputWrapper>
+                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                    <StyledLabel for="categoryName">
+                      <DriveFileRenameOutlineIcon className="LabelIcon" />
+                    </StyledLabel>
+                    <StyledInput
+                      id="categoryName"
+                      type="text"
+                      name="categoryName"
+                      placeholder="Category new name"
+                      value={CategoryNewName}
+                      onChange={(e) => setCategoryNewName(e.target.value)}
+                    />
+                  </div>
+                </InputWrapper>
+              )}
               {ProccessLoading ? (
                 <AddingLoader />
               ) : (

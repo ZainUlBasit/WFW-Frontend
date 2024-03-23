@@ -12,12 +12,15 @@ import ConnectionLost from "../../../Components/Error/ConnectionLost";
 import SelectNone from "../../../Components/Error/SelectNone";
 import moment from "moment";
 import CompanyTransactionDataServices from "../../../Services/companyTransactions.services";
+import { fetchStocks } from "../../../store/StockSlice";
 // import { useSelector } from "react-redux";
 
 const CompanyLedger = () => {
   // const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
   const [value, setValue] = useState("");
-  const [fromDate, setFromDate] = useState();
+  const [fromDate, setFromDate] = useState(
+    moment(new Date()).subtract(1, "months").format("YYYY-MM-DD")
+  );
   const [toDate, setToDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
   const [open, setOpen] = useState(false);
   const [isCash, setIsCash] = useState(false);
@@ -34,18 +37,7 @@ const CompanyLedger = () => {
   });
   const [ShowMsg, setShowMsg] = useState(false);
   useEffect(() => {
-    const FetchData = async () => {
-      let response = await CompanyTransactionDataServices.getAllTransactions();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      console.log(response);
-      response = response.map((dt) => {
-        return new Date(dt.date.seconds * 1000);
-      });
-      console.log(response);
-      setFromDate(moment(response[0]).format("YYYY-MM-DD"));
-    };
-    FetchData();
-    dispatch(fetchCompanies());
+    dispatch(fetchCompanies(data));
     console.log(company);
   }, []);
   const onChangeFunc = (event) => {
@@ -109,10 +101,7 @@ const CompanyLedger = () => {
             setSelectCompany={setSelectCompany}
             SelectCompany={SelectCompany}
             DefOption="Select Company..."
-            Options={company.filter((comp) => {
-              if (data.userdata.fullName == "Admin") return comp;
-              else return comp.shop == data.userdata.fullName;
-            })}
+            Options={company}
           />
           {SelectCompany.found && isCash ? (
             <CashLedger

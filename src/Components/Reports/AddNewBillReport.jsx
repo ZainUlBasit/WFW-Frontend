@@ -373,6 +373,7 @@ function AddNewBillReport(props) {
             </View>
             {/* Rows Data */}
             {props.Data.map((data) => {
+              console.log(data);
               return (
                 <View
                   style={{
@@ -382,13 +383,13 @@ function AddNewBillReport(props) {
                   }}
                 >
                   Description
-                  <Text style={styles.cell1}>{data.itemName}</Text>
+                  <Text style={styles.cell1}>{data.name}</Text>
                   qty
-                  <Text style={styles.cell2}>{data.itemQuantity}</Text>
+                  <Text style={styles.cell2}>{data.qty}</Text>
                   price
-                  <Text style={styles.cell3}>{data.itemPrice}</Text>
+                  <Text style={styles.cell3}>{data.price}</Text>
                   amount
-                  <Text style={styles.cell4}>{data.totalAmount}</Text>
+                  <Text style={styles.cell4}>{data.amount}</Text>
                 </View>
               );
             })}

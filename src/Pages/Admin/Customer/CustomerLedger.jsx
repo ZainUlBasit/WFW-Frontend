@@ -36,29 +36,29 @@ const CustomerLedger = () => {
   const [ItemReturn, setItemReturn] = useState([]);
   const [ShowMsg, setShowMsg] = useState(false);
   useEffect(() => {
-    dispatch(fetchCustomers({ shop: uData.userdata.fullName }));
+    dispatch(fetchCustomers(uData));
   }, []);
 
-  useEffect(() => {
-    const getData = async () => {
-      let data = await customerReturnsServices.getAllReturns();
-      data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data = data
-        .filter(
-          (dt) =>
-            dt.shop === uData.userdata.fullName &&
-            dt.customerid === SelectCustomer.name
-        )
-        .map((dtt) => {
-          return {
-            ...dtt,
-            date: moment(dtt.date.seconds * 1000).format("DD/MM/YYYY"),
-          };
-        });
-      setItemReturn(data);
-    };
-    getData();
-  }, [SelectCustomer]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     let data = await customerReturnsServices.getAllReturns();
+  //     data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
+  //     data = data
+  //       .filter(
+  //         (dt) =>
+  //           dt.shop === uData.userdata.fullName &&
+  //           dt.customerid === SelectCustomer.name
+  //       )
+  //       .map((dtt) => {
+  //         return {
+  //           ...dtt,
+  //           date: moment(dtt.date.seconds * 1000).format("DD/MM/YYYY"),
+  //         };
+  //       });
+  //     setItemReturn(data);
+  //   };
+  //   getData();
+  // }, [SelectCustomer]);
 
   // useEffect(() => {
   //   console.log(ItemReturn);
@@ -154,6 +154,14 @@ const CustomerLedger = () => {
                 </div>
                 <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
+                    Return:
+                  </div>
+                  <div className="w-[190px]">
+                    {getCurrentTotal().return_amount}/-
+                  </div>
+                </div>
+                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                  <div className="w-[170px] flex justify-end mr-[4px]">
                     Remaining:
                   </div>
                   <div className="w-[190px]">
@@ -164,7 +172,7 @@ const CustomerLedger = () => {
             </div>
           ) : null}
           {/* Item Return Table */}
-          {SelectCustomer.found && isItem ? (
+          {/* {SelectCustomer.found && isItem ? (
             <TableComp
               title="Item Return Detail"
               rows={ItemReturn}
@@ -175,7 +183,7 @@ const CustomerLedger = () => {
               FromDate={fromDate}
               ToDate={toDate}
             />
-          ) : null}
+          ) : null} */}
         </div>
       ) : (
         <DataLoader />

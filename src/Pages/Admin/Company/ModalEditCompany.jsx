@@ -26,8 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import CompanyDataServices from "../../../Services/company.services";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
-import { DeleteCompany } from "../../../Https";
-import { showErrorToast } from "../../../utils/TaostMessages";
+import { DeleteCompany, UpdateCompanyApi } from "../../../Https";
+import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
 
 const ModalEditCompany = ({ setOpen, open, selComp }) => {
   const style = {
@@ -51,6 +51,7 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
   const [CompanyCnic, setCompanyCnic] = useState("");
   const [CompanyEmail, setCompanyEmail] = useState("");
   const [ProccessLoading, setProccessLoading] = useState(false);
+  const [CurrentBranch, setCurrentBranch] = useState("");
 
   const setData = () => {
     console.log(selComp);
@@ -62,6 +63,7 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
       setCompanyAddress(item.companyAddress);
       setCompanyCnic(item.companyCnic);
       setCompanyEmail(item.companyEmail);
+      setCurrentBranch(item.companyBranch);
       return "";
     });
   };
@@ -94,9 +96,14 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
       !(CompanyAddress == "")
     ) {
       try {
-        const response = await DeleteCompany({ companyId: CompanyId });
-        if (!response.data?.success) showErrorToast(response.data?.error?.msg);
-        else {
+        const response = await UpdateCompanyApi({
+          companyId: CompanyId,
+          payload: companyInfo,
+          branch: CurrentBranch,
+        });
+        if (!response.data?.success) {
+          showErrorToast(response.data?.error?.msg);
+        } else {
           showSuccessToast(response.data?.data?.msg);
           dispatch(fetchCompanies(uData));
           setOpen(false);
@@ -120,29 +127,19 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
   const onDelete = async (e) => {
     setProccessLoading(true);
     e.preventDefault();
-    if (CompanyId !== "") {
-      await CompanyDataServices.deleteCompany(CompanyId);
-      setOpen(false);
-      dispatch(fetchCompanies());
-      toast.success("Company Successfully Deleted...", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } else {
-      toast.warn("Select Company then Try...", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setProccessLoading(false);
+    try {
+      const response = await DeleteCompany(CompanyId);
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        showSuccessToast(response.data?.data?.msg);
+        dispatch(fetchCompanies(uData));
+        setOpen(false);
+      }
+    } catch (err) {
+      showErrorToast(err.response?.data?.error?.msg);
     }
+
+    setProccessLoading(false);
   };
 
   return (

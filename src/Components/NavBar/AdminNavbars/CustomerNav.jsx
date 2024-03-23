@@ -20,7 +20,7 @@ const CustomerNav = () => {
       className={isActive_ ? "isNotActiveStyling" : "isNotActiveStyling"}
     >
       <div className="flex flex-wrap mb-[5px] mt-[5px] justify-center items-center">
-        {data.userdata.role === "shop" ? (
+        {data.role === 2 ? (
           <>
             <AdminNavButton
               title={"Add Customer"}
@@ -57,7 +57,7 @@ const CustomerNav = () => {
           width={"160px"}
         />
 
-        {data.userdata.role === "shop" ? (
+        {data.role === 2 ? (
           <>
             <AdminNavButton
               title={"Item Return"}

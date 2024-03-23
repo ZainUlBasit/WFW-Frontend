@@ -24,7 +24,7 @@ const CustomerKata = () => {
   const data = useSelector((state) => state.AutoLoginSliceReducer.data);
 
   useEffect(() => {
-    dispatch(fetchCustomers({ shop: data.userdata.fullName }));
+    dispatch(fetchCustomers(data));
   }, []);
 
   return (

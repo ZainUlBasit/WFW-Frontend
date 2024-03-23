@@ -1,6 +1,6 @@
 export const StockDataColumns = [
   {
-    id: "item_name",
+    id: "itemId",
     label: "Item Name",
     minWidth: 200,
   },
@@ -19,22 +19,36 @@ export const StockDataColumns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "total",
+    id: "total_amount",
     label: "Total",
     minWidth: 80,
     align: "right",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "invoice",
+    id: "invoice_no",
     label: "Invoice",
     minWidth: 100,
     align: "right",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "truck",
+    id: "truck_no",
     label: "Truck",
+    minWidth: 100,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "branch",
+    label: "Branch #",
+    minWidth: 100,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "desc",
+    label: "Description",
     minWidth: 100,
     align: "right",
     format: (value) => value.toLocaleString("en-US"),

@@ -14,7 +14,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import LoadingError from "../Loader/LoadingError";
 import Search from "../Search/Search";
 
-export default function TableComp({
+export default function ItemLegderTable({
   rows,
   columns,
   title,
@@ -87,7 +87,6 @@ export default function TableComp({
                 rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    console.log(row);
                     return (
                       <TableRow
                         hover
@@ -96,50 +95,18 @@ export default function TableComp({
                         key={index}
                         style={{ cursor: "pointer" }}
                       >
-                        {columns.map((column) => {
-                          let value;
-                          if (title === "Item Ledger Detail") {
-                            if (column.id === "date")
-                              value = new Date(
-                                row[0][column.id] * 1000
-                              ).toLocaleDateString();
-                            else value = row[0][column.id];
-                          } else if (
-                            "companyId" === column.id ||
-                            "categoryId" === column.id ||
-                            "subcategoryId" === column.id ||
-                            "itemId" === column.id
-                          )
-                            value = row[column.id].name;
-                          else if (
-                            "addeddate" === column.id ||
-                            "date" === column.id
-                          )
-                            value = new Date(
-                              row[column.id] * 1000
-                            ).toLocaleDateString();
-                          else value = row[column.id];
-
-                          const c_id = row["_id"];
-                          return (
-                            <TableCell
-                              id={c_id}
-                              onClick={HandleDoubleClick}
-                              className={
-                                column.id === "contact"
-                                  ? "font-[georgia] select-none"
-                                  : "font-[raleway] select-none"
-                              }
-                              key={column.id}
-                              align={column.align}
-                              style={{ fontWeight: "700", fontSize: "0.95rem" }}
-                            >
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
+                        <TableCell
+                          // id={c_id}
+                          onClick={HandleDoubleClick}
+                          className={"font-[raleway] select-none"}
+                          // key={column.id}
+                          // align={column.align}
+                          style={{ fontWeight: "700", fontSize: "0.95rem" }}
+                        >
+                          {/* {column.format && typeof value === "number" */}
+                          {/* ? column.format(value) */}
+                          {/* : value} */}
+                        </TableCell>
                       </TableRow>
                     );
                   })}

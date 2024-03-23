@@ -25,6 +25,12 @@ import subcategoryServices from "../../../Services/subcategory.services";
 import { toast } from "react-toastify";
 import companyServices from "../../../Services/company.services";
 import categoryServices from "../../../Services/category.services";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
+import { CreateSubCategory } from "../../../Https";
 
 // *******************************
 //         Starting
@@ -43,70 +49,41 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
     p: 4,
   };
 
-  const [Company, setCompany] = useState("");
-  const [Category, setCategory] = useState("");
-  const [SubCategory, setSubCategory] = useState("");
-
-  const [CompanySelected, setCompanySelected] = useState(false);
-  const [CategorySelected, setCategorySelected] = useState(false);
-  const [Categories, setCategories] = useState([]);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
-  const [Companies, setCompanies] = useState([]);
+
+  const Companies = useSelector((state) => state.CompanySliceReducer.data);
+  const Categories = useSelector((state) => state.CategorySliceReducer.data);
+
+  const [CompanyID, setCompanyID] = useState("");
+  const [CategoryID, setCategoryID] = useState("");
+  const [SubCategoryName, setSubCategoryName] = useState("");
+
+  const dispatch = useDispatch();
   useEffect(() => {
-    const getComp = async () => {
-      let response = await companyServices.getCompanies();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      setCompanies(response);
-    };
-    const getCat = async () => {
-      let response = await categoryServices.getCategories();
-      response = response.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      setCategories(response);
-    };
-    getComp();
-    getCat();
+    dispatch(fetchCompanies(uData));
+    dispatch(fetchCategories(uData));
   }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const shopName = uData.userdata.fullName;
-    const SubCatInfo = {
-      company_id: Company,
-      categoryname: Category,
-      subcategoryname: SubCategory,
-      shop: shopName,
-    };
-    if (Company !== "" && Category !== "" && SubCategory !== "") {
-      try {
-        await subcategoryServices.addSubCategory(SubCatInfo);
-        toast.success("SubCategory Successfully Added...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setSubModal(false);
-      } catch (error) {
-        toast.error("Unable to add new Sub Category", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-    } else {
-      toast.warn("All Fields are mandatory", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    if (CompanyID == "" || CategoryID == "" || SubCategoryName == "") {
+      showWarningToast("Required field are undefined!");
+      return;
+    }
+    try {
+      const response = await CreateSubCategory({
+        company_id: CompanyID,
+        category_id: CategoryID,
+        name: SubCategoryName,
+        branch: uData.branch_number,
       });
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        showSuccessToast(response.data?.data?.msg);
+        setSubModal(false);
+      }
+    } catch (err) {
+      showErrorToast(err.response?.data?.error?.msg || err.message);
     }
   };
 
@@ -148,14 +125,7 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
                   </StyledLabel>
                   <StyledSelect
                     onChange={(e) => {
-                      const curD = e.target.value;
-                      if (curD !== "none") {
-                        setCompanySelected(true);
-                        setCompany(curD);
-                      } else {
-                        setCompanySelected(false);
-                        setCategorySelected(false);
-                      }
+                      setCompanyID(e.target.value);
                     }}
                   >
                     <option value="none">Select Company</option>
@@ -168,7 +138,7 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
                 </div>
               </InputWrapper>
               {/* Select Category */}
-              {CompanySelected ? (
+              {CompanyID && (
                 <InputWrapper>
                   <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                     <StyledLabel for="itemCategory">
@@ -176,46 +146,38 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
                     </StyledLabel>
                     <StyledSelect
                       onChange={(e) => {
-                        const curD = e.target.value;
-                        if (curD !== "none") {
-                          setCategorySelected(true);
-                          setCategory(curD);
-                        } else {
-                          setCategorySelected(false);
-                        }
+                        setCategoryID(e.target.value);
                       }}
                     >
                       <option value="none">Select Category</option>
-                      {Categories.filter((cat) => {
-                        if (cat.company_id === Company) return cat;
-                      }).map((category) => (
-                        <option value={category.categoryname}>
-                          {category.categoryname}
-                        </option>
+                      {Categories.filter(
+                        (cat) => cat.company_id === CompanyID
+                      ).map((category) => (
+                        <option value={category._id}>{category.name}</option>
                       ))}
                     </StyledSelect>
                   </div>
                 </InputWrapper>
-              ) : null}
+              )}
               {/* Enter Sub Category */}
-              {CategorySelected ? (
+              {CategoryID && CompanyID && (
                 <InputWrapper>
                   <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                     <StyledLabel for="itemCode">
                       <AssuredWorkloadIcon className="LabelIcon" />
                     </StyledLabel>
                     <StyledInput
-                      id="itemCode"
+                      id="sub-category-name"
                       type="text"
-                      name="itemCode"
+                      name="sub-category-name"
                       placeholder="Sub Category"
-                      value={SubCategory}
-                      onChange={(e) => setSubCategory(e.target.value)}
+                      value={SubCategoryName}
+                      onChange={(e) => setSubCategoryName(e.target.value)}
                     />
                   </div>
                 </InputWrapper>
-              ) : null}
-              {CompanySelected && CategorySelected && (
+              )}
+              {CompanyID && CategoryID && SubCategoryName && (
                 <StyledButton primary>ADD SUB CATEGORY</StyledButton>
               )}
             </form>

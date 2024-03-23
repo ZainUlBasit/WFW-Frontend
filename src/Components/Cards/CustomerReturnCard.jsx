@@ -29,18 +29,20 @@ const CustomerReturnCard = ({
             <SelectWrapper>
               <select
                 className="SelectInner"
+                value={Select.name}
                 onChange={(e) =>
-                  setSelect({ name: e.target.value, found: true })
+                  setSelect({
+                    name: e.target.value,
+                    found: e.target.value !== "" ? true : false,
+                  })
                 }
                 defaultValue={"Select Customer..."}
               >
-                <option disabled defaultValue={"Select Customer..."} key="none">
-                  {"Select Customer..."}
-                </option>
+                <option value={""}>{"Select Customer..."}</option>
                 {data.map((Comp, i) => {
                   return (
                     <option key={i} value={Comp._id}>
-                      {Comp.name || Comp.fullname}
+                      {Comp.name}
                     </option>
                   );
                 })}

@@ -18,7 +18,6 @@ const ContactMask = "+{92}300-0000000";
 const CnicMask = "00000-0000000-0";
 
 const AdminCustomer = () => {
-
   const AllItems = [
     {
       id: 1,
@@ -1007,14 +1006,14 @@ const AdminCustomer = () => {
   const customer = useSelector((state) => state.CustomerSliceReducer.data);
   const loading = useSelector((state) => state.CompanySliceReducer.loading);
   const isError = useSelector((state) => state.CompanySliceReducer.isError);
+  const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   useEffect(() => {
-    dispatch(fetchCustomers({ shop: data.userdata.fullName }));
+    dispatch(fetchCustomers(uData));
   }, []);
 
-  const [Loading, setLoading] = useState(false);
+  // const [Loading, setLoading] = useState(false);
 
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
-  const data = useSelector((state) => state.AutoLoginSliceReducer.data);
 
   // if(Loading) return <DataLoader />
 
@@ -1022,7 +1021,7 @@ const AdminCustomer = () => {
     <>
       <NavBar />
       <CustomerNav />
-      {loading || Loading ? (
+      {loading ? (
         <DataLoader />
       ) : isError ? (
         <ConnectionLost />
@@ -1031,11 +1030,7 @@ const AdminCustomer = () => {
           <TableComp
             title={"CUSTOMERS INFO"}
             rows={customer}
-            columns={
-              data.userdata.name !== "Admin"
-                ? CustomerColumns
-                : AdminCustomerColumns
-            }
+            columns={uData.role !== 1 ? CustomerColumns : AdminCustomerColumns}
             isActive_={isActive_}
             setSelID={setSelID}
           />

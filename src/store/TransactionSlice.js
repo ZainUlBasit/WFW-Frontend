@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showErrorToast } from "../utils/TaostMessages";
-import { GetBranches } from "../Https";
+import { GetBranches, GetTransactions } from "../Https";
 
-export const fetchBranches = createAsyncThunk(
+export const fetchTransactions = createAsyncThunk(
   "fetch/branches",
-  async (CurrentUser) => {
+  async (CurrentData) => {
     try {
-      const response = await GetBranches({ branch: CurrentUser.branch_number });
+      const response = await GetTransactions({ ...CurrentData });
       if (!response.data?.success) {
         showErrorToast(response.data?.error?.msg);
         return [];
@@ -18,7 +18,7 @@ export const fetchBranches = createAsyncThunk(
   }
 );
 
-const BranchSlice = createSlice({
+const TransactionSlice = createSlice({
   name: "branches",
   initialState: {
     loading: false,
@@ -27,18 +27,18 @@ const BranchSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchBranches.pending, (state) => {
+    builder.addCase(fetchTransactions.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(fetchBranches.fulfilled, (state, action) => {
+    builder.addCase(fetchTransactions.fulfilled, (state, action) => {
       state.loading = false;
       state.data = action.payload;
     });
-    builder.addCase(fetchBranches.rejected, (state, action) => {
+    builder.addCase(fetchTransactions.rejected, (state, action) => {
       state.isError = true;
       console.log("Error: ", action.error);
     });
   },
 });
 
-export default BranchSlice.reducer;
+export default TransactionSlice.reducer;

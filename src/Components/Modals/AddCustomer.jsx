@@ -16,6 +16,8 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import CallIcon from "@mui/icons-material/Call";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import StoreIcon from "@mui/icons-material/Store";
+import ContactPageIcon from "@mui/icons-material/ContactPage";
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import {
   InputWrapper,
   StyledInput,
@@ -34,6 +36,9 @@ import UserDataServices from "../../Services/user.services";
 import customerServices from "../../Services/customer.services";
 import { toast } from "react-toastify";
 import AddingLoader from "../Loader/AddingLoader";
+import { fetchBranches } from "../../store/BranchSlice";
+import { CreateCustomer } from "../../Https";
+import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
 
 const AddCustomerModal = ({ setOpen, open }) => {
   const [Loading, setLoading] = useState(false);
@@ -45,7 +50,6 @@ const AddCustomerModal = ({ setOpen, open }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 380,
     bgcolor: "background.paper",
     border: "3px solid #5A4AE3",
     borderRadius: "10px",
@@ -63,8 +67,10 @@ const AddCustomerModal = ({ setOpen, open }) => {
   const [Cnic, setCnic] = useState("");
   const [Contact, setContact] = useState("");
   const [Address, setAddress] = useState("");
-  const [Shop, setShop] = useState("");
-  const [Users, setUsers] = useState([]);
+  const [PageNumber, setPageNumber] = useState("");
+  const [ref, setRef] = useState("");
+  // const [Shop, setShop] = useState("");
+  const Branches = useSelector((state) => state.branches.data);
 
   const onSubmit = async (e) => {
     setLoading(true);
@@ -75,51 +81,26 @@ const AddCustomerModal = ({ setOpen, open }) => {
       cnic: Cnic,
       contact: Contact,
       address: Address,
-      shop: uData.userdata.fullName,
-      paid: 0,
-      total: 0,
-      remaining: 0,
-      discount: 0,
-      advance: 0,
-      verify: false,
-      page: 0,
-      ref: "no",
+      branch: uData.branch_number,
+      page: PageNumber,
+      ref: ref,
     };
     try {
-      await customerServices.addCustomer(formData);
-      toast.success("Successfully Customer added", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setOpen(false);
+      const response = await CreateCustomer(formData);
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        showSuccessToast(response.data?.data?.msg);
+        setOpen(false);
+        dispatch(fetchItems(uData));
+      }
     } catch (err) {
-      toast.error("Unable to add Customer", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      showErrorToast(err.response?.data?.error?.msg || err.message);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    const FetchData = async () => {
-      let response = await UserDataServices.getUsers();
-      response = response.docs.map((doc) => ({
-        ...doc.data(),
-        _id: doc.id,
-      }));
-      response = response.filter((data) => data.role === "shop");
-      setUsers(response);
-    };
-    FetchData();
+    dispatch(fetchBranches(uData));
   }, []);
   return (
     <Modal
@@ -156,38 +137,149 @@ const AddCustomerModal = ({ setOpen, open }) => {
           {/* Form Portion */}
           <div className="flex-col justify-center items-center">
             <form className="flex flex-col items-center justify-center w-[100%]">
-              {/* Username */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <AccountBoxIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={Name}
-                    onChange={(e) => setName(e.target.value)}
-                    id="username"
-                    type="text"
-                    name="username"
-                    placeholder="User Name"
-                  />
+              <div className="flex gap-x-5 flex-wrap">
+                <div>
+                  {/* Username */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <AccountBoxIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={Name}
+                        onChange={(e) => setName(e.target.value)}
+                        id="username"
+                        type="text"
+                        name="username"
+                        placeholder="User Name"
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* Email */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <MailIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={Email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        id="email"
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* CNIC */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <BadgeIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={Cnic}
+                        onChange={(e) => setCnic(e.target.value)}
+                        id="cnic"
+                        type="text"
+                        name="cnic"
+                        placeholder="CNIC"
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* Contact */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <CallIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={Contact}
+                        onChange={(e) => setContact(e.target.value)}
+                        id="contact"
+                        type="text"
+                        name="contact"
+                        placeholder="Contact"
+                      />
+                    </div>
+                  </InputWrapper>
                 </div>
-              </InputWrapper>
-              {/* Email */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <MailIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={Email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    id="email"
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                  />
+                <div>
+                  {/* Address */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <FmdGoodIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={Address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        id="address"
+                        type="text"
+                        name="address"
+                        placeholder="Address"
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* Page Number */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <ContactPageIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={PageNumber}
+                        onChange={(e) => setPageNumber(e.target.value)}
+                        id="page-no"
+                        type="number"
+                        name="page-no"
+                        placeholder="Page No."
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* Refrence */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <DynamicFeedIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={ref}
+                        onChange={(e) => setRef(e.target.value)}
+                        id="ref"
+                        type="text"
+                        name="ref"
+                        placeholder="Reference..."
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* Select Shop */}
+                  {/* <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <StoreIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledSelect
+                        onChange={(e) => {
+                          setShop(e.target.value);
+                        }}
+                      >
+                        <option disabled value="none" selected>
+                          Select Shop
+                        </option>
+                        {Branches.map((val, i) => {
+                          return (
+                            <option value={val.branch_number} key={i}>
+                              {val.name}
+                            </option>
+                          );
+                        })}
+                      </StyledSelect>
+                    </div>
+                  </InputWrapper> */}
                 </div>
-              </InputWrapper>
+              </div>
+
               {/* Password */}
               {/* <InputWrapper>
                 <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
@@ -220,78 +312,6 @@ const AddCustomerModal = ({ setOpen, open }) => {
                   />
                 </div>
               </InputWrapper> */}
-              {/* CNIC */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <BadgeIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={Cnic}
-                    onChange={(e) => setCnic(e.target.value)}
-                    id="cnic"
-                    type="text"
-                    name="cnic"
-                    placeholder="CNIC"
-                  />
-                </div>
-              </InputWrapper>
-              {/* Contact */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <CallIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={Contact}
-                    onChange={(e) => setContact(e.target.value)}
-                    id="contact"
-                    type="text"
-                    name="contact"
-                    placeholder="Contact"
-                  />
-                </div>
-              </InputWrapper>
-              {/* Address */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <FmdGoodIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={Address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    id="address"
-                    type="text"
-                    name="address"
-                    placeholder="Address"
-                  />
-                </div>
-              </InputWrapper>
-              {/* Select Shop */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <StoreIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledSelect
-                    onChange={(e) => {
-                      setShop(e.target.value);
-                    }}
-                  >
-                    <option disabled value="none" selected>
-                      Select Shop
-                    </option>
-                    {Users.map((val, i) => {
-                      return (
-                        <option value={val.fullName} key={i}>
-                          {val.fullName}
-                        </option>
-                      );
-                    })}
-                  </StyledSelect>
-                </div>
-              </InputWrapper>
             </form>
 
             <div className="flex items-center flex-col font-[raleway]">

@@ -26,25 +26,16 @@ import { fetchItems } from "../../store/ItemSlice";
 import DataLoader from "../Loader/DataLoader";
 import ConnectionLost from "../Error/ConnectionLost";
 import { toast } from "react-toastify";
+import { showWarningToast } from "../../utils/TaostMessages";
+import { Warning } from "postcss";
 
-const ModalItemReturn = ({
-  setOpen,
-  open,
-  ReturnItem,
-  ReturnItems,
-  setReturnItem,
-  setReturnItems,
-  title,
-}) => {
+const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
   const Data = useSelector((state) => state.ItemSliceReducer.data);
   const loading = useSelector((state) => state.ItemSliceReducer.loading);
   const isError = useSelector((state) => state.ItemSliceReducer.isError);
   const dispatch = useDispatch();
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [data, setData] = useState({ price: 1, quantity: 1 });
-  const [curItemCode, setCurItemCode] = useState("Select Item Code..");
-  const [curItemName, setCurItemName] = useState("Select Item Name..");
-  const [CurItemQty, setCurItemQty] = useState("");
+  const [Qty, setQty] = useState("");
+  const [curItemId, setCurItemId] = useState("");
   const [ItemSelect, setItemSelect] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const style = {
@@ -60,84 +51,42 @@ const ModalItemReturn = ({
     p: 4,
   };
 
-  useEffect(() => {
-    setTotalAmount(Number(data.price) * Number(data.quantity));
-    if (curItemCode != "Select Item Code..") {
-      const index = Data.findIndex((object) => {
-        return object.itemcode === curItemCode;
-      });
-      setCurItemName(Data[index].itemname);
-      setCurItemQty(Data[index].itemqty);
-      setData({
-        ...data,
-        price: Data[index].itemsale,
-        purchase: Data[index].itempurchase,
-      });
-    }
-    setReturnItem({
-      itemCode: curItemCode,
-      itemName: curItemName,
-      itemQuantity: data.quantity,
-      itemPurchase: data.purchase,
-      itemPrice: data.price,
-      totalAmount: totalAmount,
-    });
-  }, [data, curItemCode, setReturnItem, curItemName, totalAmount]);
-
-  const onChangeFunc = (e) => {
-    const cVal = e.target.value.toString();
-    if (Number(cVal) < 0) e.target.value = "0";
-    if (e.target.id === "itemQuantity") {
-      const enterQty = e.target.value;
-      if (Number(enterQty) > Number(CurItemQty)) {
-        toast.warn("Stock is not available...", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setData({ ...data, quantity: 0 });
-      } else setData({ ...data, quantity: e.target.value });
-    } else if (e.target.id === "itemPrice") {
-      setData({ ...data, price: e.target.value });
-    }
-    let tot = Number(data.price) * Number(data.quantity);
-    setTotalAmount(tot.toString());
-  };
-
   function AddItem() {
-    setReturnItem({
-      itemCode: curItemCode,
-      itemName: curItemName,
-      itemQuantity: data.quantity,
-      itemPurchase: data.purchase,
-      itemPrice: data.price,
-      totalAmount: totalAmount,
-    });
-    if (curItemCode != "Select Item Code..") {
-      const index = Data.findIndex((object) => {
-        return object.itemcode === curItemCode;
-      });
-      setReturnItems([
-        ...ReturnItems,
+    if (curItemId === "" || Qty === "") {
+      showWarningToast("Required fields are undefined!");
+      return;
+    }
+    const existingItemIndex = NewItems.findIndex(
+      (item) => item.itemId === curItemId
+    );
+    if (existingItemIndex !== -1) {
+      // Item already exists, update quantity and amount
+      const updatedItems = [...NewItems];
+      updatedItems[existingItemIndex].qty += Number(Qty);
+      updatedItems[existingItemIndex].amount +=
+        Number(Qty) * Number(Data.find((dt) => dt._id === curItemId).sale);
+      setNewItems(updatedItems);
+    } else {
+      setNewItems([
+        ...NewItems,
         {
-          itemID: Data[index]._id,
-          itemCode: curItemCode,
-          itemName: curItemName,
-          itemQuantity: data.quantity,
-          itemPurchase: data.purchase,
-          itemPrice: data.price,
-          totalAmount: totalAmount,
+          itemId: curItemId,
+          name: Data.find((dt) => dt._id === curItemId).name,
+          qty: Number(Qty),
+          purchase: Number(Data.find((dt) => dt._id === curItemId).purchase),
+          price: Number(Data.find((dt) => dt._id === curItemId).sale),
+          amount:
+            Number(Data.find((dt) => dt._id === curItemId).sale) * Number(Qty),
         },
       ]);
     }
     setOpen(false);
   }
+
   useEffect(() => {
-    dispatch(fetchItems({ shop: uData.userdata.name }));
+    dispatch(fetchItems(uData));
   }, []);
+
   return loading ? (
     <DataLoader />
   ) : isError ? (
@@ -186,7 +135,7 @@ const ModalItemReturn = ({
                   <StyledSelect
                     onChange={(e) => {
                       if (e.target.value !== "none") {
-                        setCurItemCode(e.target.value);
+                        setCurItemId(e.target.value);
                         setItemSelect(true);
                       } else {
                         setItemSelect(false);
@@ -200,8 +149,8 @@ const ModalItemReturn = ({
                     </option>
                     {Data.map((val, i) => {
                       return (
-                        <option value={val.itemcode} key={i}>
-                          {val.itemcode}
+                        <option value={val._id} key={val._id}>
+                          {val.code}
                         </option>
                       );
                     })}
@@ -217,8 +166,12 @@ const ModalItemReturn = ({
                         <DriveFileRenameOutlineIcon className="LabelIcon" />
                       </StyledLabel>
                       <StyledInput
-                        value={curItemName}
-                        onChange={() => ""}
+                        value={
+                          Data.find((dt) => dt._id === curItemId).name
+                            ? Data.find((dt) => dt._id === curItemId).name
+                            : ""
+                        }
+                        onChange={() => {}}
                         id="itemName"
                         type="text"
                         name="itemName"
@@ -236,8 +189,21 @@ const ModalItemReturn = ({
                         id="itemQuantity"
                         type="number"
                         name="itemQuantity"
-                        value={data.quantity}
-                        onChange={onChangeFunc}
+                        value={Qty}
+                        onChange={(e) => {
+                          if (curItemId !== "") {
+                            const maxQty = Data.find(
+                              (dt) => dt._id === curItemId
+                            ).qty;
+
+                            if (e.target.value > maxQty) {
+                              showWarningToast(
+                                "Qty must be less than equal to " + maxQty
+                              );
+                              setQty("");
+                            } else setQty(e.target.value);
+                          }
+                        }}
                         placeholder="Item Quantity"
                       />
                     </div>
@@ -252,8 +218,12 @@ const ModalItemReturn = ({
                         id="itemPrice"
                         type="number"
                         name="itemPrice"
-                        value={data.price}
-                        onChange={onChangeFunc}
+                        value={
+                          Data.find((dt) => dt._id === curItemId).sale
+                            ? Data.find((dt) => dt._id === curItemId).sale
+                            : ""
+                        }
+                        onChange={(e) => setPrice(e.target.value)}
                         placeholder="Item Unit Price"
                       />
                     </div>
@@ -268,7 +238,12 @@ const ModalItemReturn = ({
                         id="itemAmount"
                         type="number"
                         name="itemAmount"
-                        value={totalAmount}
+                        value={
+                          Data.find((dt) => dt._id === curItemId).sale &&
+                          Qty !== ""
+                            ? Data.find((dt) => dt._id === curItemId).sale * Qty
+                            : ""
+                        }
                         onChange={() => console.log("Value Changed...")}
                         placeholder="Item Total Amount"
                       />

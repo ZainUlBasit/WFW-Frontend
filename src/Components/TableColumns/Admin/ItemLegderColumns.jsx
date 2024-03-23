@@ -5,7 +5,7 @@ export const Columns = [
     minWidth: 150,
   },
   {
-    id: "billNo",
+    id: "invoice_no",
     label: "Bill No",
     minWidth: 150,
   },
@@ -20,14 +20,14 @@ export const Columns = [
     minWidth: 140,
   },
   {
-    id: "unitprice",
+    id: "price",
     label: "Unit Price",
     align: "left",
     minWidth: 150,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "total",
+    id: "amount",
     label: "Total",
     align: "left",
     minWidth: 150,
