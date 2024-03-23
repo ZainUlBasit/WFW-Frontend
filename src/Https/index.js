@@ -1,8 +1,8 @@
 import axios from "axios";
-import { API_BASE_URL_LOCAL, API_VERCEL } from "../utils/config";
+import { API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: API_VERCEL,
+  baseURL: API_BASE_URL_LOCAL,
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
