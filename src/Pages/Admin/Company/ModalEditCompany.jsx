@@ -99,7 +99,7 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
         const response = await UpdateCompanyApi({
           companyId: CompanyId,
           payload: companyInfo,
-          branch: CurrentBranch,
+          // branch: CurrentBranch,
         });
         if (!response.data?.success) {
           showErrorToast(response.data?.error?.msg);
