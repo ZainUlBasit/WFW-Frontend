@@ -10,7 +10,7 @@ import { fetchStocks } from "../../../store/StockSlice";
 const ItemLedger = ({ isItem, SelectedCompany, toDate, fromDate }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
   const [selID, setSelID] = useState(-1);
-  const Transactions = useSelector((state) => state.StockState.data);
+  const Transactions = useSelector((state) => state.StockState);
   // const [Transactions, setTransactions] = useState([]);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const [Loading, setLoading] = useState(false);
@@ -25,19 +25,21 @@ const ItemLedger = ({ isItem, SelectedCompany, toDate, fromDate }) => {
     );
   }, [SelectedCompany, fromDate, toDate]);
 
-  const userD = useSelector((state) => state.AutoLoginSliceReducer.data);
+  console.log(Transactions);
+  // return;
 
-  return Loading ? (
+  return Transactions.loading ? (
     <DataLoader />
   ) : (
     <div className={isItem ? "flex flex-col" : "hidden"}>
       <TableComp
         title="Item Ledger Detail"
-        rows={Transactions}
+        rows={Transactions.data}
         columns={StockDataColumns}
         isActive_={isActive_}
         setSelID={setSelID}
         LedgerDetail={true}
+        isLedger={true}
       />
     </div>
   );

@@ -43,6 +43,7 @@ const LoginComp = () => {
         });
       } else {
         response = await LoginApi({ email, password });
+
         if (!response.data?.success) {
           toast.error(response.data.error.msg, {
             position: "top-right",
@@ -53,7 +54,12 @@ const LoginComp = () => {
             theme: "light",
           });
         } else if (response.data?.success) {
-          dispatch(SetAuth(response.data.data.payload));
+          localStorage.setItem(
+            "user",
+            JSON.stringify(response.data.data.payload.user)
+          );
+          localStorage.setItem("token", response.data.data.payload.token);
+          dispatch(SetAuth(response.data.data.payload.user));
           toast.success(response.data.data.msg, {
             position: "top-right",
             autoClose: 3000,

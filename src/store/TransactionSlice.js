@@ -9,7 +9,6 @@ export const fetchTransactions = createAsyncThunk(
       const response = await GetTransactions({ ...CurrentData });
       if (!response.data?.success) {
         showErrorToast(response.data?.error?.msg);
-        return [];
       } else return response.data?.data?.payload;
     } catch (err) {
       showErrorToast(err.response?.data?.error?.msg);

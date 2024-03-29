@@ -12,12 +12,15 @@ import {
 } from "./Styling/StyledTodayInfo";
 import { useEffect } from "react";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DataLoader from "../../../Components/Loader/DataLoader";
 import expenseServices from "../../../Services/expense.services";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import customerTransactionsServices from "../../../Services/customerTransactions.services";
+import MultipleStopIcon from "@mui/icons-material/MultipleStop";
+import { fetchSaleDetails } from "../../../store/SaleDetailSlice";
+import AddingLoader from "../../../Components/Loader/AddingLoader";
 
 const TodayReport = () => {
   const [AddExpenseModal, setAddExpenseModal] = useState(false);
@@ -45,102 +48,24 @@ const TodayReport = () => {
   const [TotalSale, setTotalSale] = useState(0);
   const [TotalPurchase, setTotalPurchase] = useState(0);
   const [TotalQty, setTotalQty] = useState(0);
+  const [FromDate, setFromDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [ToDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+  const dispatch = useDispatch();
+  const Sales = useSelector((state) => state.SalesDetails);
   useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      try {
-        let data = await getDocs(collection(db, "users"));
-        data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-        data = data.filter((dt) => dt.role === "shop").map((dt) => dt.fullName);
-        data.sort(
-          (a, b) => a.localeCompare(b) //using String.prototype.localCompare()
-        );
-        setShops(data);
-
-        const curDate = new Date();
-        const newDate = new Date();
-        curDate.setDate(curDate.getDate() - 1);
-        newDate.setDate(newDate.getDate() + 1);
-        let expense = await expenseServices.getExpenses();
-        expense = expense.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-        let all_expenses = 0;
-        let shop_expense;
-        let sum_shop = 0;
-        data.map((shop) => {
-          shop_expense = expense.filter((exp) => {
-            console.log(exp);
-            return (
-              moment(exp.date.seconds * 1000).format("DD/MM/YYYY") ===
-                moment(new Date()).format("DD/MM/YYYY") && exp.shop === shop
-            );
-          });
-          sum_shop = shop_expense.reduce(
-            (acc, cur) => acc + Number(cur.expense),
-            0
-          );
-          all_expenses = Number(all_expenses) + Number(sum_shop);
-        });
-        setTodayExpense(all_expenses);
-        // requests....
-        let all_transactions =
-          await customerTransactionsServices.getAllTransactions();
-        all_transactions = all_transactions.docs.map((doc) => ({
-          ...doc.data(),
-          _id: doc.id,
-        }));
-        let current_shop;
-        let shop_sale;
-        let shop_purchase;
-        let shop_qty;
-        let all_sale = 0;
-        let all_purchase = 0;
-        let all_qty = 0;
-        let all_shop_sale = [];
-        let all_shop_purchase = [];
-        let all_shop_qty = [];
-        data.map((shop) => {
-          current_shop = all_transactions.filter(
-            (dt) =>
-              moment(dt.date.seconds * 1000).format("DD/MM/YYYY") ===
-                moment(new Date()).format("DD/MM/YYYY") && dt.shop === shop
-          );
-          shop_sale = current_shop.reduce(
-            (acc, cur) => acc + Number(cur.qty) * Number(cur.unitprice),
-            0
-          );
-          shop_purchase = current_shop.reduce(
-            (acc, cur) => acc + Number(cur.qty) * Number(cur.purchase),
-            0
-          );
-          shop_qty = current_shop.reduce(
-            (acc, cur) => acc + Number(cur.qty),
-            0
-          );
-
-          all_shop_sale.push(Number(shop_sale));
-          all_shop_purchase.push(Number(shop_purchase));
-          all_shop_qty.push(Number(shop_qty));
-
-          all_sale += Number(shop_sale);
-          all_purchase += Number(shop_purchase);
-          all_qty = Number(all_qty) + Number(shop_qty);
-        });
-        setAllShopSale(all_shop_sale);
-        setAllShopPurchase(all_shop_purchase);
-        setAllShopQty(all_shop_qty);
-        setTotalSale(all_sale);
-        setTotalPurchase(all_purchase);
-        setTotalQty(all_qty);
-        // =====================================================================
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        // =====================================================================
-      } catch (err) {
-        console.log("Error Occured: ", err);
-      }
-      setLoading(false);
-    };
-    getData();
+    dispatch(
+      fetchSaleDetails({
+        role: uData.role,
+        branch: uData.branch_number,
+        from: FromDate,
+        to: ToDate,
+      })
+    );
+    console.log(Sales);
   }, []);
+
   return (
     <>
       <Navbar />
@@ -153,48 +78,89 @@ const TodayReport = () => {
         <StyledTodayInfo>
           <StyledTodayInfoInner>
             <StyledTodayInfoHeader className="select-none">
-              Today Sales Detail
+              <div className="flex justify-between items-center px-5 w-full flex-wrap gap-y-3">
+                <div className="font-bold text-3xl">Sales Detail</div>
+                <div className="flex gap-x-4 items-center justify-center flex-wrap gap-y-3">
+                  <input
+                    type="date"
+                    className="text-black rounded-lg font-medium text-xl py-2 px-2"
+                    name="from"
+                    id="from"
+                    value={FromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  />
+
+                  <MultipleStopIcon className="!text-white !text-3xl" />
+
+                  <input
+                    type="date"
+                    className="text-black rounded-lg font-medium text-xl py-2 px-2"
+                    name="to"
+                    id="to"
+                    value={ToDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                  />
+                  <button
+                    className="bg-white hover:text-[gray] hover:rounded-[10px] transition-all duration-700 text-[#5a4ae3] py-2 px-3"
+                    onClick={() => {
+                      dispatch(
+                        fetchSaleDetails({
+                          role: uData.role,
+                          branch: uData.branch_number,
+                          from: FromDate,
+                          to: ToDate,
+                        })
+                      );
+                      console.log({
+                        branch: uData.branch_number,
+                        from: FromDate,
+                        to: ToDate,
+                      });
+                      console.log(Sales);
+                    }}
+                  >
+                    Show Details
+                  </button>
+                </div>
+              </div>
             </StyledTodayInfoHeader>
             <StyledTodayInfoBody>
               {/* shopsinfo */}
               <div className="shopsinfo flex flex-wrap justify-center h-[100%] w-full items-center select-none">
-                {Shops.map((shop, i) => {
-                  console.log(AllShopSale[i]);
-                  return (
-                    <BranchPurSaleCard
-                      ShopNo={i + 1}
-                      SaleAmount={AllShopSale[i]}
-                      PurchaseAmount={AllShopPurchase[i]}
-                    />
-                  );
-                })}
+                {Sales.loading ? (
+                  <AddingLoader />
+                ) : (
+                  <BranchPurSaleCard State={Sales?.data} />
+                )}
               </div>
-              <div className="todayInfo flex flex-wrap justify-center items-center mx-[5px] my-[15px] select-none">
-                <TodayInfoComp
-                  title={"Today's Sale"}
-                  payload={TotalSale}
-                  shopDetail={false}
-                />
-                <TodayInfoComp
-                  title={"Today's Sold Quantity"}
-                  payload={TotalQty}
-                  shopDetail={false}
-                />
-                <TodayInfoComp
-                  title={"Today's Expense"}
-                  payload={TodayExpense}
-                  shopDetail={false}
-                />
-                <TodayInfoComp
-                  title={"Total Profit"}
-                  payload={
-                    Number(TotalSale) -
-                    Number(TotalPurchase) -
-                    Number(TodayExpense)
-                  }
-                  shopDetail={false}
-                />
-              </div>
+              {uData.role === 1 && (
+                <div className="todayInfo flex flex-wrap justify-center items-center mx-[5px] my-[15px] select-none">
+                  <TodayInfoComp
+                    title={"Today's Sale"}
+                    payload={TotalSale}
+                    shopDetail={false}
+                  />
+                  <TodayInfoComp
+                    title={"Today's Sold Quantity"}
+                    payload={TotalQty}
+                    shopDetail={false}
+                  />
+                  <TodayInfoComp
+                    title={"Today's Expense"}
+                    payload={TodayExpense}
+                    shopDetail={false}
+                  />
+                  <TodayInfoComp
+                    title={"Total Profit"}
+                    payload={
+                      Number(TotalSale) -
+                      Number(TotalPurchase) -
+                      Number(TodayExpense)
+                    }
+                    shopDetail={false}
+                  />
+                </div>
+              )}
             </StyledTodayInfoBody>
           </StyledTodayInfoInner>
         </StyledTodayInfo>

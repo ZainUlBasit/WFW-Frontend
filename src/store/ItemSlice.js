@@ -29,7 +29,7 @@ export const fetchItems = createAsyncThunk(
 );
 
 const ItemSlice = createSlice({
-  name: "item",
+  name: "saledetails",
   initialState: {
     loading: false,
     data: [],

@@ -21,6 +21,13 @@ import { fetchExpenses } from "../../../store/ExpenseSlice";
 import expenseServices from "../../../Services/expense.services";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../../utils/TaostMessages";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import { CreateReport } from "../../../Https";
 
 const ModalAddExpense = (props) => {
   const style = {
@@ -36,7 +43,10 @@ const ModalAddExpense = (props) => {
     p: 4,
   };
 
-  const [Expense, setExpense] = useState(0);
+  const [Expense, setExpense] = useState("");
+  const [CurrentDate, setCurrentDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [Desc, setDesc] = useState("");
   const dispatch = useDispatch();
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
@@ -44,17 +54,24 @@ const ModalAddExpense = (props) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (Expense === 0 && Desc === "") {
-      alert("Enter data and try again...");
+      showWarningToast("Required fields are undefined!");
     } else {
-      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
-      const expInfo = {
-        date: timestamp,
-        desc: Desc,
-        expense: Expense,
-        shop: uData.userdata.fullName,
-      };
-      await expenseServices.addExpense(expInfo);
-      props.setAddExpenseModal(false);
+      try {
+        const response = await CreateReport({
+          date: CurrentDate,
+          desc: Desc,
+          expense: Expense,
+          branch: uData.branch_number,
+        });
+        if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+        else {
+          showSuccessToast(response.data?.data?.msg);
+          props.setAddExpenseModal(false);
+          // setCategoryModal(false);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -85,6 +102,22 @@ const ModalAddExpense = (props) => {
           {/* Form Portion */}
           <div className="flex-col justify-center items-center">
             <form className="flex flex-col items-center justify-center w-[100%]">
+              {/* Date */}
+              <InputWrapper>
+                <div className="bg-[#5A4AE3] flex py-[2px] rounded-[5px]">
+                  <StyledLabel>
+                    <DateRangeIcon className="LabelIcon" />
+                  </StyledLabel>
+                  <StyledInput
+                    id="date"
+                    type="date"
+                    name="date"
+                    value={CurrentDate}
+                    onChange={(e) => setCurrentDate(e.target.value)}
+                    placeholder="Date..."
+                  />
+                </div>
+              </InputWrapper>
               {/* Purchase Rate */}
               <InputWrapper>
                 <div className="bg-[#5A4AE3] flex py-[2px] rounded-[5px]">

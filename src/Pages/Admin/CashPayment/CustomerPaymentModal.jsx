@@ -31,6 +31,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import cashpaymentServices from "../../../Services/cashpayment.services";
 import customerServices from "../../../Services/customer.services";
+import AuthInputPopOver from "../../../Components/Input/CustomPopover";
 
 const PaymentModal = ({ title, open, setOpen, data }) => {
   const style = {
@@ -50,10 +51,15 @@ const PaymentModal = ({ title, open, setOpen, data }) => {
   const [Current, setCurrent] = useState("");
 
   const [customer, setCustomer] = useState("");
+  const [CustomerName, setCustomerName] = useState("");
   const [cash, setCash] = useState("");
   const [accountNo, setAccountNo] = useState("");
   const [Cdate, setCdate] = useState(new Date());
   const [description, setDescription] = useState("");
+  const [Depositor, setDepositor] = useState("");
+  const [PaymentType, setPaymentType] = useState("");
+  const [BankName, setBankName] = useState("");
+  const [CurrentDate, setCurrentDate] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -84,6 +90,20 @@ const PaymentModal = ({ title, open, setOpen, data }) => {
       setOpen(false);
     }
   };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const PopoverOpen = Boolean(anchorEl);
+  const id = PopoverOpen ? "simple-popover" : undefined;
+
+  const [SearchText, setSearchText] = useState("");
+
   return (
     <Modal
       open={open}
@@ -111,98 +131,101 @@ const PaymentModal = ({ title, open, setOpen, data }) => {
           {/* Form Portion */}
           <div className="flex-col justify-center items-center">
             <form className="flex flex-col items-center justify-center w-[100%]">
-              {/* Company name or customer name */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <PersonIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledSelect
-                    value={customer}
-                    onChange={(e) => setCustomer(e.target.value)}
-                  >
-                    <option value="none">
-                      {title == "Customer Payment"
-                        ? "Select Customer"
-                        : "Select Company"}
-                    </option>
-                    {data.map((cust, i) => (
-                      <option key={i} value={cust._id}>
-                        {cust.name}
-                      </option>
-                    ))}
-                  </StyledSelect>
-                  {/* <StyledInput
-                    id="name"
-                    type="text"
-                    name="name"
-                    placeholder="Enter Name..."
-                  /> */}
-                </div>
-              </InputWrapper>
-              {/* Company cash Payment or customer cash Payment */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <AddCardIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    id="paymentCash"
-                    type="number"
-                    name="paymentCash"
-                    placeholder="Enter Payment Cash..."
-                    value={cash}
-                    onChange={(e) => setCash(e.target.value)}
-                  />
-                </div>
-              </InputWrapper>
-              {/* Company account number or customer account number */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <AccountBalanceIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    id="name"
-                    type="number"
-                    name="name"
-                    placeholder="Enter Account #..."
-                    value={accountNo}
-                    onChange={(e) => setAccountNo(e.target.value)}
-                  />
-                </div>
-              </InputWrapper>
-              {/* payment date */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <CalendarMonthIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    id="date"
-                    type="date"
-                    name="date"
-                    value={Cdate}
-                    onChange={setCdate}
-                  />
-                </div>
-              </InputWrapper>
-              {/* Company or Customer Description */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <DescriptionIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    id="name"
-                    type="text"
-                    name="name"
-                    placeholder="Enter Description..."
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-              </InputWrapper>
+              <div className="w-[297]">
+                <AuthInputPopOver
+                  // label="Select Customer...!"
+                  placeholder={
+                    props.title === "CUSTOMER LEDGER"
+                      ? "Select Customer..."
+                      : "Select Company..."
+                  }
+                  required={true}
+                  Value={CustomerName}
+                  onClick={handleClick}
+                />
+              </div>
+
+              <Popover
+                id={id}
+                open={PopoverOpen}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                PaperProps={{
+                  sx: {
+                    borderRadius: "25px", // Add rounded corners
+                    backgroundColor: "white", // Set background color to white
+                    width: "60%", // Set the width as needed
+                    overflow: "hidden", // Hide overflowing content
+                    // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Add box-shadow
+                    boxShadow:
+                      "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(0, 0, 0, 0.08) 0px 1px 0px inset",
+                    //   marginTop: "6px",
+                  },
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <Typography
+                  sx={{
+                    p: 2,
+                    borderColor: "#5a4ae3",
+                    backgroundColor: "#5a4ae3",
+                    width: "100%",
+                    overflow: "hidden",
+                    borderRadius: "25px",
+                  }}
+                >
+                  <div className="bg-[#5a4ae3] text-white w-full font-[Quicksand]  flex flex-col justify-center items-center rounded-[50px]">
+                    <div className="w-full flex flex-col justify-between gap-y-3 items-start">
+                      <div className="flex w-full">
+                        <input
+                          type="text"
+                          className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                          placeholder="Search...."
+                          value={SearchText}
+                          onChange={(e) => setSearchText(e.target.value)}
+                        />
+                      </div>
+                      {data
+                        .filter((cust) => {
+                          const searchTextLower = SearchText.toLowerCase();
+                          const custLower = cust.name.toLowerCase();
+                          return searchTextLower !== ""
+                            ? custLower.includes(searchTextLower)
+                            : true;
+                        })
+                        .map((Comp, i) => {
+                          return (
+                            <div
+                              className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                              onClick={() => {
+                                handleClose();
+                                props.setSelectCompany({
+                                  name: Comp._id,
+                                  _name: Comp.name,
+                                  found: true,
+                                });
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                className="mr-1 appearance-none h-5 w-5 border border-gray-300 checked:bg-white rounded-full"
+                                checked={Comp._id === props.SelectCompany.name}
+                              />
+                              <span>{Comp.name}</span>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                </Typography>
+              </Popover>
 
               <Button variant="contained" onClick={onSubmit}>
                 Add Payment

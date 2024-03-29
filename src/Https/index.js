@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: API_BASE_URL_LOCAL,
+  baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
@@ -72,14 +72,20 @@ export const GetAllSaleReturn = () => api.get("/sale-return/all");
 export const GetBranchSaleReturn = (data) => api.get("/sale-return/branch");
 export const DeleteSaleReturn = (data) => api.delete("/sale-return/delete");
 export const UpdateSaleReturn = (data) => api.patch("/sale-return/update");
-// Report Requests
-export const CreateReport = (data) => api.post("/report/create");
-export const GetAllReport = () => api.get("/report/all");
-export const GetBranchReport = (data) => api.get("/report/branch");
+// Report Requests // expenses
+export const CreateReport = (data) => api.post("/report/create", data);
+export const GetAllReport = () => api.post("/report/all", data);
+export const GetBranchReport = (data) => api.post("/report/branch", data);
 export const DeleteReport = (data) => api.delete("/report/delete");
 export const UpdateReport = (data) => api.patch("/report/update");
+// Sale Details
+export const GetBranchSaleDetail = (data) =>
+  api.post("/report/sale-detail-branch", data);
+export const GetAllSaleDetail = (data) =>
+  api.post("/report/sale-detail-all", data);
+
 // Add Payment
-export const CreatePayment = (data) => api.post("/payment/create");
+export const CreatePayment = (data) => api.post("/payment/create", data);
 export const GetAllPayment = () => api.get("/payment/all");
 export const GetBranchPayment = (data) => api.get("/payment/branch");
 export const DeletePayment = (data) => api.delete("/payment/delete");

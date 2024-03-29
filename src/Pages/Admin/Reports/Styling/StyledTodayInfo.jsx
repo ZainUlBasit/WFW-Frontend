@@ -1,17 +1,19 @@
 import styled from "styled-components";
 
 export const StyledTodayInfo = styled.div.attrs({
-  className: "w-[100%] flex items-center justify-center mt-[15px]",
+  className: "w-[100%] flex items-center justify-center mt-[15px] mb-5",
 })``;
 
 export const StyledTodayInfoInner = styled.div.attrs({
-  className: "bg-white h-[90%] w-[80%] mobRes:w-[100%]",
+  className:
+    "bg-white h-[90%] w-[80%] mobRes:w-[100%] rounded-[15px] overflow-hidden",
 })`
   & {
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
+    box-shadow: 0px 0px 1px 5px #5a4ae3;
+    // box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
     border-radius: 15px;
-    border-width: 0px 0px 8px 0px;
-    border-color: #5a4ae3 #5a4ae3 #5a4ae3 #5a4ae3;
+    border-width: 2px 2px 8px 2px;
+    border-color: #5a4ae3;
     overflow: hidden;
     @media screen and (max-width: 460px) {
     }
@@ -20,7 +22,7 @@ export const StyledTodayInfoInner = styled.div.attrs({
 
 export const StyledTodayInfoHeader = styled.div.attrs({
   className:
-    "bg-[#5a4ae3] text-white w-[100%] h-[12vh] font-[raleway] font-[800] text-[1.3rem] flex items-center pl-[15px] border-b-[2px] border-b-[black] overflow-hidden",
+    "bg-[#5a4ae3] text-white w-[100%] font-[raleway] font-[800] text-[1.3rem] flex items-center pl-[15px] border-b-[2px] border-b-[black] overflow-hidden py-[20px]",
 })`
   & {
     @media screen and (max-width: 551px) {

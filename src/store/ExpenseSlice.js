@@ -3,36 +3,34 @@ import { useSelector } from "react-redux";
 import expenseServices from "../Services/expense.services";
 import { logRoles } from "@testing-library/react";
 import moment from "moment";
+import { GetAllReport, GetBranchReport } from "../Https";
+import { showErrorToast } from "../utils/TaostMessages";
 
 export const fetchExpenses = createAsyncThunk(
   "fetchExpenses",
-  async ({ shop, toDate, fromDate }) => {
-    let data = await expenseServices.getExpenses();
-    data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-    console.log(data);
-    data = data.filter((dt) => {
-      if (shop === "Admin") return dt;
-      else return dt.shop === shop;
-    });
-    data = data.sort((a, b) => {
-      const date1 = new Date(a.date.seconds * 1000);
-      const date2 = new Date(b.date.seconds * 1000);
-      return date1 - date2;
-    });
-    data = data.filter(
-      (dt) =>
-        new Date(dt.date.seconds * 1000) >= new Date(fromDate) &&
-        new Date(dt.date.seconds * 1000) <= new Date(toDate)
-    );
-    console.log(data);
-    data = data.map((dt) => {
-      return {
-        ...dt,
-        date: moment(dt.date.seconds * 1000).format("DD/MM/YYYY"),
-      };
-    });
-    console.log(data);
-    return data;
+  async (CurrentData) => {
+    try {
+      let response;
+      if (CurrentData.user.role === 1) {
+        response = await GetAllReport({ toDate: toDate, fromDate: fromDate });
+      } else if (CurrentData.user.role === 2) {
+        response = await GetBranchReport({
+          branch: CurrentData.user.branch_number,
+          toDate: CurrentData.toDate,
+          fromDate: CurrentData.fromDate,
+        });
+        console.log(response);
+      }
+      if (!response.data?.success) {
+        showErrorToast(response.data.error.msg);
+      } else if (response.data?.success) {
+        return response.data.data.payload;
+      }
+    } catch (err) {
+      console.log(err);
+      showErrorToast(err.response.data.error.msg);
+    }
+    return [];
   }
 );
 
@@ -54,6 +52,7 @@ const ExpenseSlice = createSlice({
       state.isError = false;
     });
     builder.addCase(fetchExpenses.rejected, (state, action) => {
+      console.log(action);
       console.log("Error", action.payload);
       state.isError = true;
     });

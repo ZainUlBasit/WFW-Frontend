@@ -25,9 +25,12 @@ export default function TableComp({
   Value,
   setValue,
   placeholder,
+  isLedger,
 }) {
+  console.log(rows);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [SearchText, setSearchText] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -50,6 +53,18 @@ export default function TableComp({
     <LoadingError />
   ) : (
     <TableWrapper isAct={isActive_} width="80px">
+      {!isLedger && (
+        <BannerHeader padding="20px 0px">
+          <input
+            type="text"
+            className=" py-3 px-2 w-[95%] outline-none rounded-lg text-[#5a4ae3]"
+            placeholder="Search..."
+            value={SearchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </BannerHeader>
+      )}
+
       <BannerHeader padding="20px 0px">{title.toUpperCase()}</BannerHeader>
       {/* Search Bar */}
       <div className="flex">
@@ -85,9 +100,16 @@ export default function TableComp({
             <TableBody>
               {rows.length &&
                 rows
+                  .filter((data) => {
+                    const lowercaseSearch = SearchText.toLowerCase();
+                    const lowerCaseName = data?.name.toLowerCase();
+
+                    return lowercaseSearch !== ""
+                      ? lowerCaseName.includes(lowercaseSearch)
+                      : true;
+                  })
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    console.log(row);
                     return (
                       <TableRow
                         hover
@@ -98,13 +120,14 @@ export default function TableComp({
                       >
                         {columns.map((column) => {
                           let value;
-                          if (title === "Item Ledger Detail") {
-                            if (column.id === "date")
-                              value = new Date(
-                                row[0][column.id] * 1000
-                              ).toLocaleDateString();
-                            else value = row[0][column.id];
-                          } else if (
+                          // if (title === "Item Ledger Detail") {
+                          //   if (column.id === "date")
+                          //     value = new Date(
+                          //       row[0][column.id] * 1000
+                          //     ).toLocaleDateString();
+                          //   else value = row[0][column.id];
+                          // } else
+                          if (
                             "companyId" === column.id ||
                             "categoryId" === column.id ||
                             "subcategoryId" === column.id ||

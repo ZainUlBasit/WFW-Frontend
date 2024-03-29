@@ -51,9 +51,15 @@ function App() {
   const userData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
   // Methods
   useEffect(() => {
-    dispatch(RefreshAuthSlice());
+    if (token) {
+      dispatch(SetAuth(user));
+    } else {
+      dispatch(SetAuthNotFound());
+    }
   }, []);
   return loading ? (
     <div className="h-[100vh] w-full flex justify-center items-center">

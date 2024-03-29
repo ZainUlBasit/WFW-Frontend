@@ -64,7 +64,7 @@ export default function SimpleTableComp({ rows, type }) {
         {type === "customer" ? (
           <TableBody>
             {rows.map((row) => (
-              <StyledTableRow key={row.fullname}>
+              <StyledTableRow key={row._id}>
                 <StyledTableCell component="th" scope="row" style={stylesRows}>
                   {row.name}
                 </StyledTableCell>
@@ -83,7 +83,7 @@ export default function SimpleTableComp({ rows, type }) {
         ) : (
           <TableBody>
             {rows.map((row) => (
-              <StyledTableRow key={row.fullname}>
+              <StyledTableRow key={row._id}>
                 <StyledTableCell component="th" scope="row" style={stylesRows}>
                   {row.name}
                 </StyledTableCell>

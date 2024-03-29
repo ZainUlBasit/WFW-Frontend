@@ -18,9 +18,7 @@ const ExpenseReport = ({ toDate, fromDate }) => {
   const isError = useSelector((state) => state.ExpenseSliceReducer.isError);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(
-      fetchExpenses({ shop: uData.userdata.fullName, toDate, fromDate })
-    );
+    dispatch(fetchExpenses({ user: uData, toDate, fromDate }));
   }, [toDate, fromDate]);
   return (
     <>

@@ -23,7 +23,7 @@ const CompanyPayment = () => {
   const dispatch = useDispatch();
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   useEffect(() => {
-    dispatch(fetchCompanies());
+    dispatch(fetchCompanies(uData));
   }, []);
   return (
     <>
@@ -35,10 +35,7 @@ const CompanyPayment = () => {
         <PaymentComponent
           title={"Company Payment"}
           setOpen={setOpenModal}
-          data={company.filter((comp) => {
-            if (uData.userdata.fullName == "Admin") return comp;
-            else return comp.shop == uData.userdata.fullName;
-          })}
+          data={company}
           type="company"
         />
       )}

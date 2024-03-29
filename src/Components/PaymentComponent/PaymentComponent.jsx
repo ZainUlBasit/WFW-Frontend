@@ -5,7 +5,7 @@ const PaymentComponent = ({ title, data, setOpen, type }) => {
   return (
     <>
       <div className="w-full flex justify-center items-center">
-        <div className="bg-[#5a4ae3] w-[90%] rounded-tl-[10px] rounded-tr-[10px] overflow-hidden">
+        <div className="bg-[#5a4ae3] w-[90%] rounded-tl-[10px] rounded-tr-[10px] overflow-hidden shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] border-[2px] border-[#5a4ae3]e">
           <div className="text-white text-[1.5rem] font-bold text-center py-[10px] border-b-[2px] border-b-white">
             {title.toUpperCase()}
           </div>
@@ -22,7 +22,7 @@ const PaymentComponent = ({ title, data, setOpen, type }) => {
                 Add New Payment
               </button>
             </div>
-            <div className="PaymentsDetail border-b-[2px] border-b-white">
+            <div className="PaymentsDetail border-[2px]  border-b-white">
               <SimpleTableComp rows={data} type={type} />
             </div>
           </div>

@@ -28,7 +28,7 @@ const CustomerPayment = () => {
   // const isError = useSelector((state) => state.CompanySliceReducer.isError);
   useEffect(() => {
     // const shop = uData.userdata.name;
-    dispatch(fetchCustomers({ shop: uData.userdata.fullName }));
+    dispatch(fetchCustomers(uData));
   }, []);
   return (
     <>

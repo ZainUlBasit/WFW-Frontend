@@ -15,6 +15,7 @@ import BranchReducer from "./BranchSlice";
 import TriGetSlice from "./TriGetSlice";
 import StockReducer from "./StockSlice";
 import TransactionSlice from "./TransactionSlice";
+import SaleDetailSlice from "./SaleDetailSlice";
 
 export const store = configureStore({
   reducer: {
@@ -34,5 +35,6 @@ export const store = configureStore({
     TriGet: TriGetSlice,
     StockState: StockReducer,
     Transactions: TransactionSlice,
+    SalesDetails: SaleDetailSlice,
   },
 });

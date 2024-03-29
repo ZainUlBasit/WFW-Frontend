@@ -49,20 +49,8 @@ const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
           <div className={isItem ? "flex flex-col" : "hidden"}>
             <TableComp
               title="Item Ledger Detail"
-              rows={customerTransaction.data.map((data) => {
-                console.log(data);
-                const itemsData = data.items.map((dt) => {
-                  return {
-                    date: data.date,
-                    invoice_no: data.invoice_no,
-                    name: dt.itemId.name,
-                    qty: dt.qty,
-                    price: dt.price,
-                    amount: dt.amount,
-                  };
-                });
-                return itemsData;
-              })}
+              isLedger={true}
+              rows={customerTransaction.data}
               columns={uData.role === 1 ? AdminColumns : Columns}
               isActive_={isActive_}
               setSelID={setSelID}

@@ -15,18 +15,12 @@ const Logout = () => {
   const dispatch = useDispatch();
 
   const LogoutFunction = async () => {
-    try {
-      const response = await LogoutApi();
-      if (!response.data?.success)
-        return showErrorToast(response.data?.error?.msg);
-      showSuccessToast(response.data?.data?.msg);
-      dispatch(SetAuthNotFound());
-      navigate("/login");
-    } catch (err) {
-      showErrorToast(
-        err.response?.data?.error?.msg || response.data?.error?.msg
-      );
-    }
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    showSuccessToast("Logout successfully!");
+    dispatch(SetAuthNotFound());
+    navigate("/login");
   };
 
   useEffect(() => {

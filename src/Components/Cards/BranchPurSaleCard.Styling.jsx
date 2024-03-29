@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 export const StyledWrapper = styled.div.attrs({
   className:
-    "w-[300px] bg-[#5A4AE3] flex justify-center items-center text-white rounded-[15px] m-[10px]",
+    "w-fit h-fit bg-[#5A4AE3] flex justify-center items-center text-white rounded-[15px] m-[10px] gap-x-5 px-5 pr-1 py-7",
 })`
   & {
-    height: 25vh;
+    height: auto;
     @media screen and (max-width: 480px) {
       height: 20vh;
     }
@@ -14,7 +14,7 @@ export const StyledWrapper = styled.div.attrs({
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 40%;
+    // width: fit-content;
     height: 100%;
     font-weight: 500;
     font-size: 1.8rem;
@@ -27,7 +27,7 @@ export const StyledWrapper = styled.div.attrs({
     flex-direction: column;
     justify-content: space-around;
     align-items: flex-end;
-    width: 55%;
+    // width: 55%;
     padding-right: 35px;
     height: 90%;
   }
@@ -45,6 +45,8 @@ export const StyledWrapper = styled.div.attrs({
     font-size: 1.1rem;
     color: #f3f2efc0;
     text-align: left !important;
+    font-weight: 700;
+    color: white;
   }
 
   .shopSale {
