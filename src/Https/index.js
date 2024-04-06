@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL, API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL_LOCAL,
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
@@ -86,10 +86,10 @@ export const GetAllSaleDetail = (data) =>
 
 // Add Payment
 export const CreatePayment = (data) => api.post("/payment/create", data);
-export const GetAllPayment = () => api.get("/payment/all");
-export const GetBranchPayment = (data) => api.get("/payment/branch");
-export const DeletePayment = (data) => api.delete("/payment/delete");
-export const UpdatePayment = (data) => api.patch("/payment/update");
+export const GetAllPayment = (data) => api.post("/payment/all", data);
+export const GetBranchPayment = (data) => api.post("/payment/branch", data);
+export const DeletePayment = (id) => api.delete("/payment/delete/" + id);
+export const UpdatePayment = (data) => api.patch("/payment/update", data);
 
 // Stock Request
 export const AddStock = (data) => api.post("/stock/add", data);

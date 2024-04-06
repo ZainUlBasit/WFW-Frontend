@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Popover, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import AuthInputPopOver from "./PopoverInput";
+import AuthInputPopOver from "../Input/CustomPopover";
+import { BsSearch } from "react-icons/bs";
 
 const CustomerPoperOver = ({
   Label,
@@ -14,6 +15,8 @@ const CustomerPoperOver = ({
 }) => {
   console.log(Values);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [SearchPopOver, setSearchPopOver] = useState("");
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -26,6 +29,12 @@ const CustomerPoperOver = ({
 
   return (
     <>
+      {/* <AuthInputPopOver
+        label={Label}
+        placeholder={Placeholder}
+        Value={ValueName === "" ? Placeholder : ValueName}
+        onClick={(data) => handleClick(data)}
+      /> */}
       <AuthInputPopOver
         label={Label}
         placeholder={Placeholder}
@@ -42,7 +51,9 @@ const CustomerPoperOver = ({
             borderRadius: "25px", // Add rounded corners
             backgroundColor: "white", // Set background color to white
             width: "300px", // Set the width as needed
-            overflow: "hidden", // Hide overflowing content
+            maxHeight: "50vh", // Set maximum height to 70vh
+            overflowY: "auto", // Make it scrollable vertically
+            // overflow: "hidden", // Hide overflowing content
             //   marginTop: "6px",
           },
         }}
@@ -67,7 +78,24 @@ const CustomerPoperOver = ({
         >
           <div className="bg-[#465462] text-white font-[Quicksand]  flex flex-col justify-center items-center rounded-[50px]">
             <div className="w-full flex flex-col justify-between gap-y-3 items-start">
-              {Values?.map((val) => {
+              <div className="flex border-[1px] w-[260px] border-black items-center gap-x-2 px-3 py-[6px] rounded-full overflow-hidden bg-white">
+                <BsSearch className="text-black" />
+                <input
+                  className="outline-none w-full text-black"
+                  placeholder="Search name"
+                  value={SearchPopOver}
+                  onChange={(e) => setSearchPopOver(e.target.value)}
+                />
+              </div>
+              {Values?.filter((dt) => {
+                const lowerCaseSearch = SearchPopOver.toLowerCase();
+                const lowerCaseStation = dt.name.toLowerCase();
+                if (SearchPopOver !== "") {
+                  return lowerCaseStation.includes(lowerCaseSearch);
+                } else {
+                  return dt;
+                }
+              }).map((val) => {
                 return (
                   <div
                     className="flex gap-x-3 items-center cursor-pointer"
@@ -80,7 +108,7 @@ const CustomerPoperOver = ({
                     <input
                       type="checkbox"
                       className="mr-1 appearance-none h-5 w-5 border border-gray-300 checked:bg-white rounded-full"
-                      checked={ValueId === val._id}
+                      checked={ValueName === val.name}
                     />
                     <span>{val.name}</span>
                   </div>
