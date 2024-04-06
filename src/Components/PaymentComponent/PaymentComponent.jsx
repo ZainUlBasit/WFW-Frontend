@@ -17,7 +17,8 @@ const PaymentComponent = ({ title, data, setOpen, type }) => {
               </div>
               <button
                 onClick={() => setOpen(true)}
-                className="Button bg-white text-[1rem] font-[700] text-[#5a4ae3] px-[10px] py-[5px] rounded-[5px] hover:bg-[#5a4ae3] hover:text-white border-white border-[2px] transition-all duration-700"
+                className="Button bg-white text-[1rem] font-[700] text-[#5a4ae3] px-[10px] py-[5px] rounded-[5px] hover:bg-[#5a4ae3] hover:text-white border-white border-[2px] transition-all duration-700 hidden"
+                disabled
               >
                 Add New Payment
               </button>
