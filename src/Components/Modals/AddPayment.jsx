@@ -115,8 +115,17 @@ const AddPayment = ({ open, setOpen }) => {
           formData.append("bank_name", BankName);
           formData.append("bank_number", AccountNo);
         }
-        const response = await CreatePayment(formData);
-        console.log(response);
+        try {
+          const response = await CreatePayment(formData);
+          if (response.data.success) {
+            showSuccessToast(response.data.data.msg);
+            setOpen(false);
+          } else {
+            showErrorToast(response.data.error.msg);
+          }
+        } catch (err) {
+          console.log(err);
+        }
       }
     } else {
       showErrorToast("Required fields are undefined!");

@@ -16,6 +16,7 @@ import TriGetSlice from "./TriGetSlice";
 import StockReducer from "./StockSlice";
 import TransactionSlice from "./TransactionSlice";
 import SaleDetailSlice from "./SaleDetailSlice";
+import PaymentSlice from "./PaymentSlice";
 
 export const store = configureStore({
   reducer: {
@@ -36,5 +37,6 @@ export const store = configureStore({
     StockState: StockReducer,
     Transactions: TransactionSlice,
     SalesDetails: SaleDetailSlice,
+    PaymentState: PaymentSlice,
   },
 });

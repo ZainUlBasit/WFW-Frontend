@@ -4,7 +4,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 const AuthInputPopOver = ({ label, placeholder, required, Value, onClick }) => {
   return (
     <div
-      className="relative w-[297px] font-[Quicksand] cursor-pointer bg-white rounded-lg"
+      className="relative w-[90%] font-[Quicksand] cursor-pointer bg-white rounded-lg"
       onClick={onClick}
     >
       <p className="absolute top-[-11px] left-3 w-fit bg-white font-[Raleway] text-[15px] font-bold">

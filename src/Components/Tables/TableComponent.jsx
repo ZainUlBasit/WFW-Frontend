@@ -101,8 +101,8 @@ export default function TableComp({
               {rows.length &&
                 rows
                   .filter((data) => {
-                    const lowercaseSearch = SearchText.toLowerCase();
-                    const lowerCaseName = data?.name.toLowerCase();
+                    const lowercaseSearch = SearchText?.toLowerCase();
+                    const lowerCaseName = data?.name?.toLowerCase();
 
                     return lowercaseSearch !== ""
                       ? lowerCaseName.includes(lowercaseSearch)

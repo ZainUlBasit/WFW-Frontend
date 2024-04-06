@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AdminColumns,
   Columns,
@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import moment from "moment";
 import DataLoader from "../../../Components/Loader/DataLoader";
 import cashpaymentServices from "../../../Services/cashpayment.services";
+import { fetchPayments } from "../../../store/PaymentSlice";
 
 const CashLedger = ({ isCash, SelectedCompany, toDate, fromDate }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -17,42 +18,37 @@ const CashLedger = ({ isCash, SelectedCompany, toDate, fromDate }) => {
   const [Rows, setRows] = useState([]);
   const [Loading, setLoading] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
-
+  const PaymentState = useSelector((state) => state.PaymentState);
+  const dispatch = useDispatch();
   useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      let data = await cashpaymentServices.getPayments();
-      data = data.docs.map((doc) => ({ ...doc.data(), _id: doc.id }));
-      data = data.filter(
-        (dt) =>
-          dt.user_id === SelectedCompany.name &&
-          dt.shop === uData.userdata.fullName &&
-          new Date(dt.date.seconds * 1000) >= new Date(fromDate) &&
-          new Date(dt.date.seconds * 1000) <= new Date(toDate)
-      );
-      data = data.map((ite) => {
-        return {
-          ...ite,
-          date: moment(ite.date.seconds * 1000).format("DD/MM/YYYY"),
-        };
-      });
-      setRows(data);
-      setLoading(false);
-    };
-    getData();
+    dispatch(
+      fetchPayments({
+        branch_number: uData.branch_number,
+        user_Id: SelectedCompany.name,
+        startDate: fromDate,
+        endDate: toDate,
+        role: uData.role,
+      })
+    );
   }, [SelectedCompany, fromDate, toDate]);
 
-  return Loading ? (
+  return PaymentState.loading ? (
     <DataLoader />
   ) : (
     <div className={isCash ? "flex flex-col" : "hidden"}>
       <TableComp
         title="Cash Ledger Detail"
-        rows={Rows}
-        columns={uData.userdata.name === "Admin" ? AdminColumns : Columns}
+        rows={PaymentState.data.map((dt) => {
+          return {
+            ...dt,
+            payment_type: dt.payment_type === 1 ? "Cash" : "Bank",
+          };
+        })}
+        columns={uData.role === 1 ? AdminColumns : Columns}
         isActive_={isActive_}
         setSelID={setSelID}
         LedgerDetail={true}
+        isLedger={true}
       />
     </div>
   );
