@@ -92,6 +92,10 @@ const ModalItemReturn = ({
     setOpen(false);
   }
 
+  // useEffect(() => {
+  //   dispatch(fetchItems(uData));
+  // }, []);
+
   return Data.loading ? (
     <DataLoader />
   ) : Data.isError ? (
