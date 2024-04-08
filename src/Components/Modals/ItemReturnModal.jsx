@@ -31,8 +31,15 @@ import { Warning } from "postcss";
 import PopOver from "../Popover/PopOver";
 import AuthInput from "../Input/SimpleInput";
 
-const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
-  const Data = useSelector((state) => state.ItemSliceReducer.data);
+const ModalItemReturn = ({
+  setOpen,
+  open,
+  NewItems,
+  setNewItems,
+  title,
+  Data,
+}) => {
+  // const Data = useSelector((state) => state.ItemSliceReducer.data);
   const loading = useSelector((state) => state.ItemSliceReducer.loading);
   const isError = useSelector((state) => state.ItemSliceReducer.isError);
   const dispatch = useDispatch();
@@ -89,9 +96,9 @@ const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
     dispatch(fetchItems(uData));
   }, []);
 
-  return loading ? (
+  return Data.loading ? (
     <DataLoader />
-  ) : isError ? (
+  ) : Data.isError ? (
     <ConnectionLost />
   ) : Data ? (
     <Modal
@@ -133,7 +140,7 @@ const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
                 Placeholder={"Select Item..."}
                 Value={SelectedItemData}
                 setValue={setSelectedItemData}
-                Values={Data}
+                Values={Data?.data}
                 ShowName={"code"}
               />
 

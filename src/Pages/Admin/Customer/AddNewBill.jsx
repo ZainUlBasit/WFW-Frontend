@@ -25,6 +25,7 @@ import {
   showWarningToast,
 } from "../../../utils/TaostMessages";
 import { CreateTransaction } from "../../../Https";
+import { fetchItems } from "../../../store/ItemSlice";
 
 const AddNewBill = () => {
   // ======================================
@@ -222,6 +223,12 @@ const AddNewBill = () => {
     }
   }, [SelectCustomer]);
 
+  const ItemsData = useSelector((state) => state.ItemSliceReducer);
+
+  useEffect(() => {
+    dispatch(fetchItems(uData));
+  }, []);
+
   return (
     <div className="transition-all">
       <Navbar />
@@ -247,6 +254,7 @@ const AddNewBill = () => {
               ReturnItem={ReturnItem}
               NewItems={NewItems}
               title={"Add New Item"}
+              Data={ItemsData}
             />
           ) : null}
 
