@@ -19,7 +19,7 @@ import customerReturnsServices from "../../../Services/customerReturns.services"
 const CustomerLedger = () => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
   const [fromDate, onChange] = useState(new Date());
-  const [toDate, onChange1] = useState(new Date());
+  const [toDate, onChange1] = useState(moment(new Date()).format("YYYY-MM-DD"));
   const [open, setOpen] = useState(false);
   const [isCash, setIsCash] = useState(false);
   const [isItem, setIsItem] = useState(false);
@@ -38,6 +38,13 @@ const CustomerLedger = () => {
   useEffect(() => {
     dispatch(fetchCustomers(uData));
   }, []);
+
+  useEffect(() => {
+    if (SelectCustomer.found) {
+      const currentDate = customer.find((dt) => dt._id === dt._id).date;
+      onChange(moment(new Date(currentDate * 1000)).format("YYYY-MM-DD"));
+    }
+  }, [SelectCustomer]);
 
   // useEffect(() => {
   //   const getData = async () => {

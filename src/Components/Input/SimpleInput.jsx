@@ -14,7 +14,7 @@ const AuthInput = ({
   disabled,
 }) => {
   return (
-    <div className="relative w-[297px] maxInputWidth font-[Raleway]">
+    <div className="relative w-[90%] maxInputWidth font-[Raleway]">
       <p className="absolute top-[-11px] left-3 w-fit bg-white h-[13px] text-[15px] font-bold InputLabel">
         {label}
       </p>

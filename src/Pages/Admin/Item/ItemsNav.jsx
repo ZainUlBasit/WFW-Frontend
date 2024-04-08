@@ -35,6 +35,7 @@ const ItemsNav = ({
             <span className="btnText">Items Info</span>
           </Link>
         </ButtonComp>
+
         {userData.role === 2 ? (
           <>
             <ButtonComp width="180px" onClick={() => setOpen(true)}>

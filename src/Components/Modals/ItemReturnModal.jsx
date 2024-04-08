@@ -28,6 +28,8 @@ import ConnectionLost from "../Error/ConnectionLost";
 import { toast } from "react-toastify";
 import { showWarningToast } from "../../utils/TaostMessages";
 import { Warning } from "postcss";
+import PopOver from "../Popover/PopOver";
+import AuthInput from "../Input/SimpleInput";
 
 const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
   const Data = useSelector((state) => state.ItemSliceReducer.data);
@@ -37,13 +39,14 @@ const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
   const [Qty, setQty] = useState("");
   const [curItemId, setCurItemId] = useState("");
   const [ItemSelect, setItemSelect] = useState(false);
+  const [SelectedItemData, setSelectedItemData] = useState({});
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const style = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 380,
+    minWidth: 380,
     bgcolor: "background.paper",
     border: "3px solid #5A4AE3",
     borderRadius: "10px",
@@ -52,31 +55,30 @@ const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
   };
 
   function AddItem() {
-    if (curItemId === "" || Qty === "") {
+    if (SelectedItemData?._id === "" || Qty === "") {
       showWarningToast("Required fields are undefined!");
       return;
     }
     const existingItemIndex = NewItems.findIndex(
-      (item) => item.itemId === curItemId
+      (item) => item.itemId === SelectedItemData?._id
     );
     if (existingItemIndex !== -1) {
       // Item already exists, update quantity and amount
       const updatedItems = [...NewItems];
       updatedItems[existingItemIndex].qty += Number(Qty);
       updatedItems[existingItemIndex].amount +=
-        Number(Qty) * Number(Data.find((dt) => dt._id === curItemId).sale);
+        Number(Qty) * Number(SelectedItemData?.sale);
       setNewItems(updatedItems);
     } else {
       setNewItems([
         ...NewItems,
         {
-          itemId: curItemId,
-          name: Data.find((dt) => dt._id === curItemId).name,
+          itemId: SelectedItemData?._id,
+          name: SelectedItemData?.name,
           qty: Number(Qty),
-          purchase: Number(Data.find((dt) => dt._id === curItemId).purchase),
-          price: Number(Data.find((dt) => dt._id === curItemId).sale),
-          amount:
-            Number(Data.find((dt) => dt._id === curItemId).sale) * Number(Qty),
+          purchase: Number(SelectedItemData?.purchase),
+          price: Number(SelectedItemData?.sale),
+          amount: Number(SelectedItemData?.sale) * Number(Qty),
         },
       ]);
     }
@@ -125,132 +127,72 @@ const ModalItemReturn = ({ setOpen, open, NewItems, setNewItems, title }) => {
         >
           {/* Form Portion */}
           <div className="flex-col justify-center items-center">
-            <form className="flex flex-col items-center justify-center w-[100%]">
-              {/* Item Code */}
-              <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <IntegrationInstructionsIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledSelect
-                    onChange={(e) => {
-                      if (e.target.value !== "none") {
-                        setCurItemId(e.target.value);
-                        setItemSelect(true);
-                      } else {
-                        setItemSelect(false);
-                      }
-                    }}
-                    // defaultValue={curItemCode}
-                    // defaultValue={"Select item"}
-                  >
-                    <option disabled value="none" selected>
-                      Select item code
-                    </option>
-                    {Data.map((val, i) => {
-                      return (
-                        <option value={val._id} key={val._id}>
-                          {val.code}
-                        </option>
-                      );
-                    })}
-                  </StyledSelect>
-                </div>
-              </InputWrapper>
-              {ItemSelect ? (
-                <div>
-                  {/* Item Name */}
-                  <InputWrapper>
-                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                      <StyledLabel>
-                        <DriveFileRenameOutlineIcon className="LabelIcon" />
-                      </StyledLabel>
-                      <StyledInput
-                        value={
-                          Data.find((dt) => dt._id === curItemId).name
-                            ? Data.find((dt) => dt._id === curItemId).name
-                            : ""
-                        }
-                        onChange={() => {}}
-                        id="itemName"
-                        type="text"
-                        name="itemName"
-                        placeholder="Item Name"
-                      />
-                    </div>
-                  </InputWrapper>
-                  {/* Quanitity */}
-                  <InputWrapper>
-                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                      <StyledLabel>
-                        <ShoppingCartIcon className="LabelIcon" />
-                      </StyledLabel>
-                      <StyledInput
-                        id="itemQuantity"
-                        type="number"
-                        name="itemQuantity"
-                        value={Qty}
-                        onChange={(e) => {
-                          if (curItemId !== "") {
-                            const maxQty = Data.find(
-                              (dt) => dt._id === curItemId
-                            ).qty;
+            <form className="flex flex-col items-center justify-center w-[100%] gap-y-5 py-5 pb-8">
+              <PopOver
+                Label={"Item Code"}
+                Placeholder={"Select Item..."}
+                Value={SelectedItemData}
+                setValue={setSelectedItemData}
+                Values={Data}
+                ShowName={"code"}
+              />
 
-                            if (e.target.value > maxQty) {
-                              showWarningToast(
-                                "Qty must be less than equal to " + maxQty
-                              );
-                              setQty("");
-                            } else setQty(e.target.value);
-                          }
-                        }}
-                        placeholder="Item Quantity"
-                      />
-                    </div>
-                  </InputWrapper>
-                  {/* Unit Price */}
-                  <InputWrapper>
-                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                      <StyledLabel>
-                        <PaymentsIcon className="LabelIcon" />
-                      </StyledLabel>
-                      <StyledInput
-                        id="itemPrice"
-                        type="number"
-                        name="itemPrice"
-                        value={
-                          Data.find((dt) => dt._id === curItemId).sale
-                            ? Data.find((dt) => dt._id === curItemId).sale
-                            : ""
-                        }
-                        onChange={(e) => setPrice(e.target.value)}
-                        placeholder="Item Unit Price"
-                      />
-                    </div>
-                  </InputWrapper>
-                  {/* Total Amount */}
-                  <InputWrapper>
-                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                      <StyledLabel>
-                        <BallotIcon className="LabelIcon" />
-                      </StyledLabel>
-                      <StyledInput
-                        id="itemAmount"
-                        type="number"
-                        name="itemAmount"
-                        value={
-                          Data.find((dt) => dt._id === curItemId).sale &&
-                          Qty !== ""
-                            ? Data.find((dt) => dt._id === curItemId).sale * Qty
-                            : ""
-                        }
-                        onChange={() => console.log("Value Changed...")}
-                        placeholder="Item Total Amount"
-                      />
-                    </div>
-                  </InputWrapper>
-                </div>
-              ) : null}
+              {SelectedItemData?.name && (
+                <>
+                  {/* Item name */}
+                  <AuthInput
+                    id="item-name"
+                    Type="text"
+                    label="Item Name"
+                    placeholder="Enter Item Name..."
+                    required={true}
+                    Value={SelectedItemData?.name || "Select Item Name..."}
+                    setValue={setSelectedItemData}
+                    readonly={true}
+                    disabled={true}
+                  />
+                  {/* item qty */}
+                  <AuthInput
+                    id="item-qty"
+                    Type="number"
+                    label="Quantity"
+                    placeholder="Enter Quantity..."
+                    required={true}
+                    Value={Qty || "Enter Quantity..."}
+                    setValue={setQty}
+                    readonly={false}
+                    disabled={false}
+                  />
+                  {/* item sale */}
+                  <AuthInput
+                    id="item-sale"
+                    Type="number"
+                    label="Sale"
+                    placeholder="Enter Sale..."
+                    required={true}
+                    Value={SelectedItemData?.sale || ""}
+                    setValue={setSelectedItemData}
+                    readonly={true}
+                    disabled={true}
+                  />
+                  {/* item amount */}
+                  <AuthInput
+                    id="item-amount"
+                    Type="number"
+                    label="Amount"
+                    placeholder="Enter Amount..."
+                    required={true}
+                    Value={
+                      SelectedItemData?.sale && Qty !== ""
+                        ? SelectedItemData?.sale * Qty
+                        : ""
+                    }
+                    setValue={setSelectedItemData}
+                    readonly={true}
+                    disabled={true}
+                  />
+                </>
+              )}
             </form>
             <div className="flex items-center flex-col">
               <StyledButton primary onClick={AddItem}>

@@ -27,7 +27,7 @@ const CustomerNav = () => {
               type={"modal"}
               link={"/"}
               BIcon={NewspaperIcon}
-              width={"160px"}
+              width={"170px"}
               setOpen={setOpen}
             />
             <AdminNavButton
@@ -35,7 +35,7 @@ const CustomerNav = () => {
               type={"link"}
               link={"/add-new-bill"}
               BIcon={NewspaperIcon}
-              width={"160px"}
+              width={"170px"}
             />
           </>
         ) : (
@@ -46,7 +46,14 @@ const CustomerNav = () => {
           type={"link"}
           link={"/customer_info"}
           BIcon={DnsIcon}
-          width={"160px"}
+          width={"170px"}
+        />
+        <AdminNavButton
+          title={"Item Summary"}
+          type={"link"}
+          link={"/item-summary"}
+          BIcon={DnsIcon}
+          width={"170px"}
         />
 
         <AdminNavButton
@@ -54,7 +61,7 @@ const CustomerNav = () => {
           type={"link"}
           link={"/customer_kata"}
           BIcon={CategoryIcon}
-          width={"160px"}
+          width={"170px"}
         />
 
         {data.role === 2 ? (
@@ -64,7 +71,7 @@ const CustomerNav = () => {
               type={"link"}
               link={"/customer_return"}
               BIcon={PlaylistAddIcon}
-              width={"160px"}
+              width={"170px"}
             />
 
             {/* <AdminNavButton
@@ -72,7 +79,7 @@ const CustomerNav = () => {
               type={"link"}
               link={"/customer_invoices"}
               BIcon={BookmarkAddIcon}
-              width={"160px"}
+              width={"170px"}
             /> */}
           </>
         ) : (
@@ -84,7 +91,7 @@ const CustomerNav = () => {
           type={"link"}
           link={"/customer_ledger"}
           BIcon={RequestQuoteIcon}
-          width={"160px"}
+          width={"170px"}
         />
       </div>
       {Open && <AddCustomerModal open={Open} setOpen={setOpen} />}

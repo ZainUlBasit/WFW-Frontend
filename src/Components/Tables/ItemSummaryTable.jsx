@@ -14,19 +14,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import LoadingError from "../Loader/LoadingError";
 import Search from "../Search/Search";
 
-export default function TableComp({
-  rows,
-  columns,
-  title,
-  isActive_,
-  setSelID,
-  setEditItemModal,
-  setEditCompanyModal,
-  Value,
-  setValue,
-  placeholder,
-  isLedger,
-}) {
+export default function ItemSummaryTable({ rows, columns, isActive_ }) {
   console.log(rows);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -41,35 +29,12 @@ export default function TableComp({
     setPage(0);
   };
 
-  const HandleDoubleClick = (e) => {
-    if (e.detail === 2) {
-      setSelID(e.target.id);
-      // console.log(e.target.name);
-      if (title === "ITEM INFO") setEditItemModal(true);
-      if (title === "COMPANIES INFO") setEditCompanyModal(true);
-    }
-  };
+  const HandleDoubleClick = (e) => {};
   return rows.length == 0 ? (
     <LoadingError />
   ) : (
     <TableWrapper isAct={isActive_} width="80px">
-      {!isLedger && (
-        <BannerHeader padding="20px 0px">
-          <input
-            type="text"
-            className=" py-3 px-2 w-[95%] outline-none rounded-lg text-[#5a4ae3]"
-            placeholder="Search..."
-            value={SearchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </BannerHeader>
-      )}
-
-      <BannerHeader padding="20px 0px">{title.toUpperCase()}</BannerHeader>
-      {/* Search Bar */}
-      <div className="flex">
-        <Search Value={Value} setValue={setValue} Placeholder={placeholder} />
-      </div>
+      <BannerHeader padding="20px 0px">Item Summary</BannerHeader>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer
           className="border-[2px] border-[#5A4AE3] border-t-white"
