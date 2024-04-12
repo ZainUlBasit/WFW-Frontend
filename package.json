@@ -33,6 +33,8 @@
     "easyinvoice": "^3.0.23",
     "firebase": "^10.4.0",
     "fs": "^0.0.1-security",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "jspdf-invoice-template": "^1.4.3",
     "lottie-react": "^2.4.0",
     "luxon": "^3.4.3",

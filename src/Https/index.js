@@ -66,6 +66,7 @@ export const UpdateSale = (data) => api.patch("/sale/update");
 export const CreateTransaction = (data) =>
   api.post("/transaction/create", data);
 export const GetTransactions = (data) => api.post("/transaction/all", data);
+export const GetItemSummary = (data) => api.post("/transaction/summary", data);
 // Add Sales Return
 export const CreateSaleReturn = (data) => api.post("/sale-return/create", data);
 export const GetAllSaleReturn = () => api.get("/sale-return/all");

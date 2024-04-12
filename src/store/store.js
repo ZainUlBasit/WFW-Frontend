@@ -17,6 +17,7 @@ import StockReducer from "./StockSlice";
 import TransactionSlice from "./TransactionSlice";
 import SaleDetailSlice from "./SaleDetailSlice";
 import PaymentSlice from "./PaymentSlice";
+import ItemSummarySlice from "./ItemSummarySlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,5 +39,6 @@ export const store = configureStore({
     Transactions: TransactionSlice,
     SalesDetails: SaleDetailSlice,
     PaymentState: PaymentSlice,
+    ItemSummaryState: ItemSummarySlice,
   },
 });
