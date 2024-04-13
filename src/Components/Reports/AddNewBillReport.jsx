@@ -189,7 +189,7 @@ function AddNewBillReport(props) {
             marginVertical: 30,
           }}
         >
-          <Image src={WFW_Banner} style={styles.image} />
+          <Image src={"./icd.png"} style={styles.image} />
           <View>
             <Text
               style={{
