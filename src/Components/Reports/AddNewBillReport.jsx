@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     height: window.innerHeight,
   },
   image: {
-    width: "150px",
-    height: "120px",
+    width: "100%",
+    height: "150px",
     margin: 5,
   },
   header1: {
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     paddingLeft: "5px",
     fontSize: "12px",
     paddingTop: "3px",
+    textAlign: "center",
   },
   header3: {
     width: "100px",
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: "12px",
     paddingTop: "3px",
     paddingLeft: "5px",
+    textAlign: "center",
   },
   header4: {
     width: "99px",
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
     fontSize: "12px",
     paddingTop: "3px",
     paddingLeft: "5px",
+    textAlign: "center",
   },
   cell1: {
     fontFamily: "CustomFont",
@@ -186,11 +189,11 @@ function AddNewBillReport(props) {
             justifyContent: "space-between",
             alignItems: "center",
             width: "100%",
-            marginVertical: 30,
+            marginVertical: 20,
           }}
         >
           <Image src={"./icd.png"} style={styles.image} />
-          <View>
+          {/* <View>
             <Text
               style={{
                 fontFamily: "CustomFont",
@@ -221,19 +224,12 @@ function AddNewBillReport(props) {
                 {`Swat, KPK,\nPakistan`}
               </Text>
             </View>
-          </View>
+          </View> */}
         </View>
         {/* ************************************** */}
         {/* Bottom Line */}
         {/* ************************************** */}
-        <View
-          style={{
-            width: "100%",
-            height: "2px",
-            backgroundColor: "#032248",
-            marginTop: "10px",
-          }}
-        ></View>
+
         {/* ************************************** */}
         {/* Bill Detail */}
         {/* ************************************** */}
