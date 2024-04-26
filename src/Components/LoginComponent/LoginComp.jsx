@@ -43,7 +43,6 @@ const LoginComp = () => {
         });
       } else {
         response = await LoginApi({ email, password });
-
         if (!response.data?.success) {
           toast.error(response.data.error.msg, {
             position: "top-right",

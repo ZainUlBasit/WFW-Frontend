@@ -41,7 +41,9 @@ const CustomerLedger = () => {
 
   useEffect(() => {
     if (SelectCustomer.found) {
-      const currentDate = customer.find((dt) => dt._id === dt._id).date;
+      const currentDate = customer.find(
+        (dt) => dt._id === SelectCustomer.name
+      ).date;
       onChange(moment(new Date(currentDate * 1000)).format("YYYY-MM-DD"));
     }
   }, [SelectCustomer]);
