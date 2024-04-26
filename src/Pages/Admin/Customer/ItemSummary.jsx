@@ -7,11 +7,12 @@ import { fetchCustomers } from "../../../store/CustomerSlice";
 import TableComp from "../../../Components/Tables/TableComponent";
 import ItemSummaryTable from "../../../Components/Tables/ItemSummaryTable";
 import { Columns } from "../../../DemoData/ItemSummaryColumns";
-import { fetchItemSummary } from "../../../store/ItemSummarySlice";
+import { ClearData, fetchItemSummary } from "../../../store/ItemSummarySlice";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AddNewBillReport from "../../../Components/Reports/AddNewBillReport";
 import ItemSummaryReport from "../../../Components/Reports/ItemSummaryReport";
 import moment from "moment";
+import DataLoader from "../../../Components/Loader/DataLoader";
 
 const ItemSummary = () => {
   const [open, setOpen] = useState(false);
@@ -30,6 +31,7 @@ const ItemSummary = () => {
 
   useEffect(() => {
     if (UserId !== "") dispatch(fetchItemSummary({ customerId: UserId }));
+    else dispatch(ClearData());
   }, [UserId]);
 
   const totalAmount = useMemo(() => {
@@ -56,45 +58,52 @@ const ItemSummary = () => {
             />
           </div>
         </div>
-        <div>
-          <ItemSummaryTable
-            rows={ItemSummaryData.loading ? [{}] : ItemSummaryData.data}
-            columns={Columns}
-            isActive_={false}
-          />
-        </div>
-        <div className="flex justify-center items-center">
-          <PDFDownloadLink
-            document={
-              <ItemSummaryReport
-                Data={ItemSummaryData.data}
-                date={moment(new Date()).format("DD/MM/YYYY")}
-                name={
-                  CustomerState.data.find((dt) => dt._id === UserId)?.name ||
-                  "-"
-                }
-                address={
-                  CustomerState.data.find((dt) => dt._id === UserId)?.address ||
-                  "not specified"
-                }
-                total={totalAmount}
+        {ItemSummaryData.data.length !== 0 &&
+        ItemSummaryData.loading === false ? (
+          <>
+            <div>
+              <ItemSummaryTable
+                rows={ItemSummaryData.loading ? [{}] : ItemSummaryData.data}
+                columns={Columns}
+                isActive_={false}
               />
-            }
-            fileName={`${
-              CustomerState.data.find((dt) => dt._id === UserId)?.name ||
-              "ItemSummary"
-            }`}
-          >
-            <button
-              className="text-white bg-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:rounded-2xl hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem] text-3xl"
-              onClick={(e) => {
-                resetStates();
-              }}
-            >
-              Download Bill
-            </button>
-          </PDFDownloadLink>
-        </div>
+            </div>
+            <div className="flex justify-center items-center">
+              <PDFDownloadLink
+                document={
+                  <ItemSummaryReport
+                    Data={ItemSummaryData.data}
+                    date={moment(new Date()).format("DD/MM/YYYY")}
+                    name={
+                      CustomerState.data.find((dt) => dt._id === UserId)
+                        ?.name || "-"
+                    }
+                    address={
+                      CustomerState.data.find((dt) => dt._id === UserId)
+                        ?.address || "not specified"
+                    }
+                    total={totalAmount}
+                  />
+                }
+                fileName={`${
+                  CustomerState.data.find((dt) => dt._id === UserId)?.name ||
+                  "ItemSummary"
+                }`}
+              >
+                <button
+                  className="text-white bg-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:rounded-2xl hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem] text-3xl"
+                  onClick={(e) => {
+                    resetStates();
+                  }}
+                >
+                  Download Summary
+                </button>
+              </PDFDownloadLink>
+            </div>
+          </>
+        ) : (
+          <DataLoader />
+        )}
       </div>
     </>
   );

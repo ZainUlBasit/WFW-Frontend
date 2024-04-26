@@ -41,6 +41,11 @@ const ItemSummarySlice = createSlice({
       };
       state.data = tempArray;
     },
+    ClearData: (state, action) => {
+      state.loading = false;
+      state.data = [];
+      state.isError = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchItemSummary.pending, (state, action) => {
@@ -65,6 +70,6 @@ const ItemSummarySlice = createSlice({
   },
 });
 
-export const { ChangePrice } = ItemSummarySlice.actions;
+export const { ChangePrice, ClearData } = ItemSummarySlice.actions;
 
 export default ItemSummarySlice.reducer;
