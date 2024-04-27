@@ -157,6 +157,14 @@ const CustomerLedger = () => {
                 </div>
                 <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
+                    Discount:
+                  </div>
+                  <div className="w-[190px]">
+                    {getCurrentTotal().discount}/-
+                  </div>
+                </div>
+                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                  <div className="w-[170px] flex justify-end mr-[4px]">
                     Paid:
                   </div>
                   <div className="w-[190px]">{getCurrentTotal().paid}/-</div>
