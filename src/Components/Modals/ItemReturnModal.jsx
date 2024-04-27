@@ -39,7 +39,6 @@ const ModalItemReturn = ({
   title,
   Data,
 }) => {
-  // const Data = useSelector((state) => state.ItemSliceReducer.data);
   const loading = useSelector((state) => state.ItemSliceReducer.loading);
   const isError = useSelector((state) => state.ItemSliceReducer.isError);
   const dispatch = useDispatch();
@@ -92,6 +91,7 @@ const ModalItemReturn = ({
     setOpen(false);
   }
 
+  // const Data = useSelector((state) => state.ItemSliceReducer.data);
   // useEffect(() => {
   //   dispatch(fetchItems(uData));
   // }, []);

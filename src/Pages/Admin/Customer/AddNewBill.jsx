@@ -245,6 +245,8 @@ const AddNewBill = () => {
             Select={SelectCustomer}
             setOpen={setOpen}
             data={customers}
+            NewItems={NewItems}
+            setNewItems={setNewItems}
           />
           {open ? (
             <ModalItemReturn
@@ -261,7 +263,12 @@ const AddNewBill = () => {
           {lenghtOfList && SelectCustomer.found ? (
             <div className="Wrapper w-full flex justify-center border-t-[2px] border-t-white">
               <div className="w-[90%]">
-                <LedgerTable setTotal={setTotal} rows={NewItems} />
+                <LedgerTable
+                  setTotal={setTotal}
+                  rows={NewItems}
+                  setRows={setNewItems}
+                  Bill={true}
+                />
               </div>
             </div>
           ) : null}
