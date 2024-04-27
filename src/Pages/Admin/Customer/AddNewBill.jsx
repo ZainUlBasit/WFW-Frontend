@@ -46,7 +46,9 @@ const AddNewBill = () => {
   const [CustomerID, setCustomerID] = useState("");
   const [CustomerName, setCustomerName] = useState("");
   const [CustomerAddress, setCustomerAddress] = useState("");
-  const [curDate, setCurDate] = useState("");
+  const [curDate, setCurDate] = useState(
+    new Date().toISOString().substr(0, 10)
+  );
   // =========================================
   // Redux Toolkit
   // =========================================
@@ -173,6 +175,7 @@ const AddNewBill = () => {
       else {
         setCurrentBillNo(response.data.data.payload.invoice_no);
         showSuccessToast(response.data?.data?.msg);
+        resetStates();
         setUploaded(true);
       }
     } catch (err) {
@@ -277,40 +280,39 @@ const AddNewBill = () => {
             <div className="wrapper w-[100%] flex justify-center items-center">
               <div className="py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
                 <div className="h-full flex flex-col gap-y-2 justify-center items-center ml-[15px]">
-                  {!Uploaded && (
+                  <button
+                    className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                    onClick={onSubmit}
+                  >
+                    Add Bill
+                  </button>
+                  <PDFDownloadLink
+                    document={
+                      <AddNewBillReport
+                        Data={NewItems}
+                        cTotal={Total.toFixed(2)}
+                        cDiscount={discount}
+                        cGrand={(Number(Total) - Number(discount)).toFixed(2)}
+                        bBillNo={CurrentBillNo}
+                        bDate={curDate}
+                        cName={CustomerName}
+                        cAddress={CustomerAddress}
+                      />
+                    }
+                    fileName={`${CustomerName}`}
+                  >
                     <button
                       className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                      onClick={onSubmit}
-                    >
-                      Add Bill
-                    </button>
-                  )}
-                  {Uploaded && (
-                    <PDFDownloadLink
-                      document={
-                        <AddNewBillReport
-                          Data={NewItems}
-                          cTotal={Total.toFixed(2)}
-                          cDiscount={discount}
-                          cGrand={(Number(Total) - Number(discount)).toFixed(2)}
-                          bBillNo={CurrentBillNo}
-                          bDate={curDate}
-                          cName={CustomerName}
-                          cAddress={CustomerAddress}
-                        />
-                      }
-                      fileName={`${CustomerName}`}
-                    >
-                      <button
-                        className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                        onClick={(e) => {
+                      onClick={(e) => {
+                        setTimeout(() => {
                           resetStates();
-                        }}
-                      >
-                        Print Bill
-                      </button>
-                    </PDFDownloadLink>
-                  )}
+                          onSubmit(e);
+                        }, 4000);
+                      }}
+                    >
+                      Add & Print
+                    </button>
+                  </PDFDownloadLink>
                 </div>
                 <div className="w-[210px] justify-end flex flex-col items-center">
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
