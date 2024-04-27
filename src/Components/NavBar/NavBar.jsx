@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isOpenModal } from "../../store/CPSlice";
 import CPModal from "../Modals/CPModal";
 import { signOut } from "firebase/auth";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 const Navbar = () => {
   const isOpModal = useSelector((state) => state.CPSliceReducer.OpenModal);
@@ -69,25 +70,34 @@ const Navbar = () => {
         </div>
         {/* Right side */}
         <div className="rightSide">
-          <div className="mainBox  overflow-hidden">
-            <img
-              className="w-[50px] h-[50px] select-none"
-              src={data.imageUrl}
-              alt="not found"
+          {data.role === 1 ? (
+            <div className="mainBox  overflow-hidden">
+              <img
+                className="w-[50px] h-[50px] select-none"
+                src={data.imageUrl}
+                alt="not found"
+              />
+              <button
+                className="btnDown"
+                onClick={() => setIsDropActive((isDropActive) => !isDropActive)}
+                ref={dropDownRef}
+                id="DropDownBtn"
+              >
+                {isDropActive ? (
+                  <KeyboardArrowUpIcon />
+                ) : (
+                  <KeyboardArrowDownIcon />
+                )}
+              </button>
+            </div>
+          ) : (
+            <ExitToAppIcon
+              onClick={() => {
+                navigate("/logout");
+              }}
+              className="!text-4xl cursor-pointer text-[#5a4ae3] hover:text-[red] transition-all ease-in-out duration-500"
             />
-            <button
-              className="btnDown"
-              onClick={() => setIsDropActive((isDropActive) => !isDropActive)}
-              ref={dropDownRef}
-              id="DropDownBtn"
-            >
-              {isDropActive ? (
-                <KeyboardArrowUpIcon />
-              ) : (
-                <KeyboardArrowDownIcon />
-              )}
-            </button>
-          </div>
+          )}
         </div>
         {isDropActive && (
           <div className="DropDownList">
