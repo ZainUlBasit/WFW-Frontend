@@ -207,7 +207,7 @@ const AddNewBill = () => {
       setCustomerID("");
       setCustomerName("");
       setCustomerAddress("");
-      setCurDate("");
+      setCurDate(new Date().toISOString().substr(0, 10));
       setCurrentBillNo("");
       setAllBillNo([]);
       setDefaultBillNo(0);
