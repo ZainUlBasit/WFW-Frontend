@@ -62,6 +62,7 @@ const AddCustomerModal = ({ setOpen, open }) => {
 
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
+  const [Type, setType] = useState("");
   const [Password, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
   const [Cnic, setCnic] = useState("");
@@ -84,6 +85,8 @@ const AddCustomerModal = ({ setOpen, open }) => {
       branch: uData.branch_number,
       page: PageNumber,
       ref: ref,
+      type: Type,
+      password: Password,
     };
     try {
       const response = await CreateCustomer(formData);
@@ -203,8 +206,6 @@ const AddCustomerModal = ({ setOpen, open }) => {
                       />
                     </div>
                   </InputWrapper>
-                </div>
-                <div>
                   {/* Address */}
                   <InputWrapper>
                     <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
@@ -221,6 +222,40 @@ const AddCustomerModal = ({ setOpen, open }) => {
                       />
                     </div>
                   </InputWrapper>
+                </div>
+                <div>
+                  {/* Password */}
+                  <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <LockIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={Password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                      />
+                    </div>
+                  </InputWrapper>
+                  {/* Confirm Password */}
+                  {/* <InputWrapper>
+                    <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                      <StyledLabel>
+                        <SyncLockIcon className="LabelIcon" />
+                      </StyledLabel>
+                      <StyledInput
+                        value={ConfirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        id="confirmpassword"
+                        type="password"
+                        name="confirmpassword"
+                        placeholder="Confirm Password"
+                      />
+                    </div>
+                  </InputWrapper> */}
                   {/* Page Number */}
                   <InputWrapper>
                     <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
@@ -254,64 +289,31 @@ const AddCustomerModal = ({ setOpen, open }) => {
                     </div>
                   </InputWrapper>
                   {/* Select Shop */}
-                  {/* <InputWrapper>
+                  <InputWrapper>
                     <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
                       <StyledLabel>
                         <StoreIcon className="LabelIcon" />
                       </StyledLabel>
                       <StyledSelect
                         onChange={(e) => {
-                          setShop(e.target.value);
+                          setType(e.target.value);
                         }}
                       >
                         <option disabled value="none" selected>
-                          Select Shop
+                          Select Customer Type
                         </option>
-                        {Branches.map((val, i) => {
+                        {["Customer", "Shop", "Whole-Saler"].map((val, i) => {
                           return (
-                            <option value={val.branch_number} key={i}>
-                              {val.name}
+                            <option value={i + 1} key={i + 1}>
+                              {val}
                             </option>
                           );
                         })}
                       </StyledSelect>
                     </div>
-                  </InputWrapper> */}
+                  </InputWrapper>
                 </div>
               </div>
-
-              {/* Password */}
-              {/* <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <LockIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={Password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="password"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                  />
-                </div>
-              </InputWrapper> */}
-              {/* Confirm Password */}
-              {/* <InputWrapper>
-                <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
-                  <StyledLabel>
-                    <SyncLockIcon className="LabelIcon" />
-                  </StyledLabel>
-                  <StyledInput
-                    value={ConfirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    id="confirmpassword"
-                    type="password"
-                    name="confirmpassword"
-                    placeholder="Confirm Password"
-                  />
-                </div>
-              </InputWrapper> */}
             </form>
 
             <div className="flex items-center flex-col font-[raleway]">
