@@ -37,7 +37,7 @@ export const CreateCategory = (data) => api.post("/category/create", data);
 export const GetAllCategory = () => api.get("/category/all");
 export const GetBranchCategory = (data) =>
   api.get("/category/branch/" + data.branch);
-export const DeleteCategory = (data) => api.delete("/category/delete", data);
+export const DeleteCategory = (data) => api.delete("/category/delete/" + data);
 export const UpdateCategory = (data) => api.patch("/category/update", data);
 // Sub Category Request
 export const CreateSubCategory = (data) =>

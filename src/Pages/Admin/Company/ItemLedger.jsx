@@ -18,6 +18,7 @@ const ItemLedger = ({ isItem, SelectedCompany, toDate, fromDate }) => {
   useEffect(() => {
     dispatch(
       fetchStocks({
+        companyId: SelectedCompany?.name,
         ...uData,
         fromDate: Math.floor(new Date(fromDate) / 1000),
         toDate: Math.floor(new Date(toDate) / 1000),

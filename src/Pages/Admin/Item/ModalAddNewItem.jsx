@@ -52,6 +52,7 @@ const ModalAddNewItem = ({ setOpen, open }) => {
   const [ItemUnit, setItemUnit] = useState("");
   const [ItemPurchase, setItemPurchase] = useState("");
   const [ItemSale, setItemSale] = useState("");
+  const [ItemSaleShop, setItemSaleShop] = useState("");
   // redux code
   // const companies = useSelector((state) => state.CompanySliceReducer.data);
   // const categories = useSelector((state) => state.CategorySliceReducer.data);
@@ -107,6 +108,7 @@ const ModalAddNewItem = ({ setOpen, open }) => {
       unit: ItemUnit,
       purchase: ItemPurchase,
       sale: ItemSale,
+      sale_shop: ItemSaleShop,
       qty: 0,
       branch: uData.branch_number,
     };
@@ -223,12 +225,28 @@ const ModalAddNewItem = ({ setOpen, open }) => {
                           <PaymentsIcon className="LabelIcon" />
                         </StyledLabel>
                         <StyledInput
-                          id="itemPurchase"
+                          id="itemSale"
                           type="number"
-                          name="itemPurchase"
+                          name="itemSale"
                           value={ItemSale}
                           onChange={(e) => setItemSale(e.target.value)}
                           placeholder="Item Sale Rate"
+                        />
+                      </div>
+                    </InputWrapper>
+                    {/* Shop Sale Rate */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemUnit">
+                          <PaymentsIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledInput
+                          id="itemSaleShop"
+                          type="number"
+                          name="itemSaleShop"
+                          value={ItemSaleShop}
+                          onChange={(e) => setItemSaleShop(e.target.value)}
+                          placeholder="Item Shop Sale Rate"
                         />
                       </div>
                     </InputWrapper>

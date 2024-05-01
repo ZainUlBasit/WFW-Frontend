@@ -9,7 +9,14 @@ export const fetchTransactions = createAsyncThunk(
       const response = await GetTransactions({ ...CurrentData });
       if (!response.data?.success) {
         showErrorToast(response.data?.error?.msg);
-      } else return response.data?.data?.payload;
+      } else {
+        const payload = response.data?.data?.payload || [];
+        const sortedPayload = payload.sort((a, b) => {
+          // Assuming date field is in ISO 8601 format
+          return b.date - a.date;
+        });
+        return sortedPayload;
+      }
     } catch (err) {
       showErrorToast(err.response?.data?.error?.msg);
       return [];

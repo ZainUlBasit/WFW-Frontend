@@ -22,7 +22,7 @@ import categoryServices from "../../../Services/category.services";
 import companyServices from "../../../Services/company.services";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
 import { fetchCompanies } from "../../../store/CompanySlice";
-import { UpdateCategory } from "../../../Https";
+import { DeleteCategory, UpdateCategory } from "../../../Https";
 import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
 
 const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
@@ -88,11 +88,13 @@ const ModalEditCategory = ({ EditCategoryModal, setEditCategoryModal }) => {
   const onDelete = async (e) => {
     setProccessLoading(true);
     e.preventDefault();
-    let id = Categories.filter((c) => c.categoryname === CategoryName);
-    id = id[0]._id;
-    if (CategoryName !== "") {
+    // let id = Categories.filter((c) => c._id === CategoryName);
+    // id = id[0]._id;
+    alert(CategoryId);
+    if (CategoryId !== "") {
       try {
-        await categoryServices.deleteCategory(id);
+        const response = await DeleteCategory(CategoryId);
+        console.log(response);
         toast.success("Category Successfully Deleted...", {
           position: "top-right",
           autoClose: 5000,

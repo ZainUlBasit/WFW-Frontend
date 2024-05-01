@@ -14,6 +14,7 @@ export const fetchStocks = createAsyncThunk(
   async (CurrentUser) => {
     console.log(CurrentUser);
     const reqBody = {
+      companyId: CurrentUser.companyId,
       branch: CurrentUser.branch_number,
       startDate: CurrentUser.fromDate,
       endDate: CurrentUser.toDate,
