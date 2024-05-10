@@ -90,6 +90,7 @@ export default function TableComp({
                       fontWeight: "bold",
                       fontSize: "1.1rem",
                       fontFamily: "'Raleway', sans-serif",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {column.label}
@@ -116,7 +117,7 @@ export default function TableComp({
                         role="checkbox"
                         tabIndex={-1}
                         key={index}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: "pointer", whiteSpace: "nowrap" }}
                       >
                         {columns.map((column) => {
                           let value;

@@ -24,7 +24,7 @@ import {
   showSuccessToast,
   showWarningToast,
 } from "../../../utils/TaostMessages";
-import { CreateTransaction } from "../../../Https";
+import { CreatePayment, CreateTransaction } from "../../../Https";
 import { fetchItems } from "../../../store/ItemSlice";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
 
@@ -36,8 +36,10 @@ const AddNewBill = () => {
   const [ReturnItem, setReturnItem] = useState({});
   const [Total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [Payment, setPayment] = useState("");
   const [open, setOpen] = useState(false);
   const [SelectCustomer, setSelectCustomer] = useState({
+    _name: "",
     name: "",
     found: false,
   });
@@ -166,6 +168,25 @@ const AddNewBill = () => {
   // ============================================
   const addToDatabase = async () => {
     try {
+      if (Payment !== "" || Payment !== 0) {
+        const formData = new FormData();
+        formData.append("user_type", 2);
+        formData.append("user_Id", SelectCustomer.name);
+        formData.append("user_name", SelectCustomer._name);
+        formData.append("depositor", SelectCustomer._name);
+        formData.append("payment_type", 1);
+        formData.append("amount", Number(Payment));
+        formData.append("date", curDate);
+        formData.append("desc", "Bill Payment");
+        formData.append("branch", uData.branch_number);
+        const responseCash = await CreatePayment(formData);
+        if (responseCash.data.success) {
+          showSuccessToast(responseCash.data.data.msg);
+          setOpen(false);
+        } else {
+          showErrorToast(responseCash.data.error.msg);
+        }
+      }
       const response = await CreateTransaction({
         customerId: SelectCustomer.name,
         date: curDate,
@@ -379,6 +400,20 @@ const AddNewBill = () => {
                       id="discountAmount"
                       value={discount}
                       onChange={(e) => setDiscount(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex mt-1 mr-[10px] text-[1.1rem]">
+                    <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
+                      Payment:
+                    </div>
+                    <input
+                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
+                      type="number"
+                      name="paymentAmount"
+                      id="paymentAmount"
+                      placeholder="Payment"
+                      value={Payment}
+                      onChange={(e) => setPayment(e.target.value)}
                     />
                   </div>
                   <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[raleway] font-[700]">

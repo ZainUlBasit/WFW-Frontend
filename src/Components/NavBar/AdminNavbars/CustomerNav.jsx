@@ -74,13 +74,13 @@ const CustomerNav = () => {
               width={"170px"}
             />
 
-            {/* <AdminNavButton
+            <AdminNavButton
               title={"Invoice Edit"}
               type={"link"}
               link={"/customer_invoices"}
               BIcon={BookmarkAddIcon}
               width={"170px"}
-            /> */}
+            />
           </>
         ) : (
           <></>

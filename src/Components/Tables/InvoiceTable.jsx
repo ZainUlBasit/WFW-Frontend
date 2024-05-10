@@ -72,7 +72,7 @@ export default function InvoiceTable({ rows }) {
           {rows.map((row) => (
             <StyledTableRow key={row._id}>
               <StyledTableCell style={stylesRows}>
-                {moment(row.date).format("DD/MM/YYYY")}
+                {moment(row.date * 1000).format("DD/MM/YYYY")}
               </StyledTableCell>
               <StyledTableCell align="left" style={stylesRows}>
                 {row.name}
@@ -81,10 +81,10 @@ export default function InvoiceTable({ rows }) {
                 {row.qty}
               </StyledTableCell>
               <StyledTableCell align="right" style={stylesRows}>
-                {row.unitprice}
+                {row.price}
               </StyledTableCell>
               <StyledTableCell align="right" style={stylesRows}>
-                {row.total}
+                {row.amount}
               </StyledTableCell>
             </StyledTableRow>
           ))}

@@ -52,6 +52,7 @@ const ModalEditItem = ({ setOpen, open, state }) => {
   const [ItemUnit, setItemUnit] = useState("");
   const [ItemPurchase, setItemPurchase] = useState(0);
   const [ItemSale, setItemSale] = useState(0);
+  const [ItemSaleShop, setItemSaleShop] = useState("");
   const [ProccessLoading, setProccessLoading] = useState(false);
   const companies = useSelector((state) => state.CompanySliceReducer.data);
   const CompanyLoader = useSelector(
@@ -90,6 +91,7 @@ const ModalEditItem = ({ setOpen, open, state }) => {
     setItemUnit(state.unit);
     setItemPurchase(state.purchase);
     setItemSale(state.sale);
+    setItemSaleShop(state?.sale_shop || 0);
   };
 
   const onUpdate = async (e) => {
@@ -114,6 +116,7 @@ const ModalEditItem = ({ setOpen, open, state }) => {
       unit: ItemUnit,
       purchase: ItemPurchase,
       sale: ItemSale,
+      sale_shop: ItemSaleShop,
     };
     if (
       !(ItemCode === "") &&
@@ -123,7 +126,8 @@ const ModalEditItem = ({ setOpen, open, state }) => {
       !(ItemSubCategoryId === "") &&
       !(ItemUnit === "") &&
       !(ItemPurchase === 0) &&
-      !(ItemSale === 0)
+      !(ItemSale === 0) &&
+      !(ItemSaleShop === 0)
     ) {
       try {
         const response = await UpdateItem({ itemId: ItemId, payload: payload });
@@ -286,6 +290,22 @@ const ModalEditItem = ({ setOpen, open, state }) => {
                           value={ItemSale}
                           onChange={(e) => setItemSale(e.target.value)}
                           placeholder="Sell Price"
+                        />
+                      </div>
+                    </InputWrapper>
+                    {/* Shop Sale Rate */}
+                    <InputWrapper>
+                      <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                        <StyledLabel for="itemUnit">
+                          <PaymentsIcon className="LabelIcon" />
+                        </StyledLabel>
+                        <StyledInput
+                          id="itemSaleShop"
+                          type="number"
+                          name="itemSaleShop"
+                          value={ItemSaleShop}
+                          onChange={(e) => setItemSaleShop(e.target.value)}
+                          placeholder="Item Shop Sale Rate"
                         />
                       </div>
                     </InputWrapper>

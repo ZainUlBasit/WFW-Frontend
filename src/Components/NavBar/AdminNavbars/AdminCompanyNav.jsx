@@ -22,7 +22,7 @@ const AdminCompanyNav = ({ setOpen }) => {
             type={"modal"}
             link={"/"}
             BIcon={DomainAddIcon}
-            width={"165px"}
+            width={"175px"}
             setOpen={setOpen}
           />
         ) : (
@@ -33,21 +33,21 @@ const AdminCompanyNav = ({ setOpen }) => {
           type={"link"}
           link={"/companies_kata"}
           BIcon={MenuBookIcon}
-          width={"165px"}
+          width={"175px"}
         />
         <AdminNavButton
           title={"Companies Info"}
           type={"link"}
           link={"/companies_info"}
           BIcon={InfoIcon}
-          width={"165px"}
+          width={"175px"}
         />
         <AdminNavButton
           title={"Ledger"}
           type={"link"}
           link={"/company_ledger"}
           BIcon={RequestQuoteIcon}
-          width={"165px"}
+          width={"175px"}
         />
       </div>
     </NavComp>

@@ -389,7 +389,19 @@ function ItemSummaryReport(props) {
             >
               <View style={styles.accountGrandWrraper}>
                 <View style={styles.accountInfoCard}>
-                  <Text style={styles.accountInfoTitle}>Grand Total: </Text>
+                  <Text style={styles.accountInfoTitle}>Total Qty: </Text>
+                  <Text style={styles.accountInfo}>{props.qty} /-</Text>
+                </View>
+              </View>
+              <View style={styles.accountGrandWrraper}>
+                <View style={styles.accountInfoCard}>
+                  <Text style={styles.accountInfoTitle}>Total Price: </Text>
+                  <Text style={styles.accountInfo}>{props.price} /-</Text>
+                </View>
+              </View>
+              <View style={styles.accountGrandWrraper}>
+                <View style={styles.accountInfoCard}>
+                  <Text style={styles.accountInfoTitle}>Total Amount: </Text>
                   <Text style={styles.accountInfo}>{props.total} /-</Text>
                 </View>
               </View>

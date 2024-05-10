@@ -88,6 +88,7 @@ const AddPayment = ({ open, setOpen }) => {
   }, [UserType]);
 
   const onSubmit = async () => {
+    setLoading(true);
     if (
       UserType !== "" &&
       UserId !== "" &&
@@ -130,6 +131,7 @@ const AddPayment = ({ open, setOpen }) => {
     } else {
       showErrorToast("Required fields are undefined!");
     }
+    setLoading(false);
   };
 
   return (

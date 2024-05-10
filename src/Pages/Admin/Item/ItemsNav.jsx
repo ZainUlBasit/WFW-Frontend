@@ -29,7 +29,7 @@ const ItemsNav = ({
       className={isActive_ ? "isActiveStyling" : "isNotActiveStyling"}
     >
       <div className="flex flex-wrap mb-[5px] mt-[5px] justify-center items-center">
-        <ButtonComp width="180px">
+        <ButtonComp width="190px">
           <Link to="/items" className="BtnLink">
             <LeaderboardIcon className="mr-[5px]" />
             <span className="btnText">Items Info</span>
@@ -38,20 +38,20 @@ const ItemsNav = ({
 
         {userData.role === 2 ? (
           <>
-            <ButtonComp width="180px" onClick={() => setOpen(true)}>
+            <ButtonComp width="190px" onClick={() => setOpen(true)}>
               <div className="btnModal">
                 <NoteAddIcon className="mr-[5px]" />
                 <span className="btnText">Add Item</span>
               </div>
             </ButtonComp>
-            <ButtonComp width="180px" onClick={() => setCategoryModal(true)}>
+            <ButtonComp width="190px" onClick={() => setCategoryModal(true)}>
               <div className="btnModal">
                 <CategoryIcon className="mr-[5px]" />
                 <span className="btnText">Add Category</span>
               </div>
             </ButtonComp>
             <ButtonComp
-              width="180px"
+              width="190px"
               onClick={() => setEditCategoryModal(true)}
             >
               <div className="btnModal">
@@ -59,14 +59,14 @@ const ItemsNav = ({
                 <span className="btnText">Edit Category</span>
               </div>
             </ButtonComp>
-            <ButtonComp width="180px" onClick={() => setSubModal(true)}>
+            <ButtonComp width="190px" onClick={() => setSubModal(true)}>
               <div className="btnModal">
                 <PlaylistAddIcon className="mr-[5px]" />
                 <span className="btnText">Add Sub Category</span>
               </div>
             </ButtonComp>
             <ButtonComp
-              width="180px"
+              width="190px"
               onClick={() => setEditSubCategoryModal(true)}
             >
               <div className="btnModal">
@@ -74,7 +74,7 @@ const ItemsNav = ({
                 <span className="btnText">Edit SubCategory</span>
               </div>
             </ButtonComp>
-            <ButtonComp width="180px" onClick={() => setAddStockModal(true)}>
+            <ButtonComp width="190px" onClick={() => setAddStockModal(true)}>
               <div className="btnModal">
                 <BookmarkAddIcon className="mr-[5px]" />
                 <span className="btnText">Add Stock</span>
@@ -82,7 +82,7 @@ const ItemsNav = ({
             </ButtonComp>
           </>
         ) : null}
-        <ButtonComp width="180px">
+        <ButtonComp width="190px">
           <Link to="/stock_statistics" className="BtnLink">
             <LeaderboardIcon className="mr-[5px]" />
             <span className="btnText">Stock Statictics</span>

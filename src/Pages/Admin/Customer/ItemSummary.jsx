@@ -40,6 +40,18 @@ const ItemSummary = () => {
     }, 0);
   }, [ItemSummaryData.data]);
 
+  const totalPrice = useMemo(() => {
+    return ItemSummaryData.data.reduce((total, item) => {
+      return total + item.price;
+    }, 0);
+  }, [ItemSummaryData.data]);
+
+  const totalQty = useMemo(() => {
+    return ItemSummaryData.data.reduce((total, item) => {
+      return total + item.qty;
+    }, 0);
+  }, [ItemSummaryData.data]);
+
   return (
     <>
       <Navbar />
@@ -68,6 +80,17 @@ const ItemSummary = () => {
                 isActive_={false}
               />
             </div>
+            <div className="flex flex-col justify-center items-center">
+              <div className="flex font-bold text-2xl">
+                Total Qty: {Number(totalQty).toLocaleString()}
+              </div>
+              <div className="flex font-bold text-2xl">
+                Total Price: {Number(totalPrice).toLocaleString()}
+              </div>
+              <div className="flex font-bold text-2xl">
+                Total Amount: {Number(totalAmount).toLocaleString()}
+              </div>
+            </div>
             <div className="flex justify-center items-center">
               <PDFDownloadLink
                 document={
@@ -83,6 +106,8 @@ const ItemSummary = () => {
                         ?.address || "not specified"
                     }
                     total={totalAmount}
+                    qty={totalQty}
+                    price={totalPrice}
                   />
                 }
                 fileName={`${

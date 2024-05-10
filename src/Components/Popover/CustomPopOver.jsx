@@ -40,6 +40,7 @@ const CustomerPoperOver = ({
         placeholder={Placeholder}
         Value={ValueName}
         onClick={(data) => handleClick(data)}
+        Width={"w-[300px]"}
       />
       <Popover
         id={id}

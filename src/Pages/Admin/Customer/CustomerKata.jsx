@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../../../Components/NavBar/NavBar";
 import CustomerNav from "../../../Components/NavBar/AdminNavbars/CustomerNav";
@@ -27,6 +27,33 @@ const CustomerKata = () => {
     dispatch(fetchCustomers(data));
   }, []);
 
+  const totalAmount = useMemo(() => {
+    return customer.reduce((total, cust) => {
+      return total + cust.total;
+    }, 0);
+  }, [customer]);
+
+  const totalReturn = useMemo(() => {
+    return customer.reduce((total, cust) => {
+      return total + cust.return_amount;
+    }, 0);
+  }, [customer]);
+  const totalDiscount = useMemo(() => {
+    return customer.reduce((total, cust) => {
+      return total + cust.discount;
+    }, 0);
+  }, [customer]);
+  const totalPaid = useMemo(() => {
+    return customer.reduce((total, cust) => {
+      return total + cust.paid;
+    }, 0);
+  }, [customer]);
+  const totalRemaining = useMemo(() => {
+    return customer.reduce((total, cust) => {
+      return total + cust.remaining;
+    }, 0);
+  }, [customer]);
+
   return (
     <>
       <Navbar />
@@ -45,6 +72,26 @@ const CustomerKata = () => {
         />
       ) : (
         <DataLoader />
+      )}
+
+      {customer && !loading && (
+        <div className="flex flex-col justify-center items-center text-2xl font-bold py-10 gap-y-2">
+          <div className="flex gap-x-2 text-[#5a4ae3]">
+            Total Amount: {Number(totalAmount).toLocaleString()}
+          </div>
+          <div className="flex gap-x-2 text-[#5a4ae3]">
+            Total Return: {Number(totalReturn).toLocaleString()}
+          </div>
+          <div className="flex gap-x-2 text-[#5a4ae3]">
+            Total Paid: {Number(totalPaid).toLocaleString()}
+          </div>
+          <div className="flex gap-x-2 text-[#5a4ae3]">
+            Total Discount: {Number(totalDiscount).toLocaleString()}
+          </div>
+          <div className="flex gap-x-2 text-[#5a4ae3]">
+            Total Remaining: {Number(totalRemaining).toLocaleString()}
+          </div>
+        </div>
       )}
     </>
   );

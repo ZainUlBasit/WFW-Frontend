@@ -13,6 +13,11 @@ import SelectComp from "../../../Components/Select/SearchingComp";
 import { useEffect } from "react";
 import InvoiceSearch from "../../../Components/Select/InvoiceSearch";
 import { fetchCustomers } from "../../../store/CustomerSlice";
+import { fetchTransactions } from "../../../store/TransactionSlice";
+import AuthInputPopOver from "../../../Components/Input/CustomPopover";
+import { Popover, Typography } from "@mui/material";
+import { DeleteInvoice } from "../../../Https";
+import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
 
 const CustomerInvoiceEdit = () => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -30,7 +35,7 @@ const CustomerInvoiceEdit = () => {
   });
 
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
-  const [customerTransaction, setCustomerTransaction] = useState([]);
+  const customerTransaction = useSelector((state) => state.Transactions.data);
   const [isLoading, setIsLoading] = useState(false);
 
   const customer = useSelector((state) => state.CustomerSliceReducer.data);
@@ -41,49 +46,49 @@ const CustomerInvoiceEdit = () => {
   const [AllInvoices, setAllInvoices] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchCustomers({ shop: uData.userdata.name }));
-    const FetchData = async () => {
-      // const { data } = await api.get("/get-invoices/" + uData.userdata.name);
-      // console.log(data);
-    };
-    FetchData();
+    dispatch(fetchCustomers(uData));
   }, []);
 
   const onDelete = async (e) => {
     e.preventDefault();
     try {
-      // const response = await DeleteCustomerTransaction(
-        // Number(SelectInvoice.bill),
-        // SelectCustomer.name
-      // );
-      // if (response.status === 201) {
-      //   alert("Successfully deleted");
-      //   setSelectCustomer({
-      //     name: "",
-      //     found: false,
-      //   });
-      //   setSelectInvoice({
-      //     bill: "",
-      //     selected: false,
-      //   });
-      //   setShowInvoice(false);
-      // }
+      const response = await DeleteInvoice({
+        customerId: SelectCustomer?.name,
+        invoice_no: SelectInvoice?.bill,
+      });
+      console.log("delete transaction: ", response);
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        showSuccessToast(response.data?.data?.msg);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    const getTransactions = async () => {
-      setIsLoading(true);
-      // const { data } = await GetAllCustomerTransaction({
-        // sname: uData.userdata.name,
-      // });
-      setCustomerTransaction([]);
-      setIsLoading(false);
-    };
-    getTransactions();
+    if (SelectCustomer?.name)
+      dispatch(
+        fetchTransactions({
+          customerId: SelectCustomer?.name,
+          to: new Date(),
+          from: new Date(0),
+        })
+      );
   }, [SelectCustomer]);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const [SearchText, setSearchText] = useState("");
   return (
     <>
       <Navbar />
@@ -95,23 +100,104 @@ const CustomerInvoiceEdit = () => {
           {/* Header / title */}
           <div className="TitleCont select-none">CUSTOMER INVOICES EDIT</div>
           <div className="Line"></div>
-          {/* Select Components */}
           {/* Select Customer */}
           <InputWrapperStyling>
-            <SelectComp
-              DefOption={"Select Customer..."}
-              Options={customer}
-              setSelect={setSelectCustomer}
+            <AuthInputPopOver
+              placeholder="Select Customer..."
+              required={true}
+              Value={SelectCustomer?._name || "Select Customer...!"}
+              onClick={handleClick}
+              Width={"w-[90%]"}
             />
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              PaperProps={{
+                sx: {
+                  borderRadius: "25px",
+                  backgroundColor: "white",
+                  width: "60%",
+                  maxHeight: "50vh", // Set maximum height to 70vh
+                  // overflow: "hidden",
+                  overflowY: "auto", // Make it scrollable vertically
+                  boxShadow:
+                    "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(0, 0, 0, 0.08) 0px 1px 0px inset",
+                },
+              }}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <Typography
+                sx={{
+                  p: 2,
+                  borderColor: "#5a4ae3",
+                  backgroundColor: "#5a4ae3",
+                  width: "100%",
+                  overflow: "hidden",
+                  borderRadius: "25px",
+                }}
+              >
+                <div className="bg-[#5a4ae3] text-white w-full font-[Quicksand]  flex flex-col justify-center items-center rounded-[50px]">
+                  <div className="w-full flex flex-col justify-between gap-y-3 items-start">
+                    <div className="flex w-full">
+                      <input
+                        type="text"
+                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                        placeholder="Search...."
+                        value={SearchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                      />
+                    </div>
+                    {customer
+                      .filter((cust) => {
+                        const searchTextLower = SearchText.toLowerCase();
+                        const custLower = cust.name.toLowerCase();
+                        if (searchTextLower !== "") {
+                          return custLower.includes(searchTextLower);
+                        } else return true;
+                      })
+                      .map((Comp, i) => {
+                        return (
+                          <div
+                            className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                            onClick={() => {
+                              handleClose();
+                              setSelectCustomer({
+                                name: Comp._id,
+                                _name: Comp.name,
+                                found: true,
+                              });
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              className="mr-1 appearance-none h-5 w-5 border border-gray-300 checked:bg-white rounded-full"
+                              checked={Comp._id === SelectCustomer.name}
+                            />
+                            <span>{Comp.name}</span>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              </Typography>
+            </Popover>
           </InputWrapperStyling>
           {/* List of invoice to select */}
           <InputWrapperStyling>
             <InvoiceSearch
               DefOption={"Select Invoice..."}
-              Options={customerTransaction.filter(
-                (cr) => cr.customerid === SelectCustomer.name
-              )}
+              Options={customerTransaction}
               setSelect={setSelectInvoice}
+              Select={SelectInvoice}
             />
           </InputWrapperStyling>
           {/* Button Container */}

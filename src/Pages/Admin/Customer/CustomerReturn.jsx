@@ -24,8 +24,13 @@ import {
   showSuccessToast,
   showWarningToast,
 } from "../../../utils/TaostMessages";
-import { CreateSaleReturn, CreateTransaction } from "../../../Https";
+import {
+  CreatePayment,
+  CreateSaleReturn,
+  CreateTransaction,
+} from "../../../Https";
 import { fetchItems } from "../../../store/ItemSlice";
+import AddingLoader from "../../../Components/Loader/AddingLoader";
 
 const CustomerReturn = () => {
   // ======================================
@@ -35,18 +40,23 @@ const CustomerReturn = () => {
   const [ReturnItem, setReturnItem] = useState({});
   const [Total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [Payment, setPayment] = useState("");
   const [open, setOpen] = useState(false);
   const [SelectCustomer, setSelectCustomer] = useState({
+    _name: "",
     name: "",
     found: false,
   });
 
   const [Uploaded, setUploaded] = useState(false);
+  const [Loading, setLoading] = useState(false);
   const [FormatedItems, setFormatedItems] = useState(null);
   const [CustomerID, setCustomerID] = useState("");
   const [CustomerName, setCustomerName] = useState("");
   const [CustomerAddress, setCustomerAddress] = useState("");
-  const [curDate, setCurDate] = useState("");
+  const [curDate, setCurDate] = useState(
+    new Date().toISOString().substr(0, 10)
+  );
   // =========================================
   // Redux Toolkit
   // =========================================
@@ -162,17 +172,37 @@ const CustomerReturn = () => {
   // ============================================
   const addToDatabase = async () => {
     try {
+      if (Payment !== "" || Payment !== 0) {
+        const formData = new FormData();
+        formData.append("user_type", 2);
+        formData.append("user_Id", SelectCustomer.name);
+        formData.append("user_name", SelectCustomer._name);
+        formData.append("depositor", SelectCustomer._name);
+        formData.append("payment_type", 1);
+        formData.append("amount", Number(Payment));
+        formData.append("date", curDate);
+        formData.append("desc", "Bill Payment");
+        formData.append("branch", uData.branch_number);
+        const responseCash = await CreatePayment(formData);
+        if (responseCash.data.success) {
+          showSuccessToast(responseCash.data.data.msg);
+          setOpen(false);
+        } else {
+          showErrorToast(responseCash.data.error.msg);
+        }
+      }
       const response = await CreateSaleReturn({
         customerId: SelectCustomer.name,
         date: curDate,
         items: NewItems,
         discount: discount,
       });
-      console.log("Return: ", response);
+      console.log("transaction: ", response);
       if (!response.data?.success) showErrorToast(response.data?.error?.msg);
       else {
         setCurrentBillNo(response.data.data.payload.invoice_no);
         showSuccessToast(response.data?.data?.msg);
+        resetStates();
         setUploaded(true);
       }
     } catch (err) {
@@ -204,11 +234,12 @@ const CustomerReturn = () => {
       setCustomerID("");
       setCustomerName("");
       setCustomerAddress("");
-      setCurDate("");
+      setCurDate(new Date().toISOString().substr(0, 10));
       setCurrentBillNo("");
       setAllBillNo([]);
       setDefaultBillNo(0);
       setFetchingLoading(false);
+      setLoading(false);
     }, 4000);
   };
 
@@ -240,11 +271,13 @@ const CustomerReturn = () => {
       ) : customers ? (
         <div>
           <CustomerReturnCard
-            title={"Rerurn Bill"}
+            title={"Return Item Bill"}
             setSelect={setSelectCustomer}
             Select={SelectCustomer}
             setOpen={setOpen}
             data={customers}
+            NewItems={NewItems}
+            setNewItems={setNewItems}
           />
           {open ? (
             <ModalItemReturn
@@ -261,7 +294,12 @@ const CustomerReturn = () => {
           {lenghtOfList && SelectCustomer.found ? (
             <div className="Wrapper w-full flex justify-center border-t-[2px] border-t-white">
               <div className="w-[90%]">
-                <LedgerTable setTotal={setTotal} rows={NewItems} />
+                <LedgerTable
+                  setTotal={setTotal}
+                  rows={NewItems}
+                  setRows={setNewItems}
+                  Bill={true}
+                />
               </div>
             </div>
           ) : null}
@@ -270,39 +308,50 @@ const CustomerReturn = () => {
             <div className="wrapper w-[100%] flex justify-center items-center">
               <div className="py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
                 <div className="h-full flex flex-col gap-y-2 justify-center items-center ml-[15px]">
-                  {!Uploaded && (
-                    <button
-                      className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                      onClick={onSubmit}
-                    >
-                      Add Bill
-                    </button>
-                  )}
-                  {Uploaded && (
-                    <PDFDownloadLink
-                      document={
-                        <AddNewBillReport
-                          Data={NewItems}
-                          cTotal={Total.toFixed(2)}
-                          cDiscount={discount}
-                          cGrand={(Number(Total) - Number(discount)).toFixed(2)}
-                          bBillNo={CurrentBillNo}
-                          bDate={curDate}
-                          cName={CustomerName}
-                          cAddress={CustomerAddress}
-                        />
-                      }
-                      fileName={`${CustomerName}`}
-                    >
+                  {Loading ? (
+                    <AddingLoader />
+                  ) : (
+                    <>
                       <button
                         className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
                         onClick={(e) => {
-                          resetStates();
+                          setLoading(true);
+                          onSubmit(e);
                         }}
                       >
-                        Print Bill
+                        Add Bill
                       </button>
-                    </PDFDownloadLink>
+                      <PDFDownloadLink
+                        document={
+                          <AddNewBillReport
+                            Data={NewItems}
+                            cTotal={Total.toFixed(2)}
+                            cDiscount={discount}
+                            cGrand={(Number(Total) - Number(discount)).toFixed(
+                              2
+                            )}
+                            bBillNo={CurrentBillNo}
+                            bDate={curDate}
+                            cName={CustomerName}
+                            cAddress={CustomerAddress}
+                          />
+                        }
+                        fileName={`${CustomerName}`}
+                      >
+                        <button
+                          className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                          onClick={(e) => {
+                            setLoading(true);
+                            setTimeout(() => {
+                              resetStates();
+                              onSubmit(e);
+                            }, 4000);
+                          }}
+                        >
+                          Add & Print
+                        </button>
+                      </PDFDownloadLink>
+                    </>
                   )}
                 </div>
                 <div className="w-[210px] justify-end flex flex-col items-center">
@@ -344,7 +393,7 @@ const CustomerReturn = () => {
                     <div className="w-[110px] text-right mr-[15px]">Total:</div>
                     <div className="w-[100px]">{Number(Total)} /-</div>
                   </div>
-                  <div className="flex mt-[0px] mr-[10px] text-[1.1rem]">
+                  {/* <div className="flex mt-[0px] mr-[10px] text-[1.1rem]">
                     <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
                       Discount:
                     </div>
@@ -356,8 +405,8 @@ const CustomerReturn = () => {
                       value={discount}
                       onChange={(e) => setDiscount(e.target.value)}
                     />
-                  </div>
-                  <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[raleway] font-[700]">
+                  </div> */}
+                  <div className="flex pr-[10px] text-[1.1rem] mt-[2px] font-[raleway] font-[700]">
                     <div className="w-[110px] text-right mr-[15px]">
                       Grand Total:
                     </div>

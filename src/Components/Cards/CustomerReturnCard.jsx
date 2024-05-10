@@ -87,6 +87,7 @@ const CustomerReturnCard = ({
               required={true}
               Value={Select?._name || "Select Customer...!"}
               onClick={handleClick}
+              Width={"w-[90%]"}
             />
             <Popover
               id={id}
@@ -98,7 +99,9 @@ const CustomerReturnCard = ({
                   borderRadius: "25px",
                   backgroundColor: "white",
                   width: "60%",
-                  overflow: "hidden",
+                  maxHeight: "50vh", // Set maximum height to 70vh
+                  // overflow: "hidden",
+                  overflowY: "auto", // Make it scrollable vertically
                   boxShadow:
                     "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(0, 0, 0, 0.08) 0px 1px 0px inset",
                 },
@@ -230,7 +233,11 @@ const CustomerReturnCard = ({
                 <input
                   type="number"
                   value={ItemPrice}
-                  disabled
+                  onChange={(e) => {
+                    setItemPrice(e.target.value);
+                    setItemAmount(Number(e.target.value) * Number(ItemQty));
+                  }}
+                  // disabled
                   className="bg-white px-2 py-2 outline-none rounded-lg"
                   placeholder="Unit Price"
                 />

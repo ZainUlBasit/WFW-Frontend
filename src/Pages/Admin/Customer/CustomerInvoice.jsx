@@ -10,7 +10,9 @@ const CustomerInvoice = ({ data, Filter }) => {
       <div className="w-[100%] flex  flex-col justify-center items-center">
         <div className="w-[90%]">
           <InvoiceTable
-            rows={data.filter((d) => d.billNo.toString() === Filter.toString())}
+            rows={data.filter(
+              (d) => d.invoice_no.toString() === Filter.toString()
+            )}
             setSelID={setSelID}
           />
         </div>
