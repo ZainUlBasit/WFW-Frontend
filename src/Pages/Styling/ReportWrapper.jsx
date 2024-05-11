@@ -85,6 +85,7 @@ const ReportWrapper = (props) => {
                   : "Select Company..."
               }
               onClick={handleClick}
+              Width={"w-[90%]"}
             />
 
             <Popover
@@ -97,7 +98,8 @@ const ReportWrapper = (props) => {
                   borderRadius: "25px", // Add rounded corners
                   backgroundColor: "white", // Set background color to white
                   width: "60%", // Set the width as needed
-                  overflow: "hidden", // Hide overflowing content
+                  maxHeight: "40vh",
+                  overflow: "scroll", // Hide overflowing content
                   // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Add box-shadow
                   boxShadow:
                     "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(0, 0, 0, 0.08) 0px 1px 0px inset",

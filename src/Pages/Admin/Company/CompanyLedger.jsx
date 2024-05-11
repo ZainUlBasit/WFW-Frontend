@@ -125,6 +125,29 @@ const CompanyLedger = () => {
       ) : (
         <DataLoader />
       )}
+
+      {SelectCompany?.name && (
+        <div className="flex flex-col justify-center items-center py-5 text-[#5a4ae3]">
+          <div className="flex font-bold text-2xl">
+            Total:{" "}
+            {Number(
+              company.find((comp) => comp._id === SelectCompany.name)?.total
+            ).toLocaleString()}
+          </div>
+          <div className="flex font-bold text-2xl">
+            Paid:{" "}
+            {Number(
+              company.find((comp) => comp._id === SelectCompany.name)?.paid
+            ).toLocaleString()}
+          </div>
+          <div className="flex font-bold text-2xl">
+            Remaining:{" "}
+            {Number(
+              company.find((comp) => comp._id === SelectCompany.name)?.remaining
+            ).toLocaleString()}
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -187,7 +187,7 @@ const CustomerReturnCard = ({
                     const currentItem = ItemState.data.find(
                       (dt) => dt.code === e.target.value
                     );
-                    if (!currentItem) setItemCode("");
+                    if (!currentItem) setItemCode(e.target.value.toUpperCase());
                   }}
                   ref={itemCodeInputRef}
                 />
