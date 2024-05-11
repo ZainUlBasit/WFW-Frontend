@@ -31,7 +31,7 @@ export const fetchStocks = createAsyncThunk(
         showErrorToast(response.data.error.msg);
       } else if (response.data?.success) {
         return response.data.data.payload.sort((a, b) =>
-          moment(b.date).diff(moment(a.date))
+          moment(a.date).diff(moment(b.date))
         );
       }
     } catch (err) {
