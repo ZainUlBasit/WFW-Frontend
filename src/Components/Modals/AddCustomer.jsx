@@ -76,6 +76,13 @@ const AddCustomerModal = ({ setOpen, open }) => {
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
+    if (Cnic.toString().length !== 13 || Contact.toString().length !== 11) {
+      setLoading(false);
+      return showErrorToast(
+        Cnic.toString().length !== 13 ? "Invalid CNIC #" : "Invalid Contact #"
+      );
+    }
+
     const formData = {
       name: Name,
       email: Email,

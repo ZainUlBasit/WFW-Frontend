@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import moment from "moment";
 import cashpaymentServices from "../../../Services/cashpayment.services";
 import { fetchPayments } from "../../../store/PaymentSlice";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import CashLedgerReport from "../../../Components/Reports/CashLedgerReport";
 
 const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -15,6 +17,7 @@ const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
   const [Rows, setRows] = useState([]);
   const [Loading, setLoading] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
+  const customer = useSelector((state) => state.CustomerSliceReducer);
 
   const PaymentState = useSelector((state) => state.PaymentState);
   const dispatch = useDispatch();
@@ -77,6 +80,59 @@ const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
         LedgerDetail={true}
         isLedger={true}
       />
+      <div className="flex justify-center items-center my-5">
+        <PDFDownloadLink
+          document={
+            <CashLedgerReport
+              Data={PaymentState.data.map((dt) => {
+                return {
+                  ...dt,
+                  date: moment(new Date(dt.date * 1000)).format("DD/MM/YY"),
+                  payment_type: dt.payment_type === 1 ? "Cash" : "Bank",
+                };
+              })}
+              cTotal={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .total
+              }
+              cDiscount={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .discount
+              }
+              cPaid={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .paid
+              }
+              cReturn={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .return_amount
+              }
+              cRemaining={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .remaining
+              }
+              bDate={moment(new Date()).format("DD/MMM/YYYY")}
+              cName={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .name
+              }
+              cAddress={
+                customer.data.find((cus) => cus._id === SelectedCustomer?.name)
+                  .address
+              }
+            />
+          }
+          fileName={`${
+            customer.data.find((cus) => cus._id === SelectedCustomer?.name).name
+          } ${moment(new Date()).format(
+            "DD/MM/YY hh:mm:ss A"
+          )} - Cash Ledger Report`}
+        >
+          <button className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[#5a4ae3] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]">
+            Print
+          </button>
+        </PDFDownloadLink>
+      </div>
     </div>
   );
 };

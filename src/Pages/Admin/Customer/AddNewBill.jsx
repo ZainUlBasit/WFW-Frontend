@@ -168,7 +168,7 @@ const AddNewBill = () => {
   // ============================================
   const addToDatabase = async () => {
     try {
-      if (Payment !== "" || Payment !== 0) {
+      if (Payment !== "" && Number(Payment) > 0) {
         const formData = new FormData();
         formData.append("user_type", 2);
         formData.append("user_Id", SelectCustomer.name);
@@ -225,6 +225,7 @@ const AddNewBill = () => {
         name: "",
         found: false,
       });
+      setPayment("");
       setUploaded(false);
       setFormatedItems(null);
       setCustomerID("");

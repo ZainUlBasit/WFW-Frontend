@@ -14,15 +14,16 @@ import WFW_Banner from "../../assets/images/update_WFW_image.png";
 import RegularFont from "../../assets/fonts/Raleway-Regular.ttf";
 import BoldFont from "../../assets/fonts/Raleway-Bold.ttf";
 import { useEffect } from "react";
+import moment from "moment";
 
 // Register the fonts
-// Font.register({
-//   family: "CustomFont",
-//   fonts: [
-//     { src: RegularFont, fontWeight: "normal" },
-//     { src: BoldFont, fontWeight: "bold" },
-//   ],
-// });
+Font.register({
+  family: "CustomFont",
+  fonts: [
+    { src: RegularFont, fontWeight: "normal" },
+    { src: BoldFont, fontWeight: "bold" },
+  ],
+});
 
 // Create styles
 const styles = StyleSheet.create({
@@ -43,74 +44,19 @@ const styles = StyleSheet.create({
     height: "150px",
     margin: 5,
   },
-  header1: {
-    width: "240px",
-    // color: "white",
+  header: {
     paddingVertical: "5px",
-    paddingLeft: "5px",
     fontSize: "12px",
     paddingTop: "3px",
     fontWeight: "700",
   },
-  header2: {
-    width: "100px",
-    paddingVertical: "5px",
-    paddingLeft: "5px",
-    fontSize: "12px",
-    paddingTop: "3px",
-    textAlign: "center",
-  },
-  header3: {
-    width: "100px",
-    paddingVertical: "5px",
-    fontSize: "12px",
-    paddingTop: "3px",
-    paddingLeft: "5px",
-    textAlign: "center",
-  },
-  header4: {
-    width: "99px",
-    paddingVertical: "5px",
-    fontSize: "12px",
-    paddingTop: "3px",
-    paddingLeft: "5px",
-    textAlign: "center",
-  },
-  cell1: {
-    // fontFamily: "CustomFont",
+  cell: {
     fontWeight: "normal",
-    width: "240px",
     fontSize: "12px",
     paddingTop: "3px",
     paddingLeft: "5px",
   },
-  cell2: {
-    // fontFamily: "CustomFont",
-    fontWeight: "normal",
-    width: "100px",
-    fontSize: "12px",
-    paddingTop: "3px",
-    paddingLeft: "5px",
-    textAlign: "center",
-  },
-  cell3: {
-    // fontFamily: "CustomFont",
-    fontWeight: "normal",
-    width: "100px",
-    fontSize: "12px",
-    paddingTop: "3px",
-    paddingLeft: "5px",
-    textAlign: "center",
-  },
-  cell4: {
-    // fontFamily: "CustomFont",
-    fontWeight: "normal",
-    width: "100px",
-    fontSize: "12px",
-    paddingTop: "3px",
-    paddingLeft: "5px",
-    textAlign: "center",
-  },
+
   accountInfoWrraper: {
     width: "220px",
     marginTop: 20,
@@ -144,7 +90,7 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-function AddNewBillReport(props) {
+function CashLedgerReport(props) {
   return (
     <Document>
       {/*render a single page*/}
@@ -164,7 +110,6 @@ function AddNewBillReport(props) {
         >
           <Text
             style={{
-              // fontFamily: "CustomFont",
               fontWeight: "bold",
               fontSize: "10px",
             }}
@@ -173,7 +118,6 @@ function AddNewBillReport(props) {
           </Text>
           <Text
             style={{
-              // fontFamily: "CustomFont",
               fontWeight: "bold",
               fontSize: "10px",
             }}
@@ -193,38 +137,6 @@ function AddNewBillReport(props) {
           }}
         >
           <Image src={"./icd.png"} style={styles.image} />
-          {/* <View>
-            <Text
-              style={{
-                // fontFamily: "CustomFont",
-                fontWeight: "bold",
-                fontSize: 25,
-                marginBottom: 15,
-              }}
-            >
-              INVOICE
-            </Text>
-            <View>
-              <Text
-                style={{
-                  // fontFamily: "CustomFont",
-                  fontWeight: "bold",
-                  fontSize: 15,
-                }}
-              >
-                Irshad Carton Dealer
-              </Text>
-              <Text
-                style={{
-                  // fontFamily: "CustomFont",
-                  fontWeight: "normal",
-                  fontSize: 13,
-                }}
-              >
-                {`Swat, KPK,\nPakistan`}
-              </Text>
-            </View>
-          </View> */}
         </View>
         {/* ************************************** */}
         {/* Bottom Line */}
@@ -338,95 +250,79 @@ function AddNewBillReport(props) {
         </View>
         {/* Body */}
         <View style={{ flex: 9 }}>
-          {/* Table */}
+          {/* Table Header */}
           <View
             style={{
-              width: "100%",
-              height: "100%",
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: "10px",
+              flexDirection: "row",
+              borderBottom: "2px solid #032248",
             }}
+            fixed
           >
-            {/* Row Header */}
+            {Columns.map((column) => (
+              <Text style={{ ...styles.header, minWidth: column.minWidth }}>
+                {column.label}
+              </Text>
+            ))}
+          </View>
+          {/* Table Data */}
+          {props.Data.map((data) => (
             <View
               style={{
                 display: "flex",
                 flexDirection: "row",
-                borderBottom: "2px solid #032248",
+                borderBottom: "1px solid black",
+                marginBottom: "2px",
+                paddingTop: "4px",
+                paddingBottom: "4px",
               }}
-              fixed
             >
-              {/* Description */}
-              <Text style={styles.header1}>Items</Text>
-              {/* qty */}
-              <Text style={styles.header2}>Quantity</Text>
-              {/* price */}
-              <Text style={styles.header3}>Unit Price</Text>
-              {/* amount */}
-              <Text style={styles.header4}>Amount</Text>
-            </View>
-            {/* Rows Data */}
-            {props.Data.map((data) => {
-              console.log(data);
-              return (
-                <View
+              {Columns.map((column) => (
+                <Text
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    borderTop: "0px solid black",
+                    ...styles.cell,
+                    width: column.minWidth,
+                    textAlign: column.align || "left",
                   }}
                 >
-                  Description
-                  <Text style={styles.cell1}>{data.name}</Text>
-                  qty
-                  <Text style={styles.cell2}>{data.qty}</Text>
-                  price
-                  <Text style={styles.cell3}>{data.price}</Text>
-                  amount
-                  <Text style={styles.cell4}>{data.amount}</Text>
-                </View>
-              );
-            })}
-            {/* ************************************* */}
-            {/* Bottom Line */}
-            {/* ************************************* */}
-            <View
-              style={{
-                width: "100%",
-                height: "2px",
-                backgroundColor: "#032248",
-                marginTop: "10px",
-              }}
-            ></View>
-            {/* ********************************************* */}
-            {/* Bill Account Info */}
-            {/* ********************************************* */}
-            {/* Main Wrapper */}
-            <View
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "flex-end",
-              }}
-            >
-              <View style={styles.accountInfoWrraper}>
-                <View style={styles.accountInfoCard}>
-                  <Text style={styles.accountInfoTitle}>Current Total: </Text>
-                  <Text style={styles.accountInfo}>{props.cTotal}/-</Text>
-                </View>
+                  {typeof data[column.id] === "number"
+                    ? data[column.id].toLocaleString()
+                    : data[column.id]}
+                </Text>
+              ))}
+            </View>
+          ))}
 
-                <View style={styles.accountInfoCard}>
-                  <Text style={styles.accountInfoTitle}>Discount: </Text>
-                  <Text style={styles.accountInfo}>-{props.cDiscount}/-</Text>
-                </View>
+          <View
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+          >
+            <View style={styles.accountInfoWrraper}>
+              <View style={styles.accountInfoCard}>
+                <Text style={styles.accountInfoTitle}>Current Total: </Text>
+                <Text style={styles.accountInfo}>{props.cTotal}/-</Text>
               </View>
-              <View style={styles.accountGrandWrraper}>
-                <View style={styles.accountInfoCard}>
-                  <Text style={styles.accountInfoTitle}>Grand Total: </Text>
-                  <Text style={styles.accountInfo}>{props.cGrand} /-</Text>
-                </View>
+
+              <View style={styles.accountInfoCard}>
+                <Text style={styles.accountInfoTitle}>Discount: </Text>
+                <Text style={styles.accountInfo}>-{props.cDiscount}/-</Text>
+              </View>
+              <View style={styles.accountInfoCard}>
+                <Text style={styles.accountInfoTitle}>Paid: </Text>
+                <Text style={styles.accountInfo}>-{props.cPaid}/-</Text>
+              </View>
+              <View style={styles.accountInfoCard}>
+                <Text style={styles.accountInfoTitle}>Return: </Text>
+                <Text style={styles.accountInfo}>-{props.cReturn}/-</Text>
+              </View>
+            </View>
+            <View style={styles.accountGrandWrraper}>
+              <View style={styles.accountInfoCard}>
+                <Text style={styles.accountInfoTitle}>Remaining: </Text>
+                <Text style={styles.accountInfo}>{props.cRemaining} /-</Text>
               </View>
             </View>
           </View>
@@ -435,4 +331,40 @@ function AddNewBillReport(props) {
     </Document>
   );
 }
-export default AddNewBillReport;
+export default CashLedgerReport;
+
+// Sample Columns data
+const Columns = [
+  {
+    id: "date",
+    label: "Date",
+    minWidth: 60,
+  },
+  {
+    id: "depositor",
+    label: "Depositor",
+    minWidth: 120,
+  },
+  {
+    id: "payment_type",
+    label: "Type",
+    minWidth: 40,
+  },
+  {
+    id: "bank_name",
+    label: "Bank",
+    minWidth: 100,
+  },
+
+  {
+    id: "amount",
+    label: "Amount",
+    align: "left",
+    minWidth: 70,
+  },
+  {
+    id: "desc",
+    label: "Description",
+    minWidth: 130,
+  },
+];

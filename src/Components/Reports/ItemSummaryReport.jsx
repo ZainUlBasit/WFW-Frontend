@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cell1: {
-    fontFamily: "CustomFont",
+    // fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "100px",
     fontSize: "12px",
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     paddingLeft: "5px",
   },
   cell2: {
-    fontFamily: "CustomFont",
+    // fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "130px",
     fontSize: "12px",
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     // textAlign: "center",
   },
   cell3: {
-    fontFamily: "CustomFont",
+    // fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "100px",
     fontSize: "12px",
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cell4: {
-    fontFamily: "CustomFont",
+    // fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "100px",
     fontSize: "12px",
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   accountInfoTitle: {
-    fontFamily: "CustomFont",
+    // fontFamily: "CustomFont",
     fontWeight: "bold",
     fontSize: "13px",
     width: "120px",
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   accountInfo: {
     width: "100px",
-    fontFamily: "CustomFont",
+    // fontFamily: "CustomFont",
     fontWeight: "normal",
     fontSize: "13px",
     textAlign: "right",
@@ -164,7 +164,7 @@ function ItemSummaryReport(props) {
         >
           <Text
             style={{
-              fontFamily: "CustomFont",
+              // fontFamily: "CustomFont",
               fontWeight: "bold",
               fontSize: "10px",
             }}
@@ -173,7 +173,7 @@ function ItemSummaryReport(props) {
           </Text>
           <Text
             style={{
-              fontFamily: "CustomFont",
+              // fontFamily: "CustomFont",
               fontWeight: "bold",
               fontSize: "10px",
             }}
@@ -196,7 +196,7 @@ function ItemSummaryReport(props) {
           <View>
             <Text
               style={{
-                fontFamily: "CustomFont",
+                // fontFamily: "CustomFont",
                 fontWeight: "bold",
                 fontSize: 25,
                 marginBottom: 15,
@@ -207,7 +207,7 @@ function ItemSummaryReport(props) {
             <View>
               <Text
                 style={{
-                  fontFamily: "CustomFont",
+                  // fontFamily: "CustomFont",
                   fontWeight: "bold",
                   fontSize: 15,
                 }}
@@ -216,7 +216,7 @@ function ItemSummaryReport(props) {
               </Text>
               <Text
                 style={{
-                  fontFamily: "CustomFont",
+                  // fontFamily: "CustomFont",
                   fontWeight: "normal",
                   fontSize: 13,
                 }}
@@ -253,7 +253,7 @@ function ItemSummaryReport(props) {
           <View>
             <Text
               style={{
-                fontFamily: "CustomFont",
+                // fontFamily: "CustomFont",
                 fontWeight: "bold",
                 fontSize: 13,
               }}
@@ -262,7 +262,7 @@ function ItemSummaryReport(props) {
             </Text>
             <Text
               style={{
-                fontFamily: "CustomFont",
+                // fontFamily: "CustomFont",
                 fontWeight: "normal",
                 fontSize: 13,
               }}
@@ -271,7 +271,7 @@ function ItemSummaryReport(props) {
             </Text>
             <Text
               style={{
-                fontFamily: "CustomFont",
+                // fontFamily: "CustomFont",
                 fontWeight: "normal",
                 fontSize: 13,
               }}
@@ -292,7 +292,7 @@ function ItemSummaryReport(props) {
               <Text
                 style={{
                   textAlign: "right",
-                  fontFamily: "CustomFont",
+                  // fontFamily: "CustomFont",
                   fontWeight: "bold",
                   fontSize: 13,
                   width: "110px",
@@ -302,7 +302,7 @@ function ItemSummaryReport(props) {
               </Text>
               <Text
                 style={{
-                  fontFamily: "CustomFont",
+                  // fontFamily: "CustomFont",
                   fontWeight: "normal",
                   fontSize: 13,
                   paddingLeft: 3,

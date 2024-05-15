@@ -185,9 +185,10 @@ const CustomerReturnCard = ({
                   className="px-2 py-2 outline-none rounded-lg"
                   onBlur={(e) => {
                     const currentItem = ItemState.data.find(
-                      (dt) => dt.code === e.target.value
+                      (dt) => dt.code === e.target.value.toUpperCase()
                     );
-                    if (!currentItem) setItemCode(e.target.value.toUpperCase());
+                    if (!currentItem) setItemCode("");
+                    else setItemCode(e.target.value.toUpperCase());
                   }}
                   ref={itemCodeInputRef}
                 />

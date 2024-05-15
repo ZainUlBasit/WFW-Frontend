@@ -67,6 +67,7 @@ const AddPayment = ({ open, setOpen }) => {
   const [Amount, setAmount] = useState("");
   const [CurrentDate, setCurrentDate] = useState("");
   const [Desc, setDesc] = useState("");
+  const [Discount, setDiscount] = useState("");
 
   const [Loading, setLoading] = useState(false);
 
@@ -240,6 +241,17 @@ const AddPayment = ({ open, setOpen }) => {
                   required={true}
                   Value={Desc}
                   setValue={setDesc}
+                  readonly={false}
+                  disabled={false}
+                />
+                <AuthInput
+                  id="discount"
+                  Type="number"
+                  label="Discount"
+                  placeholder="Enter Discount..."
+                  required={true}
+                  Value={Discount}
+                  setValue={setDiscount}
                   readonly={false}
                   disabled={false}
                 />
