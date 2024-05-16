@@ -13,7 +13,7 @@ export const fetchTransactions = createAsyncThunk(
         const payload = response.data?.data?.payload || [];
         const sortedPayload = payload.sort((a, b) => {
           // Assuming date field is in ISO 8601 format
-          return b.date - a.date;
+          return a.date - b.date;
         });
         return sortedPayload;
       }
