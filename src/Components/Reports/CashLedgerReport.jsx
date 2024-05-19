@@ -28,7 +28,7 @@ Font.register({
 // Create styles
 const styles = StyleSheet.create({
   page: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingVertical: 10,
   },
   section: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     height: window.innerHeight,
   },
   image: {
-    width: "100%",
+    width: "110%",
     height: "150px",
     margin: 5,
   },
