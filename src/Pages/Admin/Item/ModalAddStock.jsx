@@ -213,7 +213,7 @@ const ModalAddStock = ({ AddStockModal, setAddStockModal }) => {
                       name="itemPurchase"
                       value={ItemPurchase}
                       onChange={(e) => setItemPurchase(e.target.value)}
-                      placeholder="Enter quantity"
+                      placeholder="Enter purchase"
                     />
                   </div>
                 </InputWrapper>
