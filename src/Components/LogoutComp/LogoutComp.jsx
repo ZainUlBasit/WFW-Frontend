@@ -14,11 +14,11 @@ const LogoutComp = (props) => {
           width="100px"
           alt="not found"
         />
-        <h1 className="font-[raleway] text-[22px] font-[700]">Zain Ul Basit</h1>
-        <div className="contactNo font-[raleway] text-[17px] font-[500]">
+        <h1 className="font-[Roboto] text-[22px] font-[700]">Zain Ul Basit</h1>
+        <div className="contactNo font-[Roboto] text-[17px] font-[500]">
           03110312452
         </div>
-        <div className="shopNo font-[raleway] text-[17px] font-[500]">
+        <div className="shopNo font-[Roboto] text-[17px] font-[500]">
           Shop 1
         </div>
       </div>

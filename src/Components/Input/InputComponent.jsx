@@ -30,7 +30,7 @@ const InputComponent = ({
 export default InputComponent;
 
 // export const StyledInput = styled.input`
-//   /* className="pl-[5px] w-[244px] mr-[4px] ml-[7px] outline-none border-[2px] focus:border-b-[#5A4AE3] transition-all duration-700 text-[1.2rem] rounded-[5px] font-[raleway] text-[#5A4AE3] font-[600]" */
+//   /* className="pl-[5px] w-[244px] mr-[4px] ml-[7px] outline-none border-[2px] focus:border-b-[#5A4AE3] transition-all duration-700 text-[1.2rem] rounded-[5px] font-[Roboto] text-[#5A4AE3] font-[600]" */
 //   padding-left: 5px;
 //   width: 244px;
 //   margin-right: 3px;
@@ -40,7 +40,7 @@ export default InputComponent;
 //   transition: all 0.6s ease-in-out;
 //   font-size: 1rem;
 //   border-radius: 0px 5px 5px 0px;
-//   font-family: raleway;
+//   font-family: Roboto;
 //   color: #5a4ae3;
 //   font-weight: 600;
 //   height: 35px;
@@ -53,7 +53,7 @@ export default InputComponent;
 //   value: props.value,
 //   onChange: props.onChange,
 // }))`
-//   /* pl-[5px] w-[244px] mr-[3px] ml-[7px] outline-none transition-all duration-700 text-[1rem] rounded-[5px] font-[raleway] text-[#5A4AE3] font-[600] */
+//   /* pl-[5px] w-[244px] mr-[3px] ml-[7px] outline-none transition-all duration-700 text-[1rem] rounded-[5px] font-[Roboto] text-[#5A4AE3] font-[600] */
 //   height: 35px;
 //   padding-left: 5px;
 //   width: 244px;
@@ -64,7 +64,7 @@ export default InputComponent;
 //   font-size: 1rem;
 //   border-radius: 0px 5px 5px 0px;
 //   overflow: hidden;
-//   font-family: raleway;
+//   font-family: Roboto;
 //   color: #5a4ae3;
 //   font-weight: 600;
 //   option {

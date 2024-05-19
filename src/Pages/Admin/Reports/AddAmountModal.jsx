@@ -76,7 +76,7 @@ const AddAmountModal = ({ open, setOpen }) => {
           id="modal-modal-title"
           variant="h6"
           component="h2"
-          style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+          style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
           className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-4 text-[#5A4AE3] "
         >
           <DomainAddIcon className="mr-[5px]" style={{ fontSize: "40px" }} />{" "}

@@ -15,6 +15,7 @@ import TableComp from "../../../Components/Tables/TableComponent";
 import { Columns } from "../../../Components/TableColumns/Admin/ItemLegderColumns";
 import moment from "moment";
 import customerReturnsServices from "../../../Services/customerReturns.services";
+import { fetchReturns } from "../../../store/ReturnSlice";
 
 const CustomerLedger = () => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -38,6 +39,17 @@ const CustomerLedger = () => {
   useEffect(() => {
     dispatch(fetchCustomers(uData));
   }, []);
+
+  const ReturnState = useSelector((state) => state.ReturnState);
+
+  useEffect(() => {
+    if (SelectCustomer.found)
+      dispatch(
+        fetchReturns({
+          customerId: SelectCustomer?.name,
+        })
+      );
+  }, [SelectCustomer]);
 
   useEffect(() => {
     if (SelectCustomer.found) {
@@ -105,6 +117,7 @@ const CustomerLedger = () => {
     cusTemp = cusTemp[0];
     return cusTemp;
   };
+
   return (
     <>
       <Navbar />
@@ -149,13 +162,13 @@ const CustomerLedger = () => {
           {SelectCustomer.found && isItem ? (
             <div className="w-[100%] flex justify-center items-center py-[10px]">
               <div className="w-[90%] text-[#5a4ae3] flex flex-col justify-end items-end">
-                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                <div className="flex text-[2rem] font-[Roboto] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
                     Total:
                   </div>
                   <div className="w-[190px]">{getCurrentTotal().total}/-</div>
                 </div>
-                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                <div className="flex text-[2rem] font-[Roboto] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
                     Discount:
                   </div>
@@ -163,13 +176,13 @@ const CustomerLedger = () => {
                     {getCurrentTotal().discount}/-
                   </div>
                 </div>
-                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                <div className="flex text-[2rem] font-[Roboto] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
                     Paid:
                   </div>
                   <div className="w-[190px]">{getCurrentTotal().paid}/-</div>
                 </div>
-                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                <div className="flex text-[2rem] font-[Roboto] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
                     Return:
                   </div>
@@ -177,7 +190,7 @@ const CustomerLedger = () => {
                     {getCurrentTotal().return_amount}/-
                   </div>
                 </div>
-                <div className="flex text-[2rem] font-[raleway] font-bold py-[2px]">
+                <div className="flex text-[2rem] font-[Roboto] font-bold py-[2px]">
                   <div className="w-[170px] flex justify-end mr-[4px]">
                     Remaining:
                   </div>
@@ -189,18 +202,19 @@ const CustomerLedger = () => {
             </div>
           ) : null}
           {/* Item Return Table */}
-          {/* {SelectCustomer.found && isItem ? (
+          {SelectCustomer.found && !ReturnState.loading && isItem ? (
             <TableComp
               title="Item Return Detail"
-              rows={ItemReturn}
+              rows={ReturnState.data}
               columns={Columns}
               isActive_={isActive_}
               // setSelID={setSelID}
-              LedgerDetail={true}
               FromDate={fromDate}
               ToDate={toDate}
+              LedgerDetail={true}
+              isLedger={true}
             />
-          ) : null} */}
+          ) : null}
         </div>
       ) : (
         <DataLoader />

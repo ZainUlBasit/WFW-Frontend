@@ -44,7 +44,7 @@ const CashSummary = () => {
       <ReportNav />
       <div className="flex justify-center items-center">
         <button
-          className="bg-[#4a5ae3] text-white border-[#5a4ae3] border-[2px] hover:text-[#5a4ae3] hover:bg-white hover:rounded-[8px] px-[15px] py-[8px] font-[raleway] font-bold text-[1rem] transition-all duration-500 m-[5px]"
+          className="bg-[#4a5ae3] text-white border-[#5a4ae3] border-[2px] hover:text-[#5a4ae3] hover:bg-white hover:rounded-[8px] px-[15px] py-[8px] font-[Roboto] font-bold text-[1rem] transition-all duration-500 m-[5px]"
           onClick={toggleBank}
         >
           Add Bank
@@ -55,7 +55,7 @@ const CashSummary = () => {
           <></>
         )}
         <button
-          className="bg-[#4a5ae3] text-white border-[#5a4ae3] border-[2px] hover:text-[#5a4ae3] hover:bg-white hover:rounded-[8px] px-[15px] py-[8px] font-[raleway] font-bold text-[1rem] transition-all duration-500 m-[5px]"
+          className="bg-[#4a5ae3] text-white border-[#5a4ae3] border-[2px] hover:text-[#5a4ae3] hover:bg-white hover:rounded-[8px] px-[15px] py-[8px] font-[Roboto] font-bold text-[1rem] transition-all duration-500 m-[5px]"
           onClick={toggleAmount}
         >
           Add Amount

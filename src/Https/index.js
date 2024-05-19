@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL, API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL_LOCAL,
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
@@ -68,10 +68,12 @@ export const CreateTransaction = (data) =>
 export const GetTransactions = (data) => api.post("/transaction/all", data);
 export const GetItemSummary = (data) => api.post("/transaction/summary", data);
 export const DeleteInvoice = (data) => api.post("/transaction/delete", data);
+export const CheckInvoiceNoApi = (data) =>
+  api.post("/transaction/check-invoice-no", data);
 // Add Sales Return
 export const CreateSaleReturn = (data) => api.post("/sale-return/create", data);
-export const GetAllSaleReturn = () => api.get("/sale-return/all");
-export const GetBranchSaleReturn = (data) => api.get("/sale-return/branch");
+export const GetAllSaleReturn = (data) => api.post("/sale-return/branch", data);
+// export const GetBranchSaleReturn = (data) => api.get("/sale-return/branch");
 export const DeleteSaleReturn = (data) => api.delete("/sale-return/delete");
 export const UpdateSaleReturn = (data) => api.patch("/sale-return/update");
 // Report Requests // expenses

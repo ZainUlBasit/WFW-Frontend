@@ -32,7 +32,7 @@ const ShopsInfo = () => {
   const [AddShopModal, setAddShopModal] = useState(false);
   const [Loading, setLoading] = useState(false);
   const Branches = useSelector((state) => state.branches);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const FetchData = async () => {
     setLoading(true);
     let data = await getDocs(collection(db, "users"));
@@ -42,7 +42,7 @@ const ShopsInfo = () => {
     setLoading(false);
   };
   useEffect(() => {
-    dispatch(fetchBranches())
+    dispatch(fetchBranches());
     FetchData();
   }, []);
   return (
@@ -53,7 +53,7 @@ const ShopsInfo = () => {
       ) : (
         <div className="pt-[12vh] flex justify-center items-center">
           <div className="w-[80%] border-[#5a4ae3] border-[2px] rounded-[10px] overflow-hidden pb-[10px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-            <div className="py-[10px] px-[10px] flex justify-between items-center uppercase bg-[#5a4ae3] text-white font-[raleway] font-bold text-[1.3rem] mb-[10px]">
+            <div className="py-[10px] px-[10px] flex justify-between items-center uppercase bg-[#5a4ae3] text-white font-[Roboto] font-bold text-[1.3rem] mb-[10px]">
               <div>Branches</div>
               <StyledIconWrapper onClick={() => setAddShopModal(!AddShopModal)}>
                 <AddBusinessIcon
@@ -69,9 +69,10 @@ const ShopsInfo = () => {
               </StyledIconWrapper>
             </div>
             <div className="px-[10px]">
-              {Branches && Branches.data.map((branch) => {
-                return <ShopInfo shop={branch} RefreshData={FetchData} />;
-              })}
+              {Branches &&
+                Branches.data.map((branch) => {
+                  return <ShopInfo shop={branch} RefreshData={FetchData} />;
+                })}
               {AllShops.length === 0 ? (
                 <div className="h-[60vh] w-full flex justify-center items-center">
                   <LoadingError />

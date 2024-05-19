@@ -11,6 +11,9 @@ import { fetchCustomers } from "../../../store/CustomerSlice";
 import { CircularProgress } from "@mui/material";
 import DataLoader from "../../../Components/Loader/DataLoader";
 import ConnectionLost from "../../../Components/Error/ConnectionLost";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import CustomerKataReport from "../../../Components/Reports/CustomerKataReport";
+import moment from "moment";
 
 const CustomerKata = () => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -63,13 +66,42 @@ const CustomerKata = () => {
       ) : isError ? (
         <ConnectionLost />
       ) : customer ? (
-        <TableComp
-          title={"Customer Kata"}
-          rows={customer}
-          columns={columns}
-          isActive_={isActive_}
-          setSelID={setSelID}
-        />
+        <>
+          <TableComp
+            title={"Customer Kata"}
+            rows={customer}
+            columns={columns}
+            isActive_={isActive_}
+            setSelID={setSelID}
+          />
+          <div className="flex justify-center items-center">
+            <PDFDownloadLink
+              document={
+                <CustomerKataReport
+                  Data={customer}
+                  date={moment(new Date()).format("DD/MM/YYYY")}
+                  cTotal={totalAmount.toLocaleString()}
+                  cReturn={totalReturn.toLocaleString()}
+                  cPaid={totalPaid.toLocaleString()}
+                  cDiscount={totalDiscount.toLocaleString()}
+                  cRemaining={totalRemaining.toLocaleString()}
+                />
+              }
+              fileName={`${
+                customer.find((dt) => dt._id === selID)?.name || " Kata"
+              }`}
+            >
+              <button
+                className="text-white bg-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:rounded-2xl hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem] text-3xl"
+                onClick={(e) => {
+                  // resetStates();
+                }}
+              >
+                Download Customers Kata
+              </button>
+            </PDFDownloadLink>
+          </div>
+        </>
       ) : (
         <DataLoader />
       )}

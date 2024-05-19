@@ -22,7 +22,7 @@ export const StyledButton = styled.button`
       : "#5A4AE3"};
   /* width: ${(props) => (!props.primary ? "80%" : "")}; */
   padding: ${(props) => (props.primary ? "9px 35px 8px 35px" : "5px 10px")};
-  font-family: raleway;
+  font-family: Roboto;
   font-size: 1rem;
   font-weight: ${(props) => (props.primary ? "500" : "700")};
   color: ${(props) => (props.primary ? "white" : "white")};

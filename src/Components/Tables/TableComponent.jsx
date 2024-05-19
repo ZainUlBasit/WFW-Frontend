@@ -89,7 +89,7 @@ export default function TableComp({
                       color: "white",
                       fontWeight: "bold",
                       fontSize: "1.1rem",
-                      fontFamily: "'Raleway', sans-serif",
+                      fontFamily: "'Roboto', sans-serif",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -152,7 +152,7 @@ export default function TableComp({
                               className={
                                 column.id === "contact"
                                   ? "font-[georgia] select-none"
-                                  : "font-[raleway] select-none"
+                                  : "font-[Roboto] select-none"
                               }
                               key={column.id}
                               align={column.align}

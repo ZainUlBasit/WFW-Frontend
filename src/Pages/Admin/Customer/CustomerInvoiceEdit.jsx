@@ -150,7 +150,7 @@ const CustomerInvoiceEdit = () => {
                     <div className="flex w-full">
                       <input
                         type="text"
-                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Roboto] font-bold"
                         placeholder="Search...."
                         value={SearchText}
                         onChange={(e) => setSearchText(e.target.value)}
@@ -167,7 +167,7 @@ const CustomerInvoiceEdit = () => {
                       .map((Comp, i) => {
                         return (
                           <div
-                            className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                            className="flex gap-x-3 items-center cursor-pointer font-bold font-[Roboto] text-xl"
                             onClick={() => {
                               handleClose();
                               setSelectCustomer({
@@ -217,7 +217,7 @@ const CustomerInvoiceEdit = () => {
           />
           <div className="my-[10px]">
             <button
-              className="hover:bg-[red] bg-white text-[red] hover:text-white font-[raleway] font-bold text-[1.2rem] py-[5px] px-[10px] border-[2px] border-[red] hover:rounded-[8px] transition-all duration-500"
+              className="hover:bg-[red] bg-white text-[red] hover:text-white font-[Roboto] font-bold text-[1.2rem] py-[5px] px-[10px] border-[2px] border-[red] hover:rounded-[8px] transition-all duration-500"
               onClick={onDelete}
             >
               Delete Invoice

@@ -25,6 +25,7 @@ import {
   showSuccessToast,
   showWarningToast,
 } from "../../../utils/TaostMessages";
+import AddingLoader from "../../../Components/Loader/AddingLoader";
 
 const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
   const [CompanyID, setCompanyID] = useState("");
@@ -55,6 +56,7 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
   }, []);
 
   const onSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     let shopName = data.branch_number;
     const categoryInfo = {
@@ -76,6 +78,7 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
     } else {
       showWarningToast("All Fields are mandatory");
     }
+    setLoading(false);
   };
 
   return (
@@ -95,7 +98,7 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
               variant="h6"
               component="h2"
               style={{
-                fontFamily: "'Raleway', sans-serif",
+                fontFamily: "'Roboto', sans-serif",
                 fontWeight: "bold",
               }}
               className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3]"
@@ -149,7 +152,11 @@ const ModalAddCategory = ({ setCategoryModal, CategoryModal }) => {
                       />
                     </div>
                   </InputWrapper>
-                  <StyledButton primary>ADD CATEGORY</StyledButton>
+                  {Loading ? (
+                    <AddingLoader />
+                  ) : (
+                    <StyledButton primary>ADD CATEGORY</StyledButton>
+                  )}
                 </form>
               </div>
             </Typography>

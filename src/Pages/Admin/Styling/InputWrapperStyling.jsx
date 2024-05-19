@@ -9,7 +9,7 @@ const InputWrapperStyling = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  /* className="h-full px-[8px] py-[8px] rounded-[5px] font-[raleway] placeholder:text-gray-600 outline-none text-[.9rem] font-[700] w-[95%]" */
+  /* className="h-full px-[8px] py-[8px] rounded-[5px] font-[Roboto] placeholder:text-gray-600 outline-none text-[.9rem] font-[700] w-[95%]" */
   .dropdown {
     position: absolute;
     top: 100%;
@@ -19,8 +19,8 @@ const InputWrapperStyling = styled.div`
     background-color: #dddbdb;
     z-index: 30;
   }
-  
-  & input:focus .dropdown{
+
+  & input:focus .dropdown {
     height: 100%;
   }
 
@@ -28,7 +28,7 @@ const InputWrapperStyling = styled.div`
     width: 95%;
     height: 100%;
     font-size: 1.2rem;
-    font-family: "raleway" !important;
+    font-family: "Roboto" !important;
     font-weight: 700;
     padding: 10px 8px;
     border-radius: 5px;

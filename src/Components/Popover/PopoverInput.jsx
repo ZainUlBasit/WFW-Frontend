@@ -4,8 +4,8 @@ import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
 
 const AuthInputPopOver = ({ label, placeholder, Value, onClick }) => {
   return (
-    <div className="relative w-[297px] font-[Raleway]" onClick={onClick}>
-      <p className="absolute top-[-11px] left-3 w-fit bg-white font-[Raleway] text-[15px] font-bold">
+    <div className="relative w-[297px] font-[Roboto]" onClick={onClick}>
+      <p className="absolute top-[-11px] left-3 w-fit bg-white font-[Roboto] text-[15px] font-bold">
         {label}
       </p>
       <div className="px-3 py-3 pr-10 border border-gray-300 rounded-[7.94px] w-full outline-none cursor-pointer">

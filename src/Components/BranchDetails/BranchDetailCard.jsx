@@ -15,7 +15,7 @@ const BranchDetailCard = () => {
   return (
     <div className="w-full flex flex-col items-center justify-start">
       {/* header */}
-      <h1 className="w-[80%] rounded-t-[5px] bg-[#5a4ae3] text-white text-center font-[raleway] uppercase text-[1.4rem] py-[8px] shadow-2xl mb-[5px] font-[700] mob:w-[99.5%] select-none">
+      <h1 className="w-[80%] rounded-t-[5px] bg-[#5a4ae3] text-white text-center font-[Roboto] uppercase text-[1.4rem] py-[8px] shadow-2xl mb-[5px] font-[700] mob:w-[99.5%] select-none">
         Shop Permissions
       </h1>
       {/* Shop 1 */}

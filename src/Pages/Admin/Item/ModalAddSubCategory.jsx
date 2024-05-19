@@ -31,6 +31,7 @@ import {
   showWarningToast,
 } from "../../../utils/TaostMessages";
 import { CreateSubCategory } from "../../../Https";
+import DataLoader from "../../../Components/Loader/DataLoader";
 
 // *******************************
 //         Starting
@@ -58,6 +59,8 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
   const [CategoryID, setCategoryID] = useState("");
   const [SubCategoryName, setSubCategoryName] = useState("");
 
+  const [ProccessLoading, setProccessLoading] = useState(false);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCompanies(uData));
@@ -65,6 +68,7 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
   }, []);
 
   const onSubmit = async (e) => {
+    setProccessLoading(true);
     e.preventDefault();
     if (CompanyID == "" || CategoryID == "" || SubCategoryName == "") {
       showWarningToast("Required field are undefined!");
@@ -85,6 +89,7 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
     } catch (err) {
       showErrorToast(err.response?.data?.error?.msg || err.message);
     }
+    setProccessLoading(false);
   };
 
   return (
@@ -99,7 +104,7 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
           id="modal-modal-title"
           variant="h6"
           component="h2"
-          style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+          style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
           className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3]"
         >
           <PostAddIcon
@@ -177,8 +182,15 @@ const ModalAddSubCategory = ({ setSubModal, SubModal }) => {
                   </div>
                 </InputWrapper>
               )}
-              {CompanyID && CategoryID && SubCategoryName && (
-                <StyledButton primary>ADD SUB CATEGORY</StyledButton>
+
+              {ProccessLoading ? (
+                <DataLoader />
+              ) : (
+                CompanyID &&
+                CategoryID &&
+                SubCategoryName && (
+                  <StyledButton primary>ADD SUB CATEGORY</StyledButton>
+                )
               )}
             </form>
           </div>

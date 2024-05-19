@@ -99,7 +99,11 @@ const AddPayment = ({ open, setOpen }) => {
       CurrentDate !== "" &&
       Desc !== ""
     ) {
-      if (PaymentType === 2 && BankName === "" && AccountNo === "")
+      if (
+        (PaymentType === 2 || PaymentType === 3) &&
+        BankName === "" &&
+        AccountNo === ""
+      )
         showErrorToast("Required fields are undefined!");
       else {
         const formData = new FormData();
@@ -113,7 +117,7 @@ const AddPayment = ({ open, setOpen }) => {
         formData.append("desc", Desc);
         formData.append("branch", uData.branch_number);
 
-        if (PaymentType === 2) {
+        if (PaymentType === 2 || PaymentType === 3) {
           formData.append("bank_name", BankName);
           formData.append("bank_number", AccountNo);
         }
@@ -151,7 +155,7 @@ const AddPayment = ({ open, setOpen }) => {
           id="modal-modal-title"
           variant="h6"
           component="h2"
-          style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+          style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
           className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3]"
         >
           <AssignmentReturnIcon
@@ -213,9 +217,9 @@ const AddPayment = ({ open, setOpen }) => {
                 /> */}
                 <AuthInput
                   id="depositor"
-                  Type="text"
-                  label="Depositor"
-                  placeholder="Enter Depositor Name..."
+                  Type="number"
+                  label="Bill No"
+                  placeholder="Enter Bill Number..."
                   required={true}
                   Value={Depositor}
                   setValue={setDepositor}
@@ -244,7 +248,7 @@ const AddPayment = ({ open, setOpen }) => {
                   readonly={false}
                   disabled={false}
                 />
-                <AuthInput
+                {/* <AuthInput
                   id="discount"
                   Type="number"
                   label="Discount"
@@ -254,7 +258,7 @@ const AddPayment = ({ open, setOpen }) => {
                   setValue={setDiscount}
                   readonly={false}
                   disabled={false}
-                />
+                /> */}
               </div>
               <div className="flex flex-col gap-y-3">
                 <AuthInput
@@ -283,57 +287,61 @@ const AddPayment = ({ open, setOpen }) => {
                   Values={[
                     { _id: 1, name: "Cash" },
                     { _id: 2, name: "Bank" },
+                    { _id: 3, name: "Check" },
                   ]}
                 />
 
-                {PaymentType !== "" && PaymentType === 2 && (
-                  <>
-                    <CustomerPoperOver
-                      Label={"Bank"}
-                      placeholder={"Select Bank..."}
-                      ValueId={BankId === ""}
-                      setValueId={setBankId}
-                      ValueName={BankName === "" ? "Select Bank..." : BankName}
-                      setValueName={setBankName}
-                      Values={[
-                        { _id: 1, name: "National Bank of Pakistan" },
-                        { _id: 2, name: "Habib Bank Limited" },
-                        { _id: 3, name: "United Bank Limited" },
-                        { _id: 4, name: "MCB Bank Limited" },
-                        { _id: 5, name: "Allied Bank Limited" },
-                        { _id: 6, name: "Bank Alfalah Limited" },
-                        { _id: 7, name: "Askari Bank Limited" },
-                        { _id: 8, name: "Faysal Bank Limited" },
-                        { _id: 9, name: "Bank Al-Habib Limited" },
-                        { _id: 10, name: "Habib Metropolitan Bank" },
-                        { _id: 11, name: "Soneri Bank Limited" },
-                        {
-                          _id: 12,
-                          name: "Standard Chartered Bank",
-                        },
-                        { _id: 13, name: "Summit Bank Limited" },
-                        { _id: 14, name: "Silkbank Limited" },
-                        { _id: 15, name: "Sindh Bank Limited" },
-                        { _id: 16, name: "BankIslami Pakistan Limited" },
-                        { _id: 17, name: "Al Baraka Bank" },
-                        { _id: 18, name: "Dubai Islamic Bank" },
-                        { _id: 19, name: "JS Bank Limited" },
-                        { _id: 20, name: "Meezan Bank Limited" },
-                      ]}
-                    />
-                    <AuthInput
-                      id="account-no"
-                      Type="text"
-                      label="Account No"
-                      placeholder="Enter Account Number..."
-                      required={true}
-                      Value={AccountNo}
-                      setValue={setAccountNo}
-                      readonly={false}
-                      disabled={false}
-                    />
-                  </>
-                )}
+                {PaymentType !== "" &&
+                  (PaymentType === 2 || PaymentType === 3) && (
+                    <>
+                      <CustomerPoperOver
+                        Label={"Bank"}
+                        placeholder={"Select Bank..."}
+                        ValueId={BankId === ""}
+                        setValueId={setBankId}
+                        ValueName={
+                          BankName === "" ? "Select Bank..." : BankName
+                        }
+                        setValueName={setBankName}
+                        Values={[
+                          { _id: 1, name: "National Bank of Pakistan" },
+                          { _id: 2, name: "Habib Bank Limited" },
+                          { _id: 3, name: "United Bank Limited" },
+                          { _id: 4, name: "MCB Bank Limited" },
+                          { _id: 5, name: "Allied Bank Limited" },
+                          { _id: 6, name: "Bank Alfalah Limited" },
+                          { _id: 7, name: "Askari Bank Limited" },
+                          { _id: 8, name: "Faysal Bank Limited" },
+                          { _id: 9, name: "Bank Al-Habib Limited" },
+                          { _id: 10, name: "Habib Metropolitan Bank" },
+                          { _id: 11, name: "Soneri Bank Limited" },
+                          {
+                            _id: 12,
+                            name: "Standard Chartered Bank",
+                          },
+                          { _id: 13, name: "Summit Bank Limited" },
+                          { _id: 14, name: "Silkbank Limited" },
+                          { _id: 15, name: "Sindh Bank Limited" },
+                          { _id: 16, name: "BankIslami Pakistan Limited" },
+                          { _id: 17, name: "Al Baraka Bank" },
+                          { _id: 18, name: "Dubai Islamic Bank" },
+                          { _id: 19, name: "JS Bank Limited" },
+                          { _id: 20, name: "Meezan Bank Limited" },
+                        ]}
+                      />
+                      <AuthInput
+                        id="account-no"
+                        Type="text"
+                        label="Account No"
+                        placeholder="Enter Account Number..."
+                        required={true}
+                        Value={AccountNo}
+                        setValue={setAccountNo}
+                        readonly={false}
+                        disabled={false}
+                      />
+                    </>
+                  )}
               </div>
             </form>
             {Loading ? (

@@ -57,7 +57,7 @@ export default function ItemSummaryTable({ rows, columns, isActive_ }) {
                       color: "white",
                       fontWeight: "bold",
                       fontSize: "1.1rem",
-                      fontFamily: "'Raleway', sans-serif",
+                      fontFamily: "'Roboto', sans-serif",
                     }}
                   >
                     {column.label}

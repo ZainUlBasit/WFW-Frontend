@@ -231,23 +231,23 @@ const CustomerReturn = () => {
           <div className=" h-full py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
             <div className="h-full flex justify-center items-center ml-[15px]">
               <button
-                className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
                 onClick={onSubmit}
               >
                 Add Bill
               </button>
             </div>
             <div>
-              <div className="flex pr-[10px] text-[1.3rem] mb-[5px] font-[raleway] font-[700]">
+              <div className="flex pr-[10px] text-[1.3rem] mb-[5px] font-[Roboto] font-[700]">
                 <div className="w-[130px] text-right mr-[15px]">Total:</div>
                 <div className="w-[100px]">{Number(Total)} /-</div>
               </div>
               <div className="flex mt-[0px] mr-[10px] text-[1.3rem]">
-                <div className="w-[130px] mr-[15px] font-[raleway] font-[700] text-right">
+                <div className="w-[130px] mr-[15px] font-[Roboto] font-[700] text-right">
                   Discount:
                 </div>
                 <input
-                  className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
+                  className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[Roboto]  font-[700] w-[100px]"
                   type="number"
                   name="discountAmount"
                   id="discountAmount"
@@ -255,7 +255,7 @@ const CustomerReturn = () => {
                   onChange={(e) => setDiscount(e.target.value)}
                 />
               </div>
-              <div className="flex pr-[10px] text-[1.3rem] mt-[5px] font-[raleway] font-[700]">
+              <div className="flex pr-[10px] text-[1.3rem] mt-[5px] font-[Roboto] font-[700]">
                 <div className="w-[130px] text-right mr-[15px]">
                   Grand Total:
                 </div>
@@ -269,7 +269,7 @@ const CustomerReturn = () => {
       ) : null}
 
       {/* <div className="flex flex-col items-center w-full">
-        <div className="flex w-[50%] justify-between bg-[gray] py-[5px] pl-[8px] text-white font-[700] font-[raleway] pr-[8px]">
+        <div className="flex w-[50%] justify-between bg-[gray] py-[5px] pl-[8px] text-white font-[700] font-[Roboto] pr-[8px]">
           <h4>Item Name</h4>
           <h4>Item Quantity</h4>
           <h4>Item Price</h4>
@@ -277,7 +277,7 @@ const CustomerReturn = () => {
         </div>
         {ReturnItems.map((val, i) => {
           return (
-            <div className="flex w-[50%] justify-between font-[700] font-[raleway] pr-[8px]">
+            <div className="flex w-[50%] justify-between font-[700] font-[Roboto] pr-[8px]">
               <h4>{val.itemName}</h4>
               <h4>{val.itemQuantity}</h4>
               <h4>{val.itemPrice}</h4>

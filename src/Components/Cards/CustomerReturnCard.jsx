@@ -130,7 +130,7 @@ const CustomerReturnCard = ({
                     <div className="flex w-full">
                       <input
                         type="text"
-                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Roboto] font-bold"
                         placeholder="Search...."
                         value={SearchText}
                         onChange={(e) => setSearchText(e.target.value)}
@@ -147,7 +147,7 @@ const CustomerReturnCard = ({
                       .map((Comp, i) => {
                         return (
                           <div
-                            className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                            className="flex gap-x-3 items-center cursor-pointer font-bold font-[Roboto] text-xl"
                             onClick={() => {
                               handleClose();
                               setSelect({
@@ -252,8 +252,8 @@ const CustomerReturnCard = ({
                 <button
                   className="bg-white text-[#5A4AE3] px-3 py-2 border-2 border-white hover:bg-[#5A4AE3] hover:text-white hover:rounded-lg transition-all ease-in-out duration-500 font-bold"
                   onClick={() => {
-                    if (ItemCode === "" || ItemQty === "")
-                      showErrorToast("Please enter item code/qty");
+                    if (ItemCode === "" || ItemQty === "" || ItemPrice === "")
+                      showErrorToast("Please enter item code/qty/price");
                     else {
                       setNewItems([
                         ...NewItems,

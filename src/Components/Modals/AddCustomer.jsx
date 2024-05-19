@@ -128,7 +128,7 @@ const AddCustomerModal = ({ setOpen, open }) => {
           id="modal-modal-title"
           variant="h6"
           component="h2"
-          style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+          style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
           className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3]"
         >
           <AssignmentReturnIcon
@@ -189,7 +189,9 @@ const AddCustomerModal = ({ setOpen, open }) => {
                       </StyledLabel>
                       <StyledInput
                         value={Cnic}
-                        onChange={(e) => setCnic(e.target.value)}
+                        onChange={(e) => {
+                          if (Cnic.length < 13) setCnic(e.target.value);
+                        }}
                         id="cnic"
                         type="text"
                         name="cnic"
@@ -205,7 +207,9 @@ const AddCustomerModal = ({ setOpen, open }) => {
                       </StyledLabel>
                       <StyledInput
                         value={Contact}
-                        onChange={(e) => setContact(e.target.value)}
+                        onChange={(e) => {
+                          if (Contact.length < 11) setContact(e.target.value);
+                        }}
                         id="contact"
                         type="text"
                         name="contact"
@@ -323,7 +327,7 @@ const AddCustomerModal = ({ setOpen, open }) => {
               </div>
             </form>
 
-            <div className="flex items-center flex-col font-[raleway]">
+            <div className="flex items-center flex-col font-[Roboto]">
               {!Loading ? (
                 <StyledButton primary onClick={onSubmit}>
                   ADD CUSTOMER

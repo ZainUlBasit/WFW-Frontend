@@ -19,7 +19,7 @@ export default function LedgerTable({ rows, setRows, setTotal, Bill }) {
   }
   const invoiceTotal = getTotal(rows);
   const rowCellStyle = {
-    fontFamily: "raleway",
+    fontFamily: "Roboto",
     fontWeight: "700",
     fontSize: "1.1rem",
     color: "#5a4ae3",
@@ -41,7 +41,7 @@ export default function LedgerTable({ rows, setRows, setTotal, Bill }) {
                   color: "white",
                   fontWeight: "bold",
                   fontSize: "1.1rem",
-                  fontFamily: "'Raleway', sans-serif",
+                  fontFamily: "'Roboto', sans-serif",
                 }}
               >
                 Action
@@ -58,7 +58,7 @@ export default function LedgerTable({ rows, setRows, setTotal, Bill }) {
                     color: "white",
                     fontWeight: "bold",
                     fontSize: "1.1rem",
-                    fontFamily: "'Raleway', sans-serif",
+                    fontFamily: "'Roboto', sans-serif",
                   }}
                 >
                   {item.label}

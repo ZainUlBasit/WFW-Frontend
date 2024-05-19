@@ -24,7 +24,7 @@ const SideMenuBtn = ({ path, icon, title }) => {
         width: "100%",
         height: "14vh",
         textDecoration: "none",
-        fontFamily: "raleway",
+        fontFamily: "Roboto",
         fontSize: "16px",
         fontWeight: "bold",
         backgroundColor: isHovered ? "#5a4ae3" : "#fff",

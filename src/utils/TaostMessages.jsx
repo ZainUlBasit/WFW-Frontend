@@ -16,7 +16,7 @@ export const showSuccessToast = (message) => {
 export const showErrorToast = (message) => {
   toast.error(message, {
     position: "top-right",
-    autoClose: 3000,
+    autoClose: false, // Disable auto close
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -28,7 +28,8 @@ export const showErrorToast = (message) => {
 export const showWarningToast = (message) => {
   toast.warning(message, {
     position: "top-right",
-    autoClose: 3000,
+    autoClose: false, // Disable auto close
+    // autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,

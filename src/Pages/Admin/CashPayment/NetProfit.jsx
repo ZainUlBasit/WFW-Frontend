@@ -45,7 +45,7 @@ const NetProfit = () => {
             Net Profit
           </div>
           <div className="Body">
-            <div className="pr-[10px] pl-[10px] font-[raleway] flex w-[100%] justify-between mt-[12px] sm:flex-wrap md:flex-nowrap ">
+            <div className="pr-[10px] pl-[10px] font-[Roboto] flex w-[100%] justify-between mt-[12px] sm:flex-wrap md:flex-nowrap ">
               <DatePickerComp
                 title={"From Date"}
                 value={fromDate}
@@ -59,7 +59,7 @@ const NetProfit = () => {
             </div>
             <div className="Button flex justify-center py-[20px] border-b-[2px] border-b-white mb-[10px]">
               <button
-                className="bg-[#5a4ae3] hover:bg-white text-white hover:text-[#5a4ae3] border-[2px] hover:rounded-[10px] transition-all duration-1000 border-white py-[8px] px-[15px] text-[1.2rem] font-[700] font-[raleway]"
+                className="bg-[#5a4ae3] hover:bg-white text-white hover:text-[#5a4ae3] border-[2px] hover:rounded-[10px] transition-all duration-1000 border-white py-[8px] px-[15px] text-[1.2rem] font-[700] font-[Roboto]"
                 onClick={() => setshowReport(true)}
               >
                 Show Report

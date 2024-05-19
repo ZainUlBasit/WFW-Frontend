@@ -132,7 +132,7 @@ const ModalAddStock = ({ AddStockModal, setAddStockModal }) => {
             id="modal-modal-title"
             variant="h6"
             component="h2"
-            style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+            style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
             className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-0 text-[#5A4AE3]"
           >
             <BookmarkAddIcon
@@ -183,7 +183,7 @@ const ModalAddStock = ({ AddStockModal, setAddStockModal }) => {
                           );
                           if (selectedItem) {
                             setItemID(selectedItem._id);
-                            setItemPurchase(selectedItem.purchase);
+                            // setItemPurchase(selectedItem.purchase);
                           } else {
                             // Handle the case where the selected item is not found
                           }
@@ -201,6 +201,22 @@ const ModalAddStock = ({ AddStockModal, setAddStockModal }) => {
                     </div>
                   </InputWrapper>
                 )}
+                {/* Purchase */}
+                <InputWrapper>
+                  <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">
+                    <StyledLabel for="itemUnit">
+                      <ProductionQuantityLimitsIcon className="LabelIcon" />
+                    </StyledLabel>
+                    <StyledInput
+                      id="itemPurchase"
+                      type="number"
+                      name="itemPurchase"
+                      value={ItemPurchase}
+                      onChange={(e) => setItemPurchase(e.target.value)}
+                      placeholder="Enter quantity"
+                    />
+                  </div>
+                </InputWrapper>
                 {/* Quantity */}
                 <InputWrapper>
                   <div className="bg-[#5A4AE3] flex py-[3px] rounded-[5px]">

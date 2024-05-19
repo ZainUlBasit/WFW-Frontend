@@ -66,7 +66,7 @@ const InvoiceSearch = ({ DefOption, Options, setSelect, Select }) => {
               <div className="flex w-full">
                 <input
                   type="text"
-                  className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                  className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Roboto] font-bold"
                   placeholder="Search...."
                   value={SearchText}
                   onChange={(e) => setSearchText(e.target.value)}
@@ -75,7 +75,7 @@ const InvoiceSearch = ({ DefOption, Options, setSelect, Select }) => {
               {Options.map((Comp, i) => {
                 return (
                   <div
-                    className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                    className="flex gap-x-3 items-center cursor-pointer font-bold font-[Roboto] text-xl"
                     onClick={() => {
                       handleClose();
                       setSelect({

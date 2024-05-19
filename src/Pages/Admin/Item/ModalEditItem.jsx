@@ -204,7 +204,7 @@ const ModalEditItem = ({ setOpen, open, state }) => {
             variant="h6"
             component="h2"
             style={{
-              fontFamily: "'Raleway', sans-serif",
+              fontFamily: "'Roboto', sans-serif",
               fontWeight: "bold",
               padding: "0px !important",
             }}

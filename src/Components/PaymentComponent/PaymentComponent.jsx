@@ -12,7 +12,7 @@ const PaymentComponent = ({ title, data, setOpen, type }) => {
 
           <div>
             <div className="Header text-white flex justify-between py-[5px] h-[8vh] px-[10px] border-b-[2px] border-b-white">
-              <div className="h-full flex justify-center items-center text-2xl font-[700] font-[raleway] bg-[#5a4ae3] text-white">
+              <div className="h-full flex justify-center items-center text-2xl font-[700] font-[Roboto] bg-[#5a4ae3] text-white">
                 Payments
               </div>
               <button

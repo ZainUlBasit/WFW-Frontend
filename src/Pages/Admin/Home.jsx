@@ -125,10 +125,8 @@ const Home = () => {
   // loading
   const [Loading, setLoading] = useState(false);
 
-  
   const dispatch = useDispatch();
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
   return (
@@ -143,8 +141,8 @@ const Home = () => {
         <div
           className={
             isActive_
-              ? "ml-[120px] pt-[calc(10vh+15px)] bg-[white] inline-flex flex-col w-[calc(100%-120px)] transition-all px-5 font-[raleway]"
-              : "pt-[calc(10vh+15px)] inline-flex flex-col w-full transition-all px-5 bg-[white] font-[raleway]"
+              ? "ml-[120px] pt-[calc(10vh+15px)] bg-[white] inline-flex flex-col w-[calc(100%-120px)] transition-all px-5 font-[Roboto]"
+              : "pt-[calc(10vh+15px)] inline-flex flex-col w-full transition-all px-5 bg-[white] font-[Roboto]"
           }
         >
           {/* Cards */}
@@ -170,7 +168,7 @@ const Home = () => {
               {/* <RevenueChart width={900} height={500} /> */}
             </div>
             <div className="flex flex-col justify-start bg-[aliceblue] items-center h-[380px] w-[300px] border-[2px] border-[#5a4ae3] rounded-b-[10px]">
-              <div className="flex flex-col w-full text-[1.2rem] font-bold font-[raleway] select-none mb-[20px]">
+              <div className="flex flex-col w-full text-[1.2rem] font-bold font-[Roboto] select-none mb-[20px]">
                 <div className="bg-[#5a4ae3] text-white w-full px-[10px] py-[5px]">
                   Total Payable
                 </div>
@@ -178,7 +176,7 @@ const Home = () => {
                   {TotalPay}/-
                 </div>
               </div>
-              <div className="flex flex-col w-full text-[1.2rem] font-bold font-[raleway] select-none">
+              <div className="flex flex-col w-full text-[1.2rem] font-bold font-[Roboto] select-none">
                 <div className="bg-[#5a4ae3] text-white w-full px-[10px] py-[5px]">
                   Total Recievable
                 </div>

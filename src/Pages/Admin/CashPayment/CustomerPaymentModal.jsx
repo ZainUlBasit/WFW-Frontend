@@ -116,7 +116,7 @@ const PaymentModal = ({ title, open, setOpen, data }) => {
           id="modal-modal-title"
           variant="h6"
           component="h2"
-          style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+          style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
           className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-4 text-[#5A4AE3] "
         >
           <ReceiptIcon className="mr-[5px]" style={{ fontSize: "40px" }} />{" "}
@@ -186,7 +186,7 @@ const PaymentModal = ({ title, open, setOpen, data }) => {
                       <div className="flex w-full">
                         <input
                           type="text"
-                          className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                          className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Roboto] font-bold"
                           placeholder="Search...."
                           value={SearchText}
                           onChange={(e) => setSearchText(e.target.value)}
@@ -203,7 +203,7 @@ const PaymentModal = ({ title, open, setOpen, data }) => {
                         .map((Comp, i) => {
                           return (
                             <div
-                              className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                              className="flex gap-x-3 items-center cursor-pointer font-bold font-[Roboto] text-xl"
                               onClick={() => {
                                 handleClose();
                                 props.setSelectCompany({

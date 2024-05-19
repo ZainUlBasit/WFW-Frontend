@@ -90,7 +90,7 @@ export const FormFinal = styled.div`
   padding-bottom: 10px;
   a {
     text-decoration: none;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 1.7ch;
     font-weight: 500;
     width: 100%;
@@ -108,7 +108,7 @@ export const FormFinal = styled.div`
     height: 100% !important;
     color: #5a4ae3;
     font-weight: bold !important;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 1.7ch;
   } */
   .forgotLink {
@@ -130,7 +130,7 @@ export const FormHeader = styled.h1`
   margin: 0px;
   padding: 0px;
   text-align: center;
-  font-family: "Raleway", sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #5a4ae3;
   display: flex;
   flex-direction: column;
@@ -170,7 +170,7 @@ export const FormHeader = styled.h1`
   p {
     margin: 0;
     margin-top: -5px;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 15px;
     font-weight: 500;
   }
@@ -200,7 +200,7 @@ export const StyledForm = styled.form`
     margin-top: 13px;
     /* .rightSide {
       font-size: 14.8px;
-      font-family: raleway !important;
+      font-family: Roboto !important;
       color: #5a4ae3;
       font-weight: 700;
       display: flex;
@@ -211,7 +211,7 @@ export const StyledForm = styled.form`
     } */
     .leftSide {
       font-size: 14.8px;
-      font-family: raleway !important;
+      font-family: Roboto !important;
       color: #5a4ae3;
       font-weight: bold;
       display: flex;
@@ -254,7 +254,7 @@ export const InputWrapper = styled.div`
     outline: none;
     /* padding: 8px 0px; */
     font-size: 17px;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: 600;
     color: #5a4ae3;
     border: none;
@@ -304,7 +304,7 @@ export const StyledButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Raleway", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1.8ch;
   font-weight: bold;
   color: white;

@@ -81,11 +81,11 @@ export const FormFinal = styled.div`
   padding-top: 10px;
   padding-bottom: 0px;
   .FormHead {
-    /* mt-[-30px] p-[0px] w-[100%] font-[Raleway] text-3xl font-bold text-[#5A4AE3] flex flex-col justify-center items-center */
+    /* mt-[-30px] p-[0px] w-[100%] font-[Roboto] text-3xl font-bold text-[#5A4AE3] flex flex-col justify-center items-center */
     margin-top: 0px;
     padding: 0px;
     width: 100%;
-    font-family: Raleway;
+    font-family: Roboto;
     font-size: 1.875rem /* 30px */;
     line-height: 2.25rem /* 36px */;
     font-weight: bold;
@@ -104,7 +104,7 @@ export const FormFinal = styled.div`
   }
   a {
     text-decoration: none;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 1.7ch;
     font-weight: 500;
     width: 100%;
@@ -122,7 +122,7 @@ export const FormFinal = styled.div`
     height: 100% !important;
     color: #5a4ae3;
     font-weight: bold !important;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 1.7ch;
   }
   .forgotLink {
@@ -185,7 +185,7 @@ export const InputWrapper = styled.div`
     outline: none;
     padding: 8px 0px;
     font-size: 16px;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: 600;
     color: #5a4ae3;
     border: none;
@@ -204,7 +204,7 @@ export const InputWrapper = styled.div`
     outline: none;
     padding: 4px 0px;
     font-size: 16px;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: 600;
     color: #5a4ae3 !important;
     border: none;
@@ -221,7 +221,7 @@ export const InputWrapper = styled.div`
   .dropDownList {
     /* background-color: #5A4AE3 !important; */
     color: #5a4ae3 !important;
-    font-family: "Raleway", sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: 600;
     width: 100%;
     border-radius: 0px 5px 5px 0px;
@@ -270,7 +270,7 @@ export const StyledButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Raleway", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 2.3ch;
   font-weight: bold;
   color: white;

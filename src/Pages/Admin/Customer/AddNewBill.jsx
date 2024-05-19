@@ -24,7 +24,11 @@ import {
   showSuccessToast,
   showWarningToast,
 } from "../../../utils/TaostMessages";
-import { CreatePayment, CreateTransaction } from "../../../Https";
+import {
+  CheckInvoiceNoApi,
+  CreatePayment,
+  CreateTransaction,
+} from "../../../Https";
 import { fetchItems } from "../../../store/ItemSlice";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
 
@@ -37,6 +41,8 @@ const AddNewBill = () => {
   const [Total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [Payment, setPayment] = useState("");
+  const [InvoiceNo, setInvoiceNo] = useState("");
+  const [InvoiceNoExists, setInvoiceNoExists] = useState(true);
   const [open, setOpen] = useState(false);
   const [SelectCustomer, setSelectCustomer] = useState({
     _name: "",
@@ -50,6 +56,7 @@ const AddNewBill = () => {
   const [CustomerID, setCustomerID] = useState("");
   const [CustomerName, setCustomerName] = useState("");
   const [CustomerAddress, setCustomerAddress] = useState("");
+  const [BillNoFoccused, setBillNoFoccused] = useState(true);
   const [curDate, setCurDate] = useState(
     new Date().toISOString().substr(0, 10)
   );
@@ -192,6 +199,7 @@ const AddNewBill = () => {
         date: curDate,
         items: NewItems,
         discount: discount,
+        invoice_no: InvoiceNo,
       });
       console.log("transaction: ", response);
       if (!response.data?.success) showErrorToast(response.data?.error?.msg);
@@ -257,6 +265,23 @@ const AddNewBill = () => {
     dispatch(fetchItems(uData));
   }, []);
 
+  useEffect(() => {
+    const check_bill_no = async () => {
+      if (!BillNoFoccused) {
+        try {
+          const response = await CheckInvoiceNoApi({
+            invoice_no: Number(InvoiceNo),
+          });
+          setInvoiceNoExists(response?.data?.data?.payload?.exists);
+        } catch (error) {
+          console.log(error);
+          setInvoiceNoExists(false);
+        }
+      }
+    };
+    check_bill_no();
+  }, [BillNoFoccused, InvoiceNo]);
+
   return (
     <div className="transition-all">
       <Navbar />
@@ -304,57 +329,10 @@ const AddNewBill = () => {
           {SelectCustomer.found ? (
             <div className="wrapper w-[100%] flex justify-center items-center">
               <div className="py-[10px] w-[90%] flex justify-between items-center bg-[#5a4ae3] text-white">
-                <div className="h-full flex flex-col gap-y-2 justify-center items-center ml-[15px]">
-                  {Loading ? (
-                    <AddingLoader />
-                  ) : (
-                    <>
-                      <button
-                        className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                        onClick={(e) => {
-                          setLoading(true);
-                          onSubmit(e);
-                        }}
-                      >
-                        Add Bill
-                      </button>
-                      <PDFDownloadLink
-                        document={
-                          <AddNewBillReport
-                            Data={NewItems}
-                            cTotal={Total.toFixed(2)}
-                            cDiscount={discount}
-                            cGrand={(Number(Total) - Number(discount)).toFixed(
-                              2
-                            )}
-                            bBillNo={CurrentBillNo}
-                            bDate={curDate}
-                            cName={CustomerName}
-                            cAddress={CustomerAddress}
-                          />
-                        }
-                        fileName={`${CustomerName}`}
-                      >
-                        <button
-                          className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
-                          onClick={(e) => {
-                            setLoading(true);
-                            setTimeout(() => {
-                              resetStates();
-                              onSubmit(e);
-                            }, 4000);
-                          }}
-                        >
-                          Add & Print
-                        </button>
-                      </PDFDownloadLink>
-                    </>
-                  )}
-                </div>
-                <div className="w-[210px] justify-end flex flex-col items-center">
+                <div className="w-[230px] justify-end flex flex-col items-center">
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
                     {/* <input
-                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
+                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[Roboto]  font-[700] w-[170px] py-[5px]"
                       type="number"
                       name="billno"
                       id="billno"
@@ -378,7 +356,7 @@ const AddNewBill = () => {
                   </div>
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
                     <input
-                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
+                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[Roboto]  font-[700] w-[170px] py-[5px]"
                       type="date"
                       name="date"
                       id="date"
@@ -386,16 +364,31 @@ const AddNewBill = () => {
                       onChange={(e) => setCurDate(e.target.value)}
                     />
                   </div>
-                  <div className="flex pr-[10px] text-[1.1rem] mb-[5px] font-[raleway] font-[700]">
+                  <div className="flex mt-[0px] mr-[10px] text-[1.1rem]">
+                    <div className="w-[110px] mr-[15px] font-[Roboto] font-[700] text-right">
+                      Bill No:
+                    </div>
+                    <input
+                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[Roboto]  font-[700] w-[100px]"
+                      type="number"
+                      name="bill_number"
+                      id="bill_number"
+                      value={InvoiceNo}
+                      onChange={(e) => setInvoiceNo(e.target.value)}
+                      onFocus={() => setBillNoFoccused(true)}
+                      onBlur={() => setBillNoFoccused(false)}
+                    />
+                  </div>
+                  <div className="flex pr-[10px] text-[1.1rem] mb-[5px] font-[Roboto] font-[700]">
                     <div className="w-[110px] text-right mr-[15px]">Total:</div>
                     <div className="w-[100px]">{Number(Total)} /-</div>
                   </div>
                   <div className="flex mt-[0px] mr-[10px] text-[1.1rem]">
-                    <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
+                    <div className="w-[110px] mr-[15px] font-[Roboto] font-[700] text-right">
                       Discount:
                     </div>
                     <input
-                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
+                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[Roboto]  font-[700] w-[100px]"
                       type="number"
                       name="discountAmount"
                       id="discountAmount"
@@ -404,11 +397,11 @@ const AddNewBill = () => {
                     />
                   </div>
                   <div className="flex mt-1 mr-[10px] text-[1.1rem]">
-                    <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
+                    <div className="w-[110px] mr-[15px] font-[Roboto] font-[700] text-right">
                       Payment:
                     </div>
                     <input
-                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
+                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[Roboto]  font-[700] w-[100px]"
                       type="number"
                       name="paymentAmount"
                       id="paymentAmount"
@@ -417,7 +410,7 @@ const AddNewBill = () => {
                       onChange={(e) => setPayment(e.target.value)}
                     />
                   </div>
-                  <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[raleway] font-[700]">
+                  <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[Roboto] font-[700]">
                     <div className="w-[110px] text-right mr-[15px]">
                       Grand Total:
                     </div>
@@ -425,6 +418,55 @@ const AddNewBill = () => {
                       {Number(Total) - Number(discount)} /-
                     </div>
                   </div>
+                </div>
+                <div className="h-full flex flex-col gap-y-2 justify-center items-center mr-[15px]">
+                  {Loading ? (
+                    <AddingLoader />
+                  ) : (
+                    <>
+                      <button
+                        className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                        onClick={(e) => {
+                          setLoading(true);
+                          onSubmit(e);
+                        }}
+                      >
+                        Add Bill
+                      </button>
+                      {!InvoiceNoExists && (
+                        <PDFDownloadLink
+                          document={
+                            <AddNewBillReport
+                              Data={NewItems}
+                              cTotal={Total.toFixed(2)}
+                              cDiscount={discount}
+                              cGrand={(
+                                Number(Total) - Number(discount)
+                              ).toFixed(2)}
+                              bBillNo={CurrentBillNo}
+                              bDate={curDate}
+                              cName={CustomerName}
+                              cAddress={CustomerAddress}
+                            />
+                          }
+                          fileName={`${CustomerName}`}
+                        >
+                          <button
+                            className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]"
+                            onClick={(e) => {
+                              setLoading(true);
+                              setTimeout(() => {
+                                resetStates();
+                                onSubmit(e);
+                              }, 4000);
+                            }}
+                          >
+                            Add & Print
+                          </button>
+                        </PDFDownloadLink>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>

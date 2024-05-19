@@ -128,7 +128,7 @@ const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
             "DD/MM/YY hh:mm:ss A"
           )} - Cash Ledger Report`}
         >
-          <button className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[#5a4ae3] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]">
+          <button className="bg-white text-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[#5a4ae3] border-[solid] hover:bg-[#5a4ae3] hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem]">
             Print
           </button>
         </PDFDownloadLink>

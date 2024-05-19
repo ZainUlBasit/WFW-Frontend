@@ -40,7 +40,7 @@ export default function SimpleTableComp({ rows }) {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "1.1rem",
-                fontFamily: "'Raleway', sans-serif",
+                fontFamily: "'Roboto', sans-serif",
               }}
             >
               Name
@@ -51,7 +51,7 @@ export default function SimpleTableComp({ rows }) {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "1.1rem",
-                fontFamily: "'Raleway', sans-serif",
+                fontFamily: "'Roboto', sans-serif",
               }}
               align="right"
             >
@@ -63,7 +63,7 @@ export default function SimpleTableComp({ rows }) {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "1.1rem",
-                fontFamily: "'Raleway', sans-serif",
+                fontFamily: "'Roboto', sans-serif",
               }}
               align="right"
             >
@@ -75,7 +75,7 @@ export default function SimpleTableComp({ rows }) {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "1.1rem",
-                fontFamily: "'Raleway', sans-serif",
+                fontFamily: "'Roboto', sans-serif",
               }}
               align="right"
             >
@@ -87,7 +87,7 @@ export default function SimpleTableComp({ rows }) {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "1.1rem",
-                fontFamily: "'Raleway', sans-serif",
+                fontFamily: "'Roboto', sans-serif",
               }}
               align="right"
             >

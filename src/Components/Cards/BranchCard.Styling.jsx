@@ -40,7 +40,7 @@ export const StyledWrapper = styled.div.attrs({
 `;
 
 export const StyledShop = styled.div.attrs({
-  className: "relative font-[raleway]",
+  className: "relative font-[Roboto]",
 })`
   .LabelIcon {
     font-size: 3em;

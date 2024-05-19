@@ -74,7 +74,7 @@ export default function ItemLegderTable({
                       color: "white",
                       fontWeight: "bold",
                       fontSize: "1.1rem",
-                      fontFamily: "'Raleway', sans-serif",
+                      fontFamily: "'Roboto', sans-serif",
                     }}
                   >
                     {column.label}
@@ -98,7 +98,7 @@ export default function ItemLegderTable({
                         <TableCell
                           // id={c_id}
                           onClick={HandleDoubleClick}
-                          className={"font-[raleway] select-none"}
+                          className={"font-[Roboto] select-none"}
                           // key={column.id}
                           // align={column.align}
                           style={{ fontWeight: "700", fontSize: "0.95rem" }}

@@ -47,9 +47,11 @@ const ItemSummary = () => {
   }, [ItemSummaryData.data]);
 
   const totalQty = useMemo(() => {
-    return ItemSummaryData.data.reduce((total, item) => {
-      return total + item.qty;
-    }, 0);
+    return ItemSummaryData.data
+      .filter((dt) => dt.code !== "SH")
+      .reduce((total, item) => {
+        return total + item.qty;
+      }, 0);
   }, [ItemSummaryData.data]);
 
   return (
@@ -70,64 +72,106 @@ const ItemSummary = () => {
             />
           </div>
         </div>
-        {ItemSummaryData.data.length !== 0 &&
-        ItemSummaryData.loading === false ? (
-          <>
-            <div>
-              <ItemSummaryTable
-                rows={ItemSummaryData.loading ? [{}] : ItemSummaryData.data}
-                columns={Columns}
-                isActive_={false}
-              />
-            </div>
-            <div className="flex flex-col justify-center items-center">
-              <div className="flex font-bold text-2xl">
-                Total Qty: {Number(totalQty).toLocaleString()}
-              </div>
-              <div className="flex font-bold text-2xl">
-                Total Price: {Number(totalPrice).toLocaleString()}
-              </div>
-              <div className="flex font-bold text-2xl">
-                Total Amount: {Number(totalAmount).toLocaleString()}
-              </div>
-            </div>
-            <div className="flex justify-center items-center">
-              <PDFDownloadLink
-                document={
-                  <ItemSummaryReport
-                    Data={ItemSummaryData.data}
-                    date={moment(new Date()).format("DD/MM/YYYY")}
-                    name={
-                      CustomerState.data.find((dt) => dt._id === UserId)
-                        ?.name || "-"
-                    }
-                    address={
-                      CustomerState.data.find((dt) => dt._id === UserId)
-                        ?.address || "not specified"
-                    }
-                    total={totalAmount}
-                    qty={totalQty}
-                    price={totalPrice}
-                  />
-                }
-                fileName={`${
-                  CustomerState.data.find((dt) => dt._id === UserId)?.name ||
-                  "ItemSummary"
-                }`}
-              >
-                <button
-                  className="text-white bg-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[raleway] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:rounded-2xl hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem] text-3xl"
-                  onClick={(e) => {
-                    resetStates();
-                  }}
-                >
-                  Download Summary
-                </button>
-              </PDFDownloadLink>
-            </div>
-          </>
-        ) : (
+        {ItemSummaryData.loading ? (
           <DataLoader />
+        ) : (
+          ItemSummaryData.data.length !== 0 &&
+          ItemSummaryData.loading === false && (
+            <>
+              <div>
+                <ItemSummaryTable
+                  rows={ItemSummaryData.loading ? [{}] : ItemSummaryData.data}
+                  columns={Columns}
+                  isActive_={false}
+                />
+              </div>
+              <div className="flex flex-col justify-center items-center">
+                <div className="flex font-bold text-2xl">
+                  Total Qty: {Number(totalQty).toLocaleString()}
+                </div>
+
+                <div className="flex font-bold text-2xl">
+                  Total Amount: {Number(totalAmount).toLocaleString()}
+                </div>
+                <div className="flex font-bold text-2xl">
+                  Return:{" "}
+                  {Number(
+                    CustomerState.data.find((dt) => dt._id === UserId)
+                      ?.return_amount
+                  ).toLocaleString()}
+                </div>
+                <div className="flex font-bold text-2xl">
+                  Paid:{" "}
+                  {Number(
+                    CustomerState.data.find((dt) => dt._id === UserId)?.paid
+                  ).toLocaleString()}
+                </div>
+                <div className="flex font-bold text-2xl">
+                  Discount:{" "}
+                  {Number(
+                    CustomerState.data.find((dt) => dt._id === UserId)?.discount
+                  ).toLocaleString()}
+                </div>
+                <div className="flex font-bold text-2xl">
+                  Remaining:{" "}
+                  {Number(
+                    CustomerState.data.find((dt) => dt._id === UserId)
+                      ?.remaining
+                  ).toLocaleString()}
+                </div>
+              </div>
+              <div className="flex justify-center items-center">
+                <PDFDownloadLink
+                  document={
+                    <ItemSummaryReport
+                      Data={ItemSummaryData.data}
+                      date={moment(new Date()).format("DD/MM/YYYY")}
+                      name={
+                        CustomerState.data.find((dt) => dt._id === UserId)
+                          ?.name || "-"
+                      }
+                      address={
+                        CustomerState.data.find((dt) => dt._id === UserId)
+                          ?.address || "not specified"
+                      }
+                      cRemaining={
+                        CustomerState.data.find((dt) => dt._id === UserId)
+                          ?.remaining || "not specified"
+                      }
+                      cReturn={
+                        CustomerState.data.find((dt) => dt._id === UserId)
+                          ?.return_amount
+                      }
+                      cDiscount={
+                        CustomerState.data.find((dt) => dt._id === UserId)
+                          ?.discount || "not specified"
+                      }
+                      cPaid={
+                        CustomerState.data.find((dt) => dt._id === UserId)
+                          ?.paid || "not specified"
+                      }
+                      total={totalAmount}
+                      qty={totalQty}
+                      price={totalPrice}
+                    />
+                  }
+                  fileName={`${
+                    CustomerState.data.find((dt) => dt._id === UserId)?.name ||
+                    "ItemSummary"
+                  }`}
+                >
+                  <button
+                    className="text-white bg-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:rounded-2xl hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem] text-3xl"
+                    onClick={(e) => {
+                      resetStates();
+                    }}
+                  >
+                    Download Summary
+                  </button>
+                </PDFDownloadLink>
+              </div>
+            </>
+          )
         )}
       </div>
     </>

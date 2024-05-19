@@ -42,7 +42,7 @@ export default function StockStatisticsTable() {
                     color: "white",
                     fontWeight: "bold",
                     fontSize: "1.1rem",
-                    fontFamily: "'Raleway', sans-serif",
+                    fontFamily: "'Roboto', sans-serif",
                   }}
                 >
                   {column.label}
@@ -63,7 +63,7 @@ export default function StockStatisticsTable() {
                           className={
                             column.id === "contact"
                               ? "font-[georgia]"
-                              : "font-[raleway]"
+                              : "font-[Roboto]"
                           }
                           key={column.id}
                           align={column.align}

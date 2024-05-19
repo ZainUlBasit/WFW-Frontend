@@ -10,7 +10,7 @@ const LoadingError = () => {
         loop={false}
         className="w-[200px] h-[200px]"
       />
-      <span className="font-[raleway] text-[#1886E6] font-bold text-[1.5rem]">
+      <span className="font-[Roboto] text-[#1886E6] font-bold text-[1.5rem]">
         Data Not Found...!
       </span>
     </div>

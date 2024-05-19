@@ -37,7 +37,7 @@ const ShopCard = ({
           <Typography component={"div"}>
             <ul className="flex flex-col list-disc pl-[25px] pt-[10px] sm:pl-[10px]">
               <li>
-                <div className="ListItemWrapper flex w-[360px] sm:pl-[0px] justify-between font-[raleway]">
+                <div className="ListItemWrapper flex w-[360px] sm:pl-[0px] justify-between font-[Roboto]">
                   <h1 className="select-none">
                     Accept Return Items From Customer
                   </h1>
@@ -64,7 +64,7 @@ const ShopCard = ({
                 </div>
               </li>
               <li>
-                <div className="ListItemWrapper flex w-[360px] sm:pl-[0px] justify-between font-[raleway]">
+                <div className="ListItemWrapper flex w-[360px] sm:pl-[0px] justify-between font-[Roboto]">
                   <h1 className="select-none">
                     Edit Company Invoice Items From Customer
                   </h1>
@@ -90,7 +90,7 @@ const ShopCard = ({
                 </div>
               </li>
               <li>
-                <div className="ListItemWrapper flex w-[360px] sm:pl-[0px] justify-between font-[raleway]">
+                <div className="ListItemWrapper flex w-[360px] sm:pl-[0px] justify-between font-[Roboto]">
                   <h1 className="select-none">
                     Edit Customer Invoice Items From Customer
                   </h1>

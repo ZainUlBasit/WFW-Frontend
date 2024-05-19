@@ -7,7 +7,7 @@ import CustomerSliceReducer from "./CustomerSlice";
 import CategorySliceReducer from "./CategorySlice";
 import SubCategorySliceReducer from "./SubCategorySlice";
 import ExpenseSliceReducer from "./ExpenseSlice";
-import CustomerReturnSliceReducer from "./CustomerReturnSlice";
+import CustomerReturnSlice from "./ReturnSlice";
 import CustomerTransactionSliceReducer from "./CustomerTransactionSlice";
 import AutoLoginSliceReducer from "./AuthSlice";
 import BankReducer from "./BankSlice";
@@ -29,7 +29,7 @@ export const store = configureStore({
     CategorySliceReducer,
     SubCategorySliceReducer,
     ExpenseSliceReducer,
-    CustomerReturnSliceReducer,
+    ReturnState: CustomerReturnSlice,
     CustomerTransactionSliceReducer,
     AutoLoginSliceReducer,
     BankReducer,

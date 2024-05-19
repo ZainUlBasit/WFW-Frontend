@@ -38,7 +38,7 @@ const ForgotPassword = () => {
             <div className=" flex justify-center items-center w-full">
               <img src={Lock} className="w-[100px] h-[100px]" />
             </div>
-            <h2 className="text-[2rem] font-[700] font-[raleway]">
+            <h2 className="text-[2rem] font-[700] font-[Roboto]">
               Forgot Password?
             </h2>
             <p>You can reset your password here.</p>

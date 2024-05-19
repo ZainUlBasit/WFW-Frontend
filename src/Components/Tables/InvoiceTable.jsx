@@ -34,14 +34,14 @@ const styles = {
   color: "white",
   fontWeight: "bold",
   fontSize: "1.1rem",
-  fontFamily: "'Raleway', sans-serif",
+  fontFamily: "'Roboto', sans-serif",
 };
 const stylesRows = {
   color: "#5A4AE3",
   // color: "white",
   fontWeight: "bold",
   fontSize: "1rem",
-  fontFamily: "'Raleway', sans-serif",
+  fontFamily: "'Roboto', sans-serif",
 };
 
 export default function InvoiceTable({ rows }) {

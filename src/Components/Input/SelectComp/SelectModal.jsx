@@ -3,7 +3,7 @@ import { StyledInputWrapper } from "../StyledInputWrapper";
 import { StyledLabel } from "../StyledLabel";
 
 const StyledSelect = styled.select`
-  /* pl-[5px] w-[244px] mr-[3px] ml-[7px] outline-none transition-all duration-700 text-[1rem] rounded-[5px] font-[raleway] text-[#5A4AE3] font-[600] */
+  /* pl-[5px] w-[244px] mr-[3px] ml-[7px] outline-none transition-all duration-700 text-[1rem] rounded-[5px] font-[Roboto] text-[#5A4AE3] font-[600] */
   height: 35px;
   padding-left: 5px;
   width: 244px;
@@ -14,7 +14,7 @@ const StyledSelect = styled.select`
   font-size: 1rem;
   border-radius: 0px 5px 5px 0px;
   overflow: hidden;
-  font-family: raleway;
+  font-family: Roboto;
   color: #5a4ae3;
   font-weight: 600;
   option {

@@ -11,8 +11,8 @@ import {
 import WFW_Banner from "../../assets/images/update_WFW_image.png";
 
 // Import the font files
-import RegularFont from "../../assets/fonts/Raleway-Regular.ttf";
-import BoldFont from "../../assets/fonts/Raleway-Bold.ttf";
+import RegularFont from "../../assets/fonts/Roboto-Regular.ttf";
+import BoldFont from "../../assets/fonts/Roboto-Bold.ttf";
 import { useEffect } from "react";
 import moment from "moment";
 

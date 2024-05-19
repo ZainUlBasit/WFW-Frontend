@@ -4,7 +4,7 @@ export const CustomerReturnCardWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  font-family: raleway;
+  font-family: Roboto;
   .Inner {
     width: 90%;
     background-color: #5a4ae3;

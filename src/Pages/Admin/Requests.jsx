@@ -34,7 +34,7 @@ const Requests = () => {
       ) : (
         <div className="pt-[12vh] flex justify-center items-center">
           <div className="w-[80%] border-[#5a4ae3] border-[2px] rounded-[10px] overflow-hidden pb-[10px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-            <div className="py-[10px] text-center uppercase bg-[#5a4ae3] text-white font-[raleway] font-bold text-[1.3rem] mb-[10px]">
+            <div className="py-[10px] text-center uppercase bg-[#5a4ae3] text-white font-[Roboto] font-bold text-[1.3rem] mb-[10px]">
               Customer Requests
             </div>
             <div className="px-[10px]">

@@ -11,8 +11,8 @@ import {
 import WFW_Banner from "../../assets/images/update_WFW_image.png";
 
 // Import the font files
-import RegularFont from "../../assets/fonts/Raleway-Regular.ttf";
-import BoldFont from "../../assets/fonts/Raleway-Bold.ttf";
+import RegularFont from "../../assets/fonts/Roboto-Regular.ttf";
+import BoldFont from "../../assets/fonts/Roboto-Bold.ttf";
 import { useEffect } from "react";
 
 // Register the fonts
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cell1: {
-    // fontFamily: "CustomFont",
+    fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "100px",
     fontSize: "12px",
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     paddingLeft: "5px",
   },
   cell2: {
-    // fontFamily: "CustomFont",
+    fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "130px",
     fontSize: "12px",
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     // textAlign: "center",
   },
   cell3: {
-    // fontFamily: "CustomFont",
+    fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "100px",
     fontSize: "12px",
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cell4: {
-    // fontFamily: "CustomFont",
+    fontFamily: "CustomFont",
     fontWeight: "normal",
     width: "100px",
     fontSize: "12px",
@@ -121,9 +121,10 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     display: "flex",
     flexDirection: "row",
+    borderBottom: "1px solid black",
   },
   accountInfoTitle: {
-    // fontFamily: "CustomFont",
+    fontFamily: "CustomFont",
     fontWeight: "bold",
     fontSize: "13px",
     width: "120px",
@@ -132,14 +133,14 @@ const styles = StyleSheet.create({
   },
   accountInfo: {
     width: "100px",
-    // fontFamily: "CustomFont",
-    fontWeight: "normal",
+    fontFamily: "CustomFont",
+    fontWeight: "bold",
     fontSize: "13px",
     textAlign: "right",
   },
   accountGrandWrraper: {
     width: "220px",
-    paddingVertical: 5,
+    paddingVertical: 1,
   },
 });
 
@@ -164,7 +165,7 @@ function ItemSummaryReport(props) {
         >
           <Text
             style={{
-              // fontFamily: "CustomFont",
+              fontFamily: "CustomFont",
               fontWeight: "bold",
               fontSize: "10px",
             }}
@@ -173,7 +174,7 @@ function ItemSummaryReport(props) {
           </Text>
           <Text
             style={{
-              // fontFamily: "CustomFont",
+              fontFamily: "CustomFont",
               fontWeight: "bold",
               fontSize: "10px",
             }}
@@ -196,7 +197,7 @@ function ItemSummaryReport(props) {
           <View>
             <Text
               style={{
-                // fontFamily: "CustomFont",
+                fontFamily: "CustomFont",
                 fontWeight: "bold",
                 fontSize: 25,
                 marginBottom: 15,
@@ -207,7 +208,7 @@ function ItemSummaryReport(props) {
             <View>
               <Text
                 style={{
-                  // fontFamily: "CustomFont",
+                  fontFamily: "CustomFont",
                   fontWeight: "bold",
                   fontSize: 15,
                 }}
@@ -216,7 +217,7 @@ function ItemSummaryReport(props) {
               </Text>
               <Text
                 style={{
-                  // fontFamily: "CustomFont",
+                  fontFamily: "CustomFont",
                   fontWeight: "normal",
                   fontSize: 13,
                 }}
@@ -253,7 +254,7 @@ function ItemSummaryReport(props) {
           <View>
             <Text
               style={{
-                // fontFamily: "CustomFont",
+                fontFamily: "CustomFont",
                 fontWeight: "bold",
                 fontSize: 13,
               }}
@@ -262,7 +263,7 @@ function ItemSummaryReport(props) {
             </Text>
             <Text
               style={{
-                // fontFamily: "CustomFont",
+                fontFamily: "CustomFont",
                 fontWeight: "normal",
                 fontSize: 13,
               }}
@@ -271,7 +272,7 @@ function ItemSummaryReport(props) {
             </Text>
             <Text
               style={{
-                // fontFamily: "CustomFont",
+                fontFamily: "CustomFont",
                 fontWeight: "normal",
                 fontSize: 13,
               }}
@@ -292,7 +293,7 @@ function ItemSummaryReport(props) {
               <Text
                 style={{
                   textAlign: "right",
-                  // fontFamily: "CustomFont",
+                  fontFamily: "CustomFont",
                   fontWeight: "bold",
                   fontSize: 13,
                   width: "110px",
@@ -302,7 +303,7 @@ function ItemSummaryReport(props) {
               </Text>
               <Text
                 style={{
-                  // fontFamily: "CustomFont",
+                  fontFamily: "CustomFont",
                   fontWeight: "normal",
                   fontSize: 13,
                   paddingLeft: 3,
@@ -395,14 +396,32 @@ function ItemSummaryReport(props) {
               </View>
               <View style={styles.accountGrandWrraper}>
                 <View style={styles.accountInfoCard}>
-                  <Text style={styles.accountInfoTitle}>Total Price: </Text>
-                  <Text style={styles.accountInfo}>{props.price} /-</Text>
+                  <Text style={styles.accountInfoTitle}>Total Amount: </Text>
+                  <Text style={styles.accountInfo}>{props.total} /-</Text>
                 </View>
               </View>
               <View style={styles.accountGrandWrraper}>
                 <View style={styles.accountInfoCard}>
-                  <Text style={styles.accountInfoTitle}>Total Amount: </Text>
-                  <Text style={styles.accountInfo}>{props.total} /-</Text>
+                  <Text style={styles.accountInfoTitle}>Return: </Text>
+                  <Text style={styles.accountInfo}>{props.cReturn} /-</Text>
+                </View>
+              </View>
+              <View style={styles.accountGrandWrraper}>
+                <View style={styles.accountInfoCard}>
+                  <Text style={styles.accountInfoTitle}>Paid: </Text>
+                  <Text style={styles.accountInfo}>{props.cPaid} /-</Text>
+                </View>
+              </View>
+              <View style={styles.accountGrandWrraper}>
+                <View style={styles.accountInfoCard}>
+                  <Text style={styles.accountInfoTitle}>Discount: </Text>
+                  <Text style={styles.accountInfo}>{props.cDiscount} /-</Text>
+                </View>
+              </View>
+              <View style={styles.accountGrandWrraper}>
+                <View style={styles.accountInfoCard}>
+                  <Text style={styles.accountInfoTitle}>Remaining: </Text>
+                  <Text style={styles.accountInfo}>{props.cRemaining} /-</Text>
                 </View>
               </View>
             </View>

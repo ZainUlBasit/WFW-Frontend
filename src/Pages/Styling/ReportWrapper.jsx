@@ -26,7 +26,7 @@ export const ReportStyled = styled.div`
     border: 2px solid white;
     .TitleCont {
       color: white;
-      font-family: raleway;
+      font-family: Roboto;
       font-weight: 700;
       font-size: 2.3em;
       padding: 20px 0px 10px 0px;
@@ -130,7 +130,7 @@ const ReportWrapper = (props) => {
                     <div className="flex w-full">
                       <input
                         type="text"
-                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Raleway] font-bold"
+                        className="w-full px-4 py-2 outline-none rounded-md placeholder:text-gray-500 text-black font-[Roboto] font-bold"
                         placeholder="Search...."
                         value={SearchText}
                         onChange={(e) => setSearchText(e.target.value)}
@@ -145,7 +145,7 @@ const ReportWrapper = (props) => {
                     }).map((Comp, i) => {
                       return (
                         <div
-                          className="flex gap-x-3 items-center cursor-pointer font-bold font-[Raleway] text-xl"
+                          className="flex gap-x-3 items-center cursor-pointer font-bold font-[Roboto] text-xl"
                           onClick={() => {
                             handleClose();
                             props.setSelectCompany({
@@ -177,7 +177,7 @@ const ReportWrapper = (props) => {
           </InputWrapperStyling>
         ) : null}
         {!props.Invoice ? (
-          <div className="pr-[10px] pl-[10px] font-[raleway] flex w-[100%] rounded-[10px] justify-between mt-[12px] mb-[28px] max500:flex-wrap md:flex-nowrap">
+          <div className="pr-[10px] pl-[10px] font-[Roboto] flex w-[100%] rounded-[10px] justify-between mt-[12px] mb-[28px] max500:flex-wrap md:flex-nowrap">
             <DatePickerComp
               title={"From Date"}
               value={props.fromDate}

@@ -154,7 +154,7 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
           id="modal-modal-title"
           variant="h6"
           component="h2"
-          style={{ fontFamily: "'Raleway', sans-serif", fontWeight: "bold" }}
+          style={{ fontFamily: "'Roboto', sans-serif", fontWeight: "bold" }}
           className="flex justify-center items-center border-b-2 border-[#5A4AE3] pb-4 text-[#5A4AE3] "
         >
           <AppRegistrationIcon
@@ -193,7 +193,7 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
                     <ContactPhoneIcon className="LabelIcon" />
                   </StyledLabel>
                   <IMaskInput
-                    className="pl-[5px] py-[4px] w-[244px] mr-[2px] ml-[7px] outline-none border-[2px] focus:border-b-[#5A4AE3] transition-all duration-700 text-[1.05rem] rounded-l-[0px] rounded-r-[5px] font-[raleway]  text-[#5A4AE3] font-[700]"
+                    className="pl-[5px] py-[4px] w-[244px] mr-[2px] ml-[7px] outline-none border-[2px] focus:border-b-[#5A4AE3] transition-all duration-700 text-[1.05rem] rounded-l-[0px] rounded-r-[5px] font-[Roboto]  text-[#5A4AE3] font-[700]"
                     placeholder="+92345-1234567"
                     mask={"+{92}300-0000000"}
                     // onAccept={(value, mask) => console.log(value, mask)}
@@ -227,7 +227,7 @@ const ModalEditCompany = ({ setOpen, open, selComp }) => {
                     <BadgeIcon className="LabelIcon" />
                   </StyledLabel>
                   <IMaskInput
-                    className="pl-[5px] py-[4px] w-[244px] mr-[2px] ml-[7px] outline-none border-[2px] focus:border-b-[#5A4AE3] transition-all duration-700 text-[1.05rem] rounded-l-[0px] rounded-r-[5px] font-[raleway]  text-[#5A4AE3] font-[700]"
+                    className="pl-[5px] py-[4px] w-[244px] mr-[2px] ml-[7px] outline-none border-[2px] focus:border-b-[#5A4AE3] transition-all duration-700 text-[1.05rem] rounded-l-[0px] rounded-r-[5px] font-[Roboto]  text-[#5A4AE3] font-[700]"
                     placeholder="12345-1234567-8"
                     mask={"{00000}-0000000-0"}
                     // onAccept={(value, mask) => console.log(value, mask)}

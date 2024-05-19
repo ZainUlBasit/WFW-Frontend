@@ -30,12 +30,12 @@ export const SideMenuList = styled.ul`
       width: 100% !important;
       height: 14vh !important;
       text-decoration: none !important;
-      font-family: raleway !important;
+      font-family: Roboto !important;
       font-size: 16px !important;
       font-weight: bold !important;
       :hover {
         background-color: #5a4ae3 !important;
-        color: white  !important;;
+        color: white !important;
       }
     }
   }

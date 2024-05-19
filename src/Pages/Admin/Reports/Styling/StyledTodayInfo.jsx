@@ -22,7 +22,7 @@ export const StyledTodayInfoInner = styled.div.attrs({
 
 export const StyledTodayInfoHeader = styled.div.attrs({
   className:
-    "bg-[#5a4ae3] text-white w-[100%] font-[raleway] font-[800] text-[1.3rem] flex items-center pl-[15px] border-b-[2px] border-b-[black] overflow-hidden py-[20px]",
+    "bg-[#5a4ae3] text-white w-[100%] font-[Roboto] font-[800] text-[1.3rem] flex items-center pl-[15px] border-b-[2px] border-b-[black] overflow-hidden py-[20px]",
 })`
   & {
     @media screen and (max-width: 551px) {
@@ -37,7 +37,7 @@ export const StyledTodayInfoHeader = styled.div.attrs({
 
 export const StyledTodayInfoBody = styled.div.attrs({
   className:
-    "bg-white text-black w-[100%] h-[calc(100%-12vh)] font-[raleway] flex flex-wrap py-[15px]",
+    "bg-white text-black w-[100%] h-[calc(100%-12vh)] font-[Roboto] flex flex-wrap py-[15px]",
 })`
   & {
     .shopsinfo {
