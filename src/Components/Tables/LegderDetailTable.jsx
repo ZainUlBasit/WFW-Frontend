@@ -23,7 +23,7 @@ export default function LedgerTable({ rows, setRows, setTotal, Bill }) {
     fontWeight: "700",
     fontSize: "1.1rem",
     color: "#5a4ae3",
-    textAlign: "center",
+    // textAlign: "center",
   };
   return (
     <TableContainer component={Paper} style={{ maxWidth: "100%" }}>
@@ -80,7 +80,7 @@ export default function LedgerTable({ rows, setRows, setTotal, Bill }) {
                   />
                 </TableCell>
               )}
-              <TableCell align="center" style={rowCellStyle}>
+              <TableCell align="left" style={rowCellStyle}>
                 {val.name}
               </TableCell>
               <TableCell align="left" style={rowCellStyle}>
