@@ -212,11 +212,7 @@ const CustomerReturnCard = ({
                     if (e.target.value === "") {
                       setItemAmount("");
                     } else {
-                      setItemAmount(
-                        Number(
-                          ItemState.data.find((dt) => dt.code === ItemCode).sale
-                        ) * Number(e.target.value)
-                      );
+                      setItemAmount(Number(ItemPrice) * Number(e.target.value));
                     }
                   }}
                   onBlur={(e) => {
