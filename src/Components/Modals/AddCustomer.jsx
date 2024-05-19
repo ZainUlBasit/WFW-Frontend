@@ -190,7 +190,7 @@ const AddCustomerModal = ({ setOpen, open }) => {
                       <StyledInput
                         value={Cnic}
                         onChange={(e) => {
-                          if (Cnic.length < 13) setCnic(e.target.value);
+                          setCnic(e.target.value);
                         }}
                         id="cnic"
                         type="text"
@@ -208,7 +208,7 @@ const AddCustomerModal = ({ setOpen, open }) => {
                       <StyledInput
                         value={Contact}
                         onChange={(e) => {
-                          if (Contact.length < 11) setContact(e.target.value);
+                          setContact(e.target.value);
                         }}
                         id="contact"
                         type="text"
