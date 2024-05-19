@@ -57,9 +57,9 @@ const CustomerReturnCard = ({
       const currentItem = ItemState.data.find((dt) => dt.code === ItemCode);
       if (currentItem) {
         setItemPrice(
-          data.find((dt) => dt._id === Select?.name)?.user_type === 2
-            ? currentItem?.sale_shop
-            : currentItem?.sale
+          data.find((dt) => dt._id === Select?.name)?.user_type === 1
+            ? currentItem?.sale
+            : currentItem?.sale_shop
         );
         setItemName(currentItem.name);
         setItemId(currentItem._id);
