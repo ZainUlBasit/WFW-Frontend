@@ -18,9 +18,11 @@ import AuthInputPopOver from "../../../Components/Input/CustomPopover";
 import { Popover, Typography } from "@mui/material";
 import { DeleteInvoice } from "../../../Https";
 import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
+import AddingLoader from "../../../Components/Loader/AddingLoader";
 
 const CustomerInvoiceEdit = () => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
+  const [Loading, setLoading] = useState(false);
   const invoiceNumberRef = useRef();
   const [showInvoice, setShowInvoice] = useState(false);
 
@@ -50,6 +52,7 @@ const CustomerInvoiceEdit = () => {
   }, []);
 
   const onDelete = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const response = await DeleteInvoice({
@@ -60,10 +63,19 @@ const CustomerInvoiceEdit = () => {
       if (!response.data?.success) showErrorToast(response.data?.error?.msg);
       else {
         showSuccessToast(response.data?.data?.msg);
+        setSelectInvoice({
+          bill: "",
+          selected: false,
+        });
+        setSelectCustomer({
+          name: "",
+          found: false,
+        });
       }
     } catch (err) {
       console.log(err);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -209,23 +221,25 @@ const CustomerInvoiceEdit = () => {
           </div>
         </div>
       </ReportStyled>
-      {showInvoice && SelectCustomer.found && SelectInvoice.selected ? (
+      {showInvoice && SelectCustomer.found && SelectInvoice.selected && (
         <div className="flex flex-col w-[100%] justify-center items-center">
           <CustomerInvoice
             data={customerTransaction}
             Filter={SelectInvoice.bill}
           />
           <div className="my-[10px]">
-            <button
-              className="hover:bg-[red] bg-white text-[red] hover:text-white font-[Roboto] font-bold text-[1.2rem] py-[5px] px-[10px] border-[2px] border-[red] hover:rounded-[8px] transition-all duration-500"
-              onClick={onDelete}
-            >
-              Delete Invoice
-            </button>
+            {Loading ? (
+              <AddingLoader />
+            ) : (
+              <button
+                className="hover:bg-[red] bg-white text-[red] hover:text-white font-[Roboto] font-bold text-[1.2rem] py-[5px] px-[10px] border-[2px] border-[red] hover:rounded-[8px] transition-all duration-500"
+                onClick={onDelete}
+              >
+                Delete Invoice
+              </button>
+            )}
           </div>
         </div>
-      ) : (
-        <></>
       )}
     </>
   );
