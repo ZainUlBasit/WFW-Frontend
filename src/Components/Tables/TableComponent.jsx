@@ -22,6 +22,7 @@ export default function TableComp({
   setSelID,
   setEditItemModal,
   setEditCompanyModal,
+  setOpenEditLedgerModal,
   Value,
   setValue,
   placeholder,
@@ -47,6 +48,9 @@ export default function TableComp({
       // console.log(e.target.name);
       if (title === "ITEM INFO") setEditItemModal(true);
       if (title === "COMPANIES INFO") setEditCompanyModal(true);
+      if (title.toUpperCase() === "Item Ledger Detail".toUpperCase()) {
+        setOpenEditLedgerModal(true);
+      }
     }
   };
   return rows.length == 0 ? (

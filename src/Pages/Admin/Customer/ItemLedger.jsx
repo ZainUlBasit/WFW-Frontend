@@ -13,6 +13,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import ItemLedgerReport from "../../../Components/Reports/ItemLedgerReport";
 import { fetchCustomers } from "../../../store/CustomerSlice";
 import { fetchReturns } from "../../../store/ReturnSlice";
+import EditItemLedgerModal from "../../../Components/Modals/EditItemLedgerModal";
 
 const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -20,6 +21,7 @@ const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
   const [isLoading, setIsLoading] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const customerTransaction = useSelector((state) => state.Transactions);
+  const [OpenEditLedgerModal, setOpenEditLedgerModal] = useState(false);
 
   const customer = useSelector((state) => state.CustomerSliceReducer);
 
@@ -59,6 +61,7 @@ const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
               isActive_={isActive_}
               setSelID={setSelID}
               LedgerDetail={true}
+              setOpenEditLedgerModal={setOpenEditLedgerModal}
             />
           </div>
           <div className="flex justify-center items-center my-5">
@@ -117,6 +120,13 @@ const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
         </div>
       ) : (
         <DataLoader />
+      )}
+      {OpenEditLedgerModal && (
+        <EditItemLedgerModal
+          open={OpenEditLedgerModal}
+          setOpen={setOpenEditLedgerModal}
+          CurrentState={customerTransaction.data.find((dt) => dt._id === selID)}
+        />
       )}
     </>
   );
