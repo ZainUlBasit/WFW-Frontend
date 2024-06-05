@@ -70,6 +70,8 @@ export const GetItemSummary = (data) => api.post("/transaction/summary", data);
 export const DeleteInvoice = (data) => api.post("/transaction/delete", data);
 export const CheckInvoiceNoApi = (data) =>
   api.post("/transaction/check-invoice-no", data);
+export const UpdateInvoiceItem = (payload) =>
+  api.post("/transaction/update-invoice-item", payload);
 // Add Sales Return
 export const CreateSaleReturn = (data) => api.post("/sale-return/create", data);
 export const GetAllSaleReturn = (data) => api.post("/sale-return/branch", data);

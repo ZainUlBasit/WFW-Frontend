@@ -40,10 +40,16 @@ import customerServices from "../../Services/customer.services";
 import { toast } from "react-toastify";
 import AddingLoader from "../Loader/AddingLoader";
 import { fetchBranches } from "../../store/BranchSlice";
-import { CreateCustomer } from "../../Https";
+import { CreateCustomer, UpdateInvoiceItem } from "../../Https";
 import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
+import { fetchTransactions } from "../../store/TransactionSlice";
 
-const EditItemLedgerModal = ({ setOpen, open, CurrentState }) => {
+const EditItemLedgerModal = ({
+  setOpen,
+  open,
+  CurrentState,
+  CurrentCustomer,
+}) => {
   console.log("========================");
   console.log(CurrentState);
   console.log("========================");
@@ -68,7 +74,25 @@ const EditItemLedgerModal = ({ setOpen, open, CurrentState }) => {
     setLoading(true);
     e.preventDefault();
     try {
-    } catch (error) {}
+      const response = await UpdateInvoiceItem({
+        InvoiceInfo: CurrentState,
+        updateValue: {
+          qty: Number(itemQty),
+          price: Number(itemPrice),
+          amount: Number(itemQty) * Number(itemPrice),
+        },
+        customerId: CurrentCustomer.customerId,
+      });
+
+      if (!response.data?.success) showErrorToast(response.data?.error?.msg);
+      else {
+        showSuccessToast(response.data?.data?.msg);
+        dispatch(fetchTransactions(CurrentCustomer));
+        setOpen(false);
+      }
+    } catch (err) {
+      showErrorToast(err.response?.data?.error?.msg || err.message);
+    }
     setLoading(false);
   };
 

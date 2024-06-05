@@ -126,6 +126,11 @@ const ItemLedger = ({ isItem, SelectedCustomer, FromDate, ToDate }) => {
           open={OpenEditLedgerModal}
           setOpen={setOpenEditLedgerModal}
           CurrentState={customerTransaction.data.find((dt) => dt._id === selID)}
+          CurrentCustomer={{
+            customerId: SelectedCustomer?.name,
+            to: ToDate,
+            from: FromDate,
+          }}
         />
       )}
     </>
