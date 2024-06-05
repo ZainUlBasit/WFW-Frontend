@@ -43,6 +43,7 @@ import { fetchBranches } from "../../store/BranchSlice";
 import { CreateCustomer, UpdateInvoiceItem } from "../../Https";
 import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
 import { fetchTransactions } from "../../store/TransactionSlice";
+import { fetchCustomers } from "../../store/CustomerSlice";
 
 const EditItemLedgerModal = ({
   setOpen,
@@ -88,6 +89,8 @@ const EditItemLedgerModal = ({
       else {
         showSuccessToast(response.data?.data?.msg);
         dispatch(fetchTransactions(CurrentCustomer));
+        dispatch(fetchCustomers(uData));
+
         setOpen(false);
       }
     } catch (err) {

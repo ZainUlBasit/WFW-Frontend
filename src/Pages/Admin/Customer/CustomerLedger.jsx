@@ -29,13 +29,13 @@ const CustomerLedger = () => {
   const customer = useSelector((state) => state.CustomerSliceReducer.data);
   const loading = useSelector((state) => state.CustomerSliceReducer.loading);
   const isError = useSelector((state) => state.CustomerSliceReducer.isError);
-  const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const [SelectCustomer, setSelectCustomer] = useState({
     name: "",
     found: false,
   });
   const [ItemReturn, setItemReturn] = useState([]);
   const [ShowMsg, setShowMsg] = useState(false);
+  const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   useEffect(() => {
     dispatch(fetchCustomers(uData));
   }, []);
