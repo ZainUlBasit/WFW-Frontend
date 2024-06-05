@@ -25,6 +25,7 @@ import {
   showWarningToast,
 } from "../../../utils/TaostMessages";
 import {
+  CheckInvoiceNoApi,
   CreatePayment,
   CreateSaleReturn,
   CreateTransaction,
@@ -56,6 +57,7 @@ const CustomerReturn = () => {
   const [CustomerID, setCustomerID] = useState("");
   const [CustomerName, setCustomerName] = useState("");
   const [CustomerAddress, setCustomerAddress] = useState("");
+  const [BillNoFoccused, setBillNoFoccused] = useState(true);
   const [curDate, setCurDate] = useState(
     new Date().toISOString().substr(0, 10)
   );
@@ -174,7 +176,7 @@ const CustomerReturn = () => {
   // ============================================
   const addToDatabase = async () => {
     try {
-      if (Payment !== "" || Payment !== 0) {
+      if (Payment !== "" && Number(Payment) > 0) {
         const formData = new FormData();
         formData.append("user_type", 2);
         formData.append("user_Id", SelectCustomer.name);
@@ -197,7 +199,8 @@ const CustomerReturn = () => {
         customerId: SelectCustomer.name,
         date: curDate,
         items: NewItems,
-        discount: discount,
+        discount: 0,
+        invoice_no: InvoiceNo,
       });
       console.log("transaction: ", response);
       if (!response.data?.success) showErrorToast(response.data?.error?.msg);
@@ -231,6 +234,8 @@ const CustomerReturn = () => {
         name: "",
         found: false,
       });
+      setPayment("");
+      setInvoiceNo("");
       setUploaded(false);
       setFormatedItems(null);
       setCustomerID("");
@@ -262,6 +267,23 @@ const CustomerReturn = () => {
     dispatch(fetchItems(uData));
   }, []);
 
+  useEffect(() => {
+    const check_bill_no = async () => {
+      if (!BillNoFoccused) {
+        try {
+          const response = await CheckInvoiceNoApi({
+            invoice_no: Number(InvoiceNo),
+          });
+          setInvoiceNoExists(response?.data?.data?.payload?.exists);
+        } catch (error) {
+          console.log(error);
+          setInvoiceNoExists(false);
+        }
+      }
+    };
+    check_bill_no();
+  }, [BillNoFoccused, InvoiceNo]);
+
   return (
     <div className="transition-all">
       <Navbar />
@@ -273,7 +295,7 @@ const CustomerReturn = () => {
       ) : customers ? (
         <div>
           <CustomerReturnCard
-            title={"Return Item Bill"}
+            title={"Item Return Bill"}
             setSelect={setSelectCustomer}
             Select={SelectCustomer}
             setOpen={setOpen}
@@ -312,27 +334,27 @@ const CustomerReturn = () => {
                 <div className="w-[230px] justify-end flex flex-col items-center">
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
                     {/* <input
-                    className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
-                    type="number"
-                    name="billno"
-                    id="billno"
-                    value={CurrentBillNo}
-                    onChange={(e) => setCurrentBillNo(e.target.value)}
-                    onBlur={(e) => {
-                      const enterBill = e.target.value;
-                      if (AllBillNo.includes(Number(enterBill))) {
-                        toast.warn("Bill No Already Taken...", {
-                          position: "top-right",
-                          autoClose: 5000,
-                          hideProgressBar: false,
-                          draggable: true,
-                          progress: undefined,
-                          theme: "light",
-                        });
-                        setCurrentBillNo(DefaultBillNo);
-                      }
-                    }}
-                  /> */}
+                      className="px-[8px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[170px] py-[5px]"
+                      type="number"
+                      name="billno"
+                      id="billno"
+                      value={CurrentBillNo}
+                      onChange={(e) => setCurrentBillNo(e.target.value)}
+                      onBlur={(e) => {
+                        const enterBill = e.target.value;
+                        if (AllBillNo.includes(Number(enterBill))) {
+                          toast.warn("Bill No Already Taken...", {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                          });
+                          setCurrentBillNo(DefaultBillNo);
+                        }
+                      }}
+                    /> */}
                   </div>
                   <div className="flex w-[100%] justify-end my-[10px] mr-[10px] text-[1.1rem]">
                     <input
@@ -359,44 +381,9 @@ const CustomerReturn = () => {
                       onBlur={() => setBillNoFoccused(false)}
                     />
                   </div>
-                  <div className="flex pr-[10px] text-[1.1rem] mb-[5px] font-[raleway] font-[700]">
+                  <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[raleway] font-[700]">
                     <div className="w-[110px] text-right mr-[15px]">Total:</div>
                     <div className="w-[100px]">{Number(Total)} /-</div>
-                  </div>
-                  <div className="flex mt-[0px] mr-[10px] text-[1.1rem]">
-                    <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
-                      Discount:
-                    </div>
-                    <input
-                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
-                      type="number"
-                      name="discountAmount"
-                      id="discountAmount"
-                      value={discount}
-                      onChange={(e) => setDiscount(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex mt-1 mr-[10px] text-[1.1rem]">
-                    <div className="w-[110px] mr-[15px] font-[raleway] font-[700] text-right">
-                      Payment:
-                    </div>
-                    <input
-                      className="pl-[4px] text-[#5a4ae3] outline-none rounded-r-[7px] font-[raleway]  font-[700] w-[100px]"
-                      type="number"
-                      name="paymentAmount"
-                      id="paymentAmount"
-                      placeholder="Payment"
-                      value={Payment}
-                      onChange={(e) => setPayment(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex pr-[10px] text-[1.1rem] mt-[5px] font-[raleway] font-[700]">
-                    <div className="w-[110px] text-right mr-[15px]">
-                      Grand Total:
-                    </div>
-                    <div className="w-[100px]">
-                      {Number(Total) - Number(discount)} /-
-                    </div>
                   </div>
                 </div>
                 <div className="h-full flex flex-col gap-y-2 justify-center items-center mr-[15px]">
