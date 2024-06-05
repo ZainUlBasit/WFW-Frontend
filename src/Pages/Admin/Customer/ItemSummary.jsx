@@ -91,7 +91,10 @@ const ItemSummary = () => {
                 </div>
 
                 <div className="flex font-bold text-2xl">
-                  Total Amount: {Number(totalAmount).toLocaleString()}
+                  Total Amount:{" "}
+                  {Number(
+                    CustomerState.data.find((dt) => dt._id === UserId)?.total
+                  ).toLocaleString()}
                 </div>
                 <div className="flex font-bold text-2xl">
                   Return:{" "}
