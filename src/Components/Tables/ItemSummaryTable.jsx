@@ -101,7 +101,7 @@ export default function ItemSummaryTable({ rows, columns, isActive_ }) {
                         align={"left"}
                         style={{ fontWeight: "700", fontSize: "0.95rem" }}
                       >
-                        {row.qty}
+                        {row.code === "SH" ? 1 : row.qty}
                       </TableCell>
                       <TableCell
                         align={"left"}
@@ -123,7 +123,7 @@ export default function ItemSummaryTable({ rows, columns, isActive_ }) {
                         align={"left"}
                         style={{ fontWeight: "700", fontSize: "0.95rem" }}
                       >
-                        {row.price * row.qty}
+                        {row.code === "SH" ? row.price : row.price * row.qty}
                       </TableCell>
                     </TableRow>
                   );
