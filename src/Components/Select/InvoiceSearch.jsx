@@ -16,6 +16,12 @@ const InvoiceSearch = ({ DefOption, Options, setSelect, Select }) => {
   const id = open ? "simple-popover" : undefined;
 
   const [SearchText, setSearchText] = useState("");
+
+  const uniqueOptions = [
+    ...new Set(Options.map((Comp) => Comp.invoice_no)),
+  ].map((invoice_no) => {
+    return Options.find((Comp) => Comp.invoice_no === invoice_no);
+  });
   return (
     <SelectWrapper>
       <AuthInputPopOver
@@ -72,7 +78,7 @@ const InvoiceSearch = ({ DefOption, Options, setSelect, Select }) => {
                   onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
-              {Options.map((Comp, i) => {
+              {uniqueOptions.map((Comp, i) => {
                 return (
                   <div
                     className="flex gap-x-3 items-center cursor-pointer font-bold font-[Roboto] text-xl"

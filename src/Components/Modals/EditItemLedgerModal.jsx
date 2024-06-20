@@ -126,7 +126,7 @@ const EditItemLedgerModal = ({
             className="mr-[5px] mb-[5px]"
             style={{ fontSize: "50px" }}
           />
-          Edit Ledger
+          Edit Item Ledger
           <CrossButton setOpen={setOpen} />
         </Typography>
 

@@ -37,6 +37,13 @@ const CustomerNav = () => {
               BIcon={NewspaperIcon}
               width={"170px"}
             />
+            <AdminNavButton
+              title={"Invoice Edit"}
+              type={"link"}
+              link={"/customer_invoices"}
+              BIcon={BookmarkAddIcon}
+              width={"170px"}
+            />
           </>
         ) : (
           <></>
@@ -45,13 +52,6 @@ const CustomerNav = () => {
           title={"Customer Info"}
           type={"link"}
           link={"/customer_info"}
-          BIcon={DnsIcon}
-          width={"170px"}
-        />
-        <AdminNavButton
-          title={"Item Summary"}
-          type={"link"}
-          link={"/item-summary"}
           BIcon={DnsIcon}
           width={"170px"}
         />
@@ -75,10 +75,17 @@ const CustomerNav = () => {
             />
 
             <AdminNavButton
-              title={"Invoice Edit"}
+              title={"Return Edit"}
               type={"link"}
-              link={"/customer_invoices"}
+              link={"/customer_return_edit"}
               BIcon={BookmarkAddIcon}
+              width={"170px"}
+            />
+            <AdminNavButton
+              title={"Item Summary"}
+              type={"link"}
+              link={"/item-summary"}
+              BIcon={DnsIcon}
               width={"170px"}
             />
           </>

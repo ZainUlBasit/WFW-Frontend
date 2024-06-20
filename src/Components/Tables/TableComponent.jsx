@@ -13,6 +13,7 @@ import { useState } from "react";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import LoadingError from "../Loader/LoadingError";
 import Search from "../Search/Search";
+import EditPayment from "../Modals/EditPayment";
 
 export default function TableComp({
   rows,
@@ -27,11 +28,14 @@ export default function TableComp({
   setValue,
   placeholder,
   isLedger,
+  CurrentCustomer,
 }) {
   console.log(rows);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [SearchText, setSearchText] = useState("");
+  const [Open, setOpen] = useState(false);
+  const [Id, setId] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -50,6 +54,10 @@ export default function TableComp({
       if (title === "COMPANIES INFO") setEditCompanyModal(true);
       if (title.toUpperCase() === "Item Ledger Detail".toUpperCase()) {
         setOpenEditLedgerModal(true);
+      }
+      if (title.toUpperCase() === "Cash Ledger Detail".toUpperCase()) {
+        setId(e.target.id);
+        setOpen(true);
       }
     }
   };
@@ -184,6 +192,14 @@ export default function TableComp({
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      {Open && (
+        <EditPayment
+          open={Open}
+          setOpen={setOpen}
+          paymentDetails={rows.find((dt) => dt._id === Id)}
+          CurrentCustomer={CurrentCustomer ? CurrentCustomer : {}}
+        />
+      )}
     </TableWrapper>
   );
 }

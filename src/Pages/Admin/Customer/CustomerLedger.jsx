@@ -34,8 +34,8 @@ const CustomerLedger = () => {
     found: false,
   });
   const [ItemReturn, setItemReturn] = useState([]);
-  const [ShowMsg, setShowMsg] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
+  const [ShowMsg, setShowMsg] = useState(false);
   useEffect(() => {
     dispatch(fetchCustomers(uData));
   }, []);

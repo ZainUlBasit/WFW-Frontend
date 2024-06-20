@@ -7,7 +7,7 @@ export const CustomerReturnCardWrapper = styled.div`
   font-family: Roboto;
   .Inner {
     width: 90%;
-    background-color: #5a4ae3;
+    background-color: ${(props) => (props.Red ? "red" : "#5a4ae3")};
     border-radius: 10px 10px 0px 0px;
   }
   .title {

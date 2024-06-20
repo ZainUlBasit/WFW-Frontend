@@ -10,6 +10,7 @@ import cashpaymentServices from "../../../Services/cashpayment.services";
 import { fetchPayments } from "../../../store/PaymentSlice";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import CashLedgerReport from "../../../Components/Reports/CashLedgerReport";
+import EditPayment from "../../../Components/Modals/EditPayment";
 
 const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -18,6 +19,7 @@ const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
   const [Loading, setLoading] = useState(false);
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
   const customer = useSelector((state) => state.CustomerSliceReducer);
+  const [OpenEditLedgerModal, setOpenEditLedgerModal] = useState(false);
 
   const PaymentState = useSelector((state) => state.PaymentState);
   const dispatch = useDispatch();
@@ -67,6 +69,7 @@ const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
   ) : (
     <div className={isCash ? "flex flex-col w-full" : "bg-yellow-400 hidden"}>
       <TableComp
+        setOpenEditLedgerModal={setOpenEditLedgerModal}
         title="Cash Ledger Detail"
         rows={PaymentState.data.map((dt) => {
           return {
@@ -78,7 +81,13 @@ const CashLedger = ({ isCash, SelectedCustomer, FromDate, ToDate }) => {
         isActive_={isActive_}
         setSelID={setSelID}
         LedgerDetail={true}
-        isLedger={true}
+        CurrentCustomer={{
+          branch_number: uData.branch_number,
+          user_Id: SelectedCustomer.name,
+          startDate: FromDate,
+          endDate: ToDate,
+          role: uData.role,
+        }}
       />
       <div className="flex justify-center items-center my-5">
         <PDFDownloadLink

@@ -78,7 +78,9 @@ const CustomerReturnCard = ({
 
   return (
     <>
-      <CustomerReturnCardWrapper>
+      <CustomerReturnCardWrapper
+        Red={title === "Item Return Bill" ? true : false}
+      >
         <div className="Inner">
           <div className="title">{title.toUpperCase()}</div>
           <InputWrapperStyling className="InputTab">

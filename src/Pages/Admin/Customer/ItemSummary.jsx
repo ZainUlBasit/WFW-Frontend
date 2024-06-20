@@ -92,9 +92,11 @@ const ItemSummary = () => {
 
                 <div className="flex font-bold text-2xl">
                   Total Amount:{" "}
-                  {Number(
-                    CustomerState.data.find((dt) => dt._id === UserId)?.total
-                  ).toLocaleString()}
+                  {ItemSummaryData.data
+                    .reduce((total, Item) => {
+                      return total + Number(Item.qty) * Number(Item.price);
+                    }, 0)
+                    .toLocaleString()}
                 </div>
                 <div className="flex font-bold text-2xl">
                   Return:{" "}
@@ -117,9 +119,13 @@ const ItemSummary = () => {
                 </div>
                 <div className="flex font-bold text-2xl">
                   Remaining:{" "}
-                  {Number(
-                    CustomerState.data.find((dt) => dt._id === UserId)
-                      ?.remaining
+                  {(
+                    ItemSummaryData.data.reduce((total, Item) => {
+                      return total + Number(Item.qty) * Number(Item.price);
+                    }, 0) -
+                    Number(
+                      CustomerState.data.find((dt) => dt._id === UserId)?.paid
+                    )
                   ).toLocaleString()}
                 </div>
               </div>
@@ -138,22 +144,28 @@ const ItemSummary = () => {
                           ?.address || "not specified"
                       }
                       cRemaining={
-                        CustomerState.data.find((dt) => dt._id === UserId)
-                          ?.remaining || "not specified"
+                        ItemSummaryData.data.reduce((total, Item) => {
+                          return total + Number(Item.qty) * Number(Item.price);
+                        }, 0) -
+                          Number(
+                            CustomerState.data.find((dt) => dt._id === UserId)
+                              .paid
+                          ) || "not specified"
                       }
                       cReturn={
                         CustomerState.data.find((dt) => dt._id === UserId)
-                          ?.return_amount
+                          .return_amount
                       }
                       cDiscount={
                         CustomerState.data.find((dt) => dt._id === UserId)
-                          ?.discount || "not specified"
+                          .discount || "not specified"
                       }
                       cPaid={
-                        CustomerState.data.find((dt) => dt._id === UserId)
-                          ?.paid || "not specified"
+                        CustomerState.data.find((dt) => dt._id === UserId).paid
                       }
-                      total={totalAmount}
+                      total={ItemSummaryData.data.reduce((total, Item) => {
+                        return total + Number(Item.qty) * Number(Item.price);
+                      }, 0)}
                       qty={totalQty}
                       price={totalPrice}
                     />
