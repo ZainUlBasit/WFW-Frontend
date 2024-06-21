@@ -174,9 +174,22 @@ const ItemSummary = () => {
                           ?.address || "not specified"
                       }
                       cRemaining={
-                        ItemSummaryData.data.reduce((total, Item) => {
-                          return total + Number(Item.qty) * Number(Item.price);
-                        }, 0) -
+                        ItemSummaryData.data
+                          .map((dt) => {
+                            if (dt.code === "SH") {
+                              return {
+                                ...dt,
+                                qty: 1,
+                              };
+                            } else {
+                              return { ...dt };
+                            }
+                          })
+                          .reduce((total, Item) => {
+                            return (
+                              total + Number(Item.qty) * Number(Item.price)
+                            );
+                          }, 0) -
                           Number(
                             CustomerState.data.find((dt) => dt._id === UserId)
                               ?.paid
