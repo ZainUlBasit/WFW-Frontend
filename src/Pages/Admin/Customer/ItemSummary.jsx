@@ -133,7 +133,16 @@ const ItemSummary = () => {
                 <PDFDownloadLink
                   document={
                     <ItemSummaryReport
-                      Data={ItemSummaryData.data}
+                      Data={ItemSummaryData.data.map((dt) => {
+                        if (dt.code === "SH") {
+                          return {
+                            ...dt,
+                            qty: 1,
+                          };
+                        } else {
+                          return { ...dt };
+                        }
+                      })}
                       date={moment(new Date()).format("DD/MM/YYYY")}
                       name={
                         CustomerState.data.find((dt) => dt._id === UserId)
