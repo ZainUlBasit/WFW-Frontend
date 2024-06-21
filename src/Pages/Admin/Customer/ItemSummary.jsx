@@ -188,7 +188,7 @@ const ItemSummary = () => {
                       }
                       cDiscount={
                         CustomerState.data.find((dt) => dt._id === UserId)
-                          ?.discount || "not specified"
+                          ?.discount || 0
                       }
                       cPaid={
                         CustomerState.data.find((dt) => dt._id === UserId)?.paid
