@@ -184,29 +184,34 @@ const ItemSummary = () => {
                       }
                       cReturn={
                         CustomerState.data.find((dt) => dt._id === UserId)
-                          .return_amount
+                          ?.return_amount
                       }
                       cDiscount={
                         CustomerState.data.find((dt) => dt._id === UserId)
-                          .discount || "not specified"
+                          ?.discount || "not specified"
                       }
                       cPaid={
-                        CustomerState.data.find((dt) => dt._id === UserId).paid
+                        CustomerState.data.find((dt) => dt._id === UserId)?.paid
                       }
-                      total={ItemSummaryData.data
-                        .map((dt) => {
-                          if (dt.code === "SH") {
-                            return {
-                              ...dt,
-                              qty: 1,
-                            };
-                          } else {
-                            return { ...dt };
-                          }
-                        })
-                        .reduce((total, Item) => {
-                          return total + Number(Item.qty) * Number(Item.price);
-                        }, 0)}
+                      total={
+                        ItemSummaryData.data &&
+                        ItemSummaryData.data
+                          .map((dt) => {
+                            if (dt.code === "SH") {
+                              return {
+                                ...dt,
+                                qty: 1,
+                              };
+                            } else {
+                              return { ...dt };
+                            }
+                          })
+                          .reduce((total, Item) => {
+                            return (
+                              total + Number(Item.qty) * Number(Item.price)
+                            );
+                          }, 0)
+                      }
                       qty={totalQty}
                       price={totalPrice}
                     />
