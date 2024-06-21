@@ -93,6 +93,16 @@ const ItemSummary = () => {
                 <div className="flex font-bold text-2xl">
                   Total Amount:{" "}
                   {ItemSummaryData.data
+                    .map((dt) => {
+                      if (dt.code === "SH") {
+                        return {
+                          ...dt,
+                          qty: 1,
+                        };
+                      } else {
+                        return { ...dt };
+                      }
+                    })
                     .reduce((total, Item) => {
                       return total + Number(Item.qty) * Number(Item.price);
                     }, 0)
@@ -120,9 +130,20 @@ const ItemSummary = () => {
                 <div className="flex font-bold text-2xl">
                   Remaining:{" "}
                   {(
-                    ItemSummaryData.data.reduce((total, Item) => {
-                      return total + Number(Item.qty) * Number(Item.price);
-                    }, 0) -
+                    ItemSummaryData.data
+                      .map((dt) => {
+                        if (dt.code === "SH") {
+                          return {
+                            ...dt,
+                            qty: 1,
+                          };
+                        } else {
+                          return { ...dt };
+                        }
+                      })
+                      .reduce((total, Item) => {
+                        return total + Number(Item.qty) * Number(Item.price);
+                      }, 0) -
                     Number(
                       CustomerState.data.find((dt) => dt._id === UserId)?.paid
                     )
@@ -158,7 +179,7 @@ const ItemSummary = () => {
                         }, 0) -
                           Number(
                             CustomerState.data.find((dt) => dt._id === UserId)
-                              .paid
+                              ?.paid
                           ) || "not specified"
                       }
                       cReturn={
@@ -172,9 +193,20 @@ const ItemSummary = () => {
                       cPaid={
                         CustomerState.data.find((dt) => dt._id === UserId).paid
                       }
-                      total={ItemSummaryData.data.reduce((total, Item) => {
-                        return total + Number(Item.qty) * Number(Item.price);
-                      }, 0)}
+                      total={ItemSummaryData.data
+                        .map((dt) => {
+                          if (dt.code === "SH") {
+                            return {
+                              ...dt,
+                              qty: 1,
+                            };
+                          } else {
+                            return { ...dt };
+                          }
+                        })
+                        .reduce((total, Item) => {
+                          return total + Number(Item.qty) * Number(Item.price);
+                        }, 0)}
                       qty={totalQty}
                       price={totalPrice}
                     />
