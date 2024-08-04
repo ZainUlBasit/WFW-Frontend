@@ -12,10 +12,10 @@ import ConnectionLost from "../../../Components/Error/ConnectionLost";
 import LoadingError from "../../../Components/Loader/LoadingError";
 
 const AdminCompany = () => {
-  let company = useSelector((state) => state.CompanySliceReducer.data);
   const data = useSelector((state) => state.AutoLoginSliceReducer.data);
   const [SearchText, setSearchText] = useState("");
 
+  let company = useSelector((state) => state.CompanySliceReducer.data);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCompanies(data));

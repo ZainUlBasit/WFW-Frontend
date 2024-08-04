@@ -6,6 +6,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import DomainAddIcon from "@mui/icons-material/DomainAdd";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
+import DnsIcon from "@mui/icons-material/Dns";
 
 const AdminCompanyNav = ({ setOpen }) => {
   const isActive_ = useSelector((state) => state.SideMenuReducer.ActiveState);
@@ -40,6 +41,13 @@ const AdminCompanyNav = ({ setOpen }) => {
           type={"link"}
           link={"/companies_info"}
           BIcon={InfoIcon}
+          width={"175px"}
+        />
+        <AdminNavButton
+          title={"Item Summary"}
+          type={"link"}
+          link={"/company_item_summary"}
+          BIcon={DnsIcon}
           width={"175px"}
         />
         <AdminNavButton

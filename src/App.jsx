@@ -46,6 +46,7 @@ import ShopsInfo from "./Pages/Admin/ShopsInfo";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import ItemSummary from "./Pages/Admin/Customer/ItemSummary";
 import CustomerReturnEdit from "./Pages/Admin/Customer/CustomerReturnEdit";
+import CompanyItemSummary from "./Pages/Admin/Company/CompanyItemSummary";
 
 function App() {
   const Auth = useSelector((state) => state.AutoLoginSliceReducer.auth);
@@ -304,6 +305,14 @@ function App() {
           element={
             <ProtectedRoute isSignedIn={Auth}>
               <CompanyPayment />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/company_item_summary"
+          element={
+            <ProtectedRoute isSignedIn={Auth}>
+              <CompanyItemSummary />
             </ProtectedRoute>
           }
         />

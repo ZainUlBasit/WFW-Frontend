@@ -13,62 +13,65 @@ import AddNewBillReport from "../../../Components/Reports/AddNewBillReport";
 import ItemSummaryReport from "../../../Components/Reports/ItemSummaryReport";
 import moment from "moment";
 import DataLoader from "../../../Components/Loader/DataLoader";
+import { fetchCompanies } from "../../../store/CompanySlice";
+import AdminCompanyNav from "../../../Components/NavBar/AdminNavbars/AdminCompanyNav";
+import { fetchCompanyItemSummary } from "../../../store/CompanyItemSummarySlice";
+import { CompanyColumns } from "../../../DemoData/ItemSummaryColumns";
 
-const ItemSummary = () => {
+const CompanyItemSummary = () => {
   const [open, setOpen] = useState(false);
   const [UserId, setUserId] = useState("");
   const [UserName, setUserName] = useState("");
 
-  const CustomerState = useSelector((state) => state.CustomerSliceReducer);
   const dispatch = useDispatch();
   const uData = useSelector((state) => state.AutoLoginSliceReducer.data);
 
-  const ItemSummaryData = useSelector((state) => state.ItemSummaryState);
+  const ItemSummaryData = useSelector((state) => state.CompanyItemSummaryState);
 
+  let CompanyState = useSelector((state) => state.CompanySliceReducer);
   useEffect(() => {
-    dispatch(fetchCustomers(uData));
+    dispatch(fetchCompanies(uData));
   }, []);
-
   useEffect(() => {
-    if (UserId !== "") dispatch(fetchItemSummary({ customerId: UserId }));
+    if (UserId !== "") dispatch(fetchCompanyItemSummary({ companyId: UserId }));
     else dispatch(ClearData());
   }, [UserId]);
 
-  const totalAmount = useMemo(() => {
-    return ItemSummaryData.data.reduce((total, item) => {
-      return total + item.price * item.qty;
-    }, 0);
-  }, [ItemSummaryData.data]);
+  // const totalAmount = useMemo(() => {
+  //   return ItemSummaryData.data.reduce((total, item) => {
+  //     return total + item.price * item.qty;
+  //   }, 0);
+  // }, [ItemSummaryData.data]);
 
-  const totalPrice = useMemo(() => {
-    return ItemSummaryData.data.reduce((total, item) => {
-      return total + item.price;
-    }, 0);
-  }, [ItemSummaryData.data]);
+  // const totalPrice = useMemo(() => {
+  //   return ItemSummaryData.data.reduce((total, item) => {
+  //     return total + item.price;
+  //   }, 0);
+  // }, [ItemSummaryData.data]);
 
   const totalQty = useMemo(() => {
     return ItemSummaryData.data
       .filter((dt) => dt.code !== "SH")
       .reduce((total, item) => {
-        return total + item.qty;
+        return total + item.in_qty;
       }, 0);
   }, [ItemSummaryData.data]);
 
   return (
     <>
       <Navbar />
-      <CustomerNav setOpen={setOpen} />
+      <AdminCompanyNav setOpen={setOpen} />
       <div className="flex flex-col gap-y-4 py-4">
         <div className="flex w-full justify-center items-center">
           <div className="w-full flex justify-center items-center max-w-[400px]">
             <CustomerPoperOver
-              Label={"Customer"}
-              placeholder={"Select Customer..."}
+              Label={"Company"}
+              placeholder={"Select Company..."}
               ValueId={UserId === ""}
               setValueId={setUserId}
-              ValueName={UserName === "" ? "Select Customer..." : UserName}
+              ValueName={UserName === "" ? "Select Company..." : UserName}
               setValueName={setUserName}
-              Values={CustomerState?.data}
+              Values={CompanyState?.data}
             />
           </div>
         </div>
@@ -81,7 +84,7 @@ const ItemSummary = () => {
               <div>
                 <ItemSummaryTable
                   rows={ItemSummaryData.loading ? [{}] : ItemSummaryData.data}
-                  columns={Columns}
+                  columns={CompanyColumns}
                   isActive_={false}
                 />
               </div>
@@ -91,25 +94,28 @@ const ItemSummary = () => {
                 </div>
 
                 <div className="flex font-bold text-2xl">
-                  Total Amount: {Number(totalAmount).toLocaleString()}
-                </div>
-                <div className="flex font-bold text-2xl">
-                  Return:{" "}
-                  {Number(
-                    CustomerState.data.find((dt) => dt._id === UserId)
-                      ?.return_amount
-                  ).toLocaleString()}
+                  Total Amount:{" "}
+                  {ItemSummaryData.data
+                    .map((dt) => {
+                      if (dt.code === "SH") {
+                        return {
+                          ...dt,
+                          in_qty: 1,
+                          qty: 1,
+                        };
+                      } else {
+                        return { ...dt };
+                      }
+                    })
+                    .reduce((total, Item) => {
+                      return total + Number(Item.in_qty) * Number(Item.price);
+                    }, 0)
+                    .toLocaleString()}
                 </div>
                 <div className="flex font-bold text-2xl">
                   Paid:{" "}
                   {Number(
-                    CustomerState.data.find((dt) => dt._id === UserId)?.paid
-                  ).toLocaleString()}
-                </div>
-                <div className="flex font-bold text-2xl">
-                  Discount:{" "}
-                  {Number(
-                    CustomerState.data.find((dt) => dt._id === UserId)?.discount
+                    CompanyState.data.find((dt) => dt._id === UserId)?.paid
                   ).toLocaleString()}
                 </div>
                 <div className="flex font-bold text-2xl">
@@ -120,6 +126,7 @@ const ItemSummary = () => {
                         if (dt.code === "SH") {
                           return {
                             ...dt,
+                            in_qty: 1,
                             qty: 1,
                           };
                         } else {
@@ -127,19 +134,15 @@ const ItemSummary = () => {
                         }
                       })
                       .reduce((total, Item) => {
-                        return total + Number(Item.qty) * Number(Item.price);
+                        return total + Number(Item.in_qty) * Number(Item.price);
                       }, 0) -
                     Number(
-                      CustomerState.data.find((dt) => dt._id === UserId)?.paid
-                    ) -
-                    Number(
-                      CustomerState.data.find((dt) => dt._id === UserId)
-                        ?.return_amount
+                      CompanyState.data.find((dt) => dt._id === UserId)?.paid
                     )
                   ).toLocaleString()}
                 </div>
               </div>
-              <div className="flex justify-center items-center">
+              {/* <div className="flex justify-center items-center">
                 <PDFDownloadLink
                   document={
                     <ItemSummaryReport
@@ -155,47 +158,79 @@ const ItemSummary = () => {
                       })}
                       date={moment(new Date()).format("DD/MM/YYYY")}
                       name={
-                        CustomerState.data.find((dt) => dt._id === UserId)
+                        CompanyState.data.find((dt) => dt._id === UserId)
                           ?.name || "-"
                       }
                       address={
-                        CustomerState.data.find((dt) => dt._id === UserId)
+                        CompanyState.data.find((dt) => dt._id === UserId)
                           ?.address || "not specified"
                       }
-                      cRemaining={ItemSummaryData.data.reduce((total, Item) => {
-                        return total + Number(Item.qty) * Number(Item.price);
-                      }, 0)}
+                      cRemaining={
+                        ItemSummaryData.data
+                          .map((dt) => {
+                            if (dt.code === "SH") {
+                              return {
+                                ...dt,
+                                qty: 1,
+                              };
+                            } else {
+                              return { ...dt };
+                            }
+                          })
+                          .reduce((total, Item) => {
+                            return (
+                              total + Number(Item.qty) * Number(Item.price)
+                            );
+                          }, 0) -
+                          Number(
+                            CompanyState.data.find((dt) => dt._id === UserId)
+                              ?.paid
+                          ) || "not specified"
+                      }
                       cReturn={
-                        CustomerState.data.find((dt) => dt._id === UserId)
+                        CompanyState.data.find((dt) => dt._id === UserId)
                           ?.return_amount
                       }
                       cDiscount={
-                        CustomerState.data.find((dt) => dt._id === UserId)
+                        CompanyState.data.find((dt) => dt._id === UserId)
                           ?.discount
                       }
                       cPaid={
-                        CustomerState.data.find((dt) => dt._id === UserId)?.paid
+                        CompanyState.data.find((dt) => dt._id === UserId)?.paid
                       }
                       total={
                         ItemSummaryData.data &&
-                        ItemSummaryData.data.reduce((total, Item) => {
-                          return total + Number(Item.qty) * Number(Item.price);
-                        }, 0)
+                        ItemSummaryData.data
+                          .map((dt) => {
+                            if (dt.code === "SH") {
+                              return {
+                                ...dt,
+                                qty: 1,
+                              };
+                            } else {
+                              return { ...dt };
+                            }
+                          })
+                          .reduce((total, Item) => {
+                            return (
+                              total + Number(Item.qty) * Number(Item.price)
+                            );
+                          }, 0)
                       }
                       qty={totalQty}
                       price={totalPrice}
                     />
                   }
                   fileName={`${
-                    CustomerState.data.find((dt) => dt._id === UserId)?.name ||
-                    "ItemSummary"
+                    CompanyState.data.find((dt) => dt._id === UserId)?.name ||
+                    "CompanyItemSummary"
                   }`}
                 >
                   <button className="text-white bg-[#5a4ae3] py-[8px] px-[20px] text-[1rem] font-[Roboto] font-[700] rounded-[5px] border-[2px] border-[white] border-[solid] hover:rounded-2xl hover:text-white hover:shadow-white hover:shadow-md transition-all duration-700 returnRes2:px-[10px] returnRes2:text-[.8rem] returnRes:text-[.9rem] text-3xl">
                     Download Summary
                   </button>
                 </PDFDownloadLink>
-              </div>
+              </div> */}
             </>
           )
         )}
@@ -204,4 +239,4 @@ const ItemSummary = () => {
   );
 };
 
-export default ItemSummary;
+export default CompanyItemSummary;

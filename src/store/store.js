@@ -18,6 +18,7 @@ import TransactionSlice from "./TransactionSlice";
 import SaleDetailSlice from "./SaleDetailSlice";
 import PaymentSlice from "./PaymentSlice";
 import ItemSummarySlice from "./ItemSummarySlice";
+import CompanyItemSummarySlice from "./CompanyItemSummarySlice";
 
 export const store = configureStore({
   reducer: {
@@ -40,5 +41,6 @@ export const store = configureStore({
     SalesDetails: SaleDetailSlice,
     PaymentState: PaymentSlice,
     ItemSummaryState: ItemSummarySlice,
+    CompanyItemSummaryState: CompanyItemSummarySlice,
   },
 });

@@ -31,3 +31,43 @@ export const Columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
 ];
+
+export const CompanyColumns = [
+  {
+    id: "code",
+    label: "Item Code",
+    minWidth: 150,
+  },
+  {
+    id: "name",
+    label: "Item Name",
+    align: "left",
+    minWidth: 150,
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "in_qty",
+    label: "In-Qty",
+    align: "left",
+    // format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "qty",
+    label: "Qty",
+    align: "left",
+    // format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "sale",
+    label: "Sale",
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "purchase",
+    label: "Purchase",
+    align: "left",
+    minWidth: 150,
+    format: (value) => value.toLocaleString("en-US"),
+  },
+];

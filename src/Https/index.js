@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL, API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL_LOCAL,
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
@@ -26,6 +26,8 @@ export const GetBranchCompany = (payload) =>
   api.post("/company/branch", payload);
 export const UpdateCompanyApi = (data) => api.patch("/company/update", data);
 export const DeleteCompany = (data) => api.delete("/company/delete/" + data);
+export const GetCompanyItemSummaryApi = (payload) =>
+  api.post("/company/item-summary", payload);
 // items Requests
 export const CreateItem = (data) => api.post("/item/create", data);
 export const GetItems = () => api.get("/item/all");

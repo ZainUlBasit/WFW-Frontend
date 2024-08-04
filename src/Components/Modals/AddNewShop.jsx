@@ -110,8 +110,8 @@ const AddNewShop = ({ open, setOpen, RefreshData }) => {
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const imageRef = storage.ref(`/branch/${Name}`);
     try {
+      const imageRef = storage.ref(`/branch/${Name}`);
       const snapshot = await imageRef.put(Pic);
       const downloadURL = await snapshot.ref.getDownloadURL();
       const response = await RegisterApi({
