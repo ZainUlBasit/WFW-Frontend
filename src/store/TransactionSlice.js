@@ -7,7 +7,15 @@ export const fetchTransactions = createAsyncThunk(
   async (CurrentData) => {
     try {
       const response = await GetTransactions({ ...CurrentData });
-      console.log(response.data?.data?.payload);
+      const payload = response.data?.data?.payload;
+      // Check if payload is defined and is an array
+      if (Array.isArray(payload)) {
+        // Calculate the total amount
+        const totalAmount = payload.reduce((acc, item) => {
+          return acc + (item.amount || 0); // Ensure that amount is defined and use 0 if not
+        }, 0);
+        console.log("Total Amount:", totalAmount);
+      }
       if (!response.data?.success) {
         showErrorToast(response.data?.error?.msg);
       } else {
