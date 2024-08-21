@@ -67,6 +67,8 @@ export const DeleteSale = (data) => api.delete("/sale/delete");
 export const UpdateSale = (data) => api.patch("/sale/update");
 export const CreateTransaction = (data) =>
   api.post("/transaction/create", data);
+export const DeleteTransaction = (id) =>
+  api.delete("/transaction/delete/" + id);
 export const GetTransactions = (data) => api.post("/transaction/all", data);
 export const GetItemSummary = (data) => api.post("/transaction/summary", data);
 export const DeleteInvoice = (data) => api.post("/transaction/delete", data);

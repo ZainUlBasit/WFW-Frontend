@@ -16,7 +16,7 @@ import { fetchCustomers } from "../../../store/CustomerSlice";
 import { fetchTransactions } from "../../../store/TransactionSlice";
 import AuthInputPopOver from "../../../Components/Input/CustomPopover";
 import { Popover, Typography } from "@mui/material";
-import { DeleteInvoice } from "../../../Https";
+import { DeleteInvoice, DeleteTransaction } from "../../../Https";
 import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
 
@@ -55,10 +55,10 @@ const CustomerInvoiceEdit = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      const response = await DeleteInvoice({
-        customerId: SelectCustomer?.name,
-        invoice_no: SelectInvoice?.bill,
-      });
+      const t_id = customerTransaction.find(
+        (d) => d.invoice_no.toString() === SelectInvoice.bill.toString()
+      )?.transaction_id;
+      const response = await DeleteTransaction(t_id);
       console.log("delete transaction: ", response);
       if (!response.data?.success) showErrorToast(response.data?.error?.msg);
       else {

@@ -7,6 +7,7 @@ export const fetchTransactions = createAsyncThunk(
   async (CurrentData) => {
     try {
       const response = await GetTransactions({ ...CurrentData });
+      console.log(response.data?.data?.payload);
       if (!response.data?.success) {
         showErrorToast(response.data?.error?.msg);
       } else {
