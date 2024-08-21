@@ -13,7 +13,7 @@ import AddingLoader from "../Loader/AddingLoader";
 import { showErrorToast, showSuccessToast } from "../../utils/TaostMessages";
 import AuthInput from "../Input/SimpleInput";
 import CustomerPoperOver from "../Popover/CustomPopOver";
-import { UpdatePayment } from "../../Https";
+import { DeleteNewPayment, UpdatePayment } from "../../Https";
 import { fetchPayments } from "../../store/PaymentSlice";
 
 const EditPayment = ({ open, setOpen, paymentDetails, CurrentCustomer }) => {
@@ -114,6 +114,28 @@ const EditPayment = ({ open, setOpen, paymentDetails, CurrentCustomer }) => {
       }
     } else {
       showErrorToast("Required fields are undefined!");
+    }
+    setLoading(false);
+  };
+  const onDelete = async () => {
+    setLoading(true);
+    try {
+      const response = await DeleteNewPayment({
+        paymentId: paymentDetails._id,
+        user_type: paymentDetails.user_type,
+        user_Id: paymentDetails.user_Id,
+        amount: paymentDetails.amount,
+      });
+      console.log(response);
+      if (response.data.success) {
+        showSuccessToast(response.data.data.msg);
+        dispatch(fetchPayments(CurrentCustomer));
+        setOpen(false);
+      } else {
+        showErrorToast(response.data.error.msg);
+      }
+    } catch (err) {
+      console.log(err);
     }
     setLoading(false);
   };
@@ -271,9 +293,12 @@ const EditPayment = ({ open, setOpen, paymentDetails, CurrentCustomer }) => {
             {Loading ? (
               <AddingLoader />
             ) : (
-              <div className="flex items-center flex-col">
+              <div className="flex items-center justify-center gap-x-2 gap-y-2 px-2 flex-wrap">
                 <StyledButton primary onClick={onSubmit}>
                   Edit Payment
+                </StyledButton>
+                <StyledButton primary onClick={onDelete}>
+                  Delete Payment
                 </StyledButton>
               </div>
             )}

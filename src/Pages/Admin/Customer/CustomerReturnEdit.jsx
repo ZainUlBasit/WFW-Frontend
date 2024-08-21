@@ -16,7 +16,11 @@ import { fetchCustomers } from "../../../store/CustomerSlice";
 import { fetchTransactions } from "../../../store/TransactionSlice";
 import AuthInputPopOver from "../../../Components/Input/CustomPopover";
 import { Popover, Typography } from "@mui/material";
-import { DeleteInvoice, DeleteSaleReturnInvoice } from "../../../Https";
+import {
+  DeleteInvoice,
+  DeleteReturn,
+  DeleteSaleReturnInvoice,
+} from "../../../Https";
 import { showErrorToast, showSuccessToast } from "../../../utils/TaostMessages";
 import AddingLoader from "../../../Components/Loader/AddingLoader";
 import { fetchReturns } from "../../../store/ReturnSlice";
@@ -53,13 +57,13 @@ const CustomerReturnEdit = () => {
   }, []);
 
   const onDelete = async (e) => {
+    const r_id = customerTransaction.find(
+      (d) => d.invoice_no.toString() === SelectInvoice.bill.toString()
+    )?.return_id;
     setLoading(true);
     e.preventDefault();
     try {
-      const response = await DeleteSaleReturnInvoice({
-        customerId: SelectCustomer?.name,
-        invoice_no: SelectInvoice?.bill,
-      });
+      const response = await DeleteReturn(r_id);
       console.log("delete return transactions: ", response);
       if (!response.data?.success) showErrorToast(response.data?.error?.msg);
       else {

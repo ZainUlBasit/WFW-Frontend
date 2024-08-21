@@ -81,6 +81,8 @@ export const CreateSaleReturn = (data) => api.post("/sale-return/create", data);
 export const DeleteSaleReturnInvoice = (data) =>
   api.post("/sale-return/delete", data);
 export const GetAllSaleReturn = (data) => api.post("/sale-return/branch", data);
+export const DeleteReturn = (id) => api.delete("/sale-return/delete/" + id);
+
 // export const GetBranchSaleReturn = (data) => api.get("/sale-return/branch");
 export const DeleteSaleReturn = (data) => api.delete("/sale-return/delete");
 export const UpdateSaleReturn = (data) => api.patch("/sale-return/update");
@@ -101,6 +103,8 @@ export const CreatePayment = (data) => api.post("/payment/create", data);
 export const GetAllPayment = (data) => api.post("/payment/all", data);
 export const GetBranchPayment = (data) => api.post("/payment/branch", data);
 export const DeletePayment = (payload) => api.post("/payment/delete", payload);
+export const DeleteNewPayment = (payload) =>
+  api.post("/payment/delete-new", payload);
 export const UpdatePayment = (data) => api.post("/payment/update", data);
 
 // Stock Request
