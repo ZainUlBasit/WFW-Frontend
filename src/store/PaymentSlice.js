@@ -33,6 +33,10 @@ export const fetchPayments = createAsyncThunk(
       if (!response.data?.success) {
         showErrorToast(response.data.error.msg);
       } else if (response.data?.success) {
+        const totalAmount = response.data.data.payload.reduce((acc, item) => {
+          return acc + (item.amount || 0); // Ensure that amount is defined and use 0 if not
+        }, 0);
+        console.log("Total Amount:", totalAmount);
         return response.data.data.payload.sort((a, b) =>
           moment(a.date).diff(moment(b.date))
         );
