@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL, API_BASE_URL_LOCAL } from "../utils/config";
 
 export const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: "https://wfw-backend-app.up.railway.app/api",
   withCredentials: true,
   headers: {
     "Content-type": "application/json",
